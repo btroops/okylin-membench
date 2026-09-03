@@ -55,3 +55,19 @@
 - 9 项能力维度的 schema/runner/scorer/report/CLI/.deb 全链路；
 - 三个内置参考智能体（nomem/naive/smart）验证区分度；
 - 生成器（种子可复现）；样例结果入库；docs 三件套。
+
+## 2026-09-04 · 轮次 N+3：引文递归阅读 + 记忆演变轨迹
+
+- **递归阅读**（RESEARCH.md 系列三）：RULER（VT 链式绑定 + 难度旋钮）、
+  MemGPT（OS 式分级记忆 + 自编辑纪律，摘要级）、Zep/Graphiti（事实失效
+  边不删除 + "DMR 太简单被全文窗口刷穿"的警钟）、LoCoMo（adversarial
+  类目为拒答设计源头）。
+- **发散采纳——记忆演变轨迹**：所有开源 benchmark 只测终态 QA；赛题
+  要求衡量"写入/更新/拒绝"，因此把过程也变成证据：每 session 结束后
+  导出记忆库快照并 diff。实测三种病因清晰可分：
+  nomem 全程 +0-0（写失败）/ naive +1-0→+1-0（该删未删）/ smart +1-0→+1-1（健康覆盖）。
+  summary 新增 memory_ops.writes/deletes 计数。
+- **RULER-VT 吸收**：gen-upd-chain 链式换号模板（同槽位改两次只认终值，
+  中间值按 FAMA 判 improper_reuse）；smart 全对、naive improper_reuse。
+- **测试**：75 通过；样例结果、README/DESIGN 同步；.deb 重建。
+- **挂账**：检索定位率协议扩展、干扰项难度旋钮、逐条记忆 validity interval。

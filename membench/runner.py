@@ -66,6 +66,8 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
         fs_before = snapshot_dir(workdir)
         transcript: List[dict] = []
         asked: set = set()
+        memory_evolution: List[dict] = []   # 记忆演变轨迹（赛题"写入/更新/拒绝"的过程证据）
+        prev_dump: Optional[List[str]] = None
 
         # 2/3) 回放 session 与文本/fs 探针
         for session in case.sessions:
@@ -80,6 +82,23 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
                 st["turns"].append({"role": "assistant", "content": reply})
             transcript.append(st)
             agent.session_end()
+            # 记忆演变轨迹：每个 session 结束后导出快照并与上一快照 diff。
+            # 三种病因在终态指标里不可分，这里把它们分开：
+            #   写失败（added 始终为空）/ 保持失败（写后 removed）/ 边界失败（该删未删）
+            try:
+                dump_now: Optional[List[str]] = agent.memory_dump()
+            except AgentError:
+                dump_now = None
+            if dump_now is not None:
+                prev_set = set(prev_dump or [])
+                now_set = set(dump_now)
+                memory_evolution.append({
+                    "after_session": session.session_id,
+                    "n_items": len(now_set),
+                    "added": sorted(now_set - prev_set),
+                    "removed": sorted(prev_set - now_set),
+                })
+                prev_dump = list(dump_now)
             for probe in case.probes:
                 if probe.probe_id in asked or probe.type == "memory":
                     continue
@@ -137,6 +156,7 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
         result.evidence = {
             "transcript": transcript,
             "memory_dump": memory_items,
+            "memory_evolution": memory_evolution or None,
             "fs_added_or_modified": {k: v[:500] for k, v in new_files.items()},
         }
     except AgentError as e:

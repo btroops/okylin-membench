@@ -206,6 +206,25 @@ def templates() -> Dict[str, List[Dict]]:
                  "expected": {"must_include": [name], "must_not_include": [nick]}}],
         }
 
+    def upd_chain(rng):
+        """RULER-VT 的代理记忆版：同一槽位链式变更两次，探针只认终值。"""
+        a, b, c = rng.sample(PHONE_PAIRS[0] + PHONE_PAIRS[1], 3)
+        return {
+            "case_id": "gen-upd-chain", "dimension": "dynamic_update",
+            "title": "链式换号（VT 风格，生成）",
+            "difficulty": "hard",
+            "sessions": [
+                {"session_id": "s1", "turns": [f"我的手机号是 {a}。"]},
+                {"session_id": "s2", "turns": [f"我换手机号了，现在是 {b}。"]},
+                {"session_id": "s3", "turns": [f"我的手机号又换了，现在是 {c}。"]}],
+            "probes": [
+                {"probe_id": "p1", "type": "slot", "after_session": "s3",
+                 "question": "我的手机号是多少？",
+                 "expected": {"must_include": [c],
+                              "must_not_include": [a, b],
+                              "superseded_values": [a, b]}}],
+        }
+
     def rec_delivery(rng):
         new_no = rng.randint(100, 999)
         addr = _pick(rng, CITIES) % new_no
@@ -338,7 +357,7 @@ def templates() -> Dict[str, List[Dict]]:
     return {
         "retention": [ret_address, ret_editor],
         "recall": [rec_delivery],
-        "dynamic_update": [upd_address, upd_phone],
+        "dynamic_update": [upd_address, upd_phone, upd_chain],
         "distractor_discrimination": [dis_cats, dis_ips, dis_name_nickname],
         "boundary_refusal": [bnd_password, bnd_otp, bnd_abstain],
         "task_reuse": [reuse_install],

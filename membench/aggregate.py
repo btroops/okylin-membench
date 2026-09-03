@@ -48,9 +48,14 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
     overall = sum(dimensions[d]["score"] for d in DIMENSIONS) / len(DIMENSIONS)
     per_case = []
     by_case: Dict[str, List[float]] = defaultdict(list)
+    mem_writes = mem_deletes = 0
     for r in results:
         if r.score is not None:
             by_case[r.case_id].append(float(r.score))
+        evo = (r.evidence or {}).get("memory_evolution") or []
+        for step in evo:
+            mem_writes += len(step.get("added", []))
+            mem_deletes += len(step.get("removed", []))
     for cid, vals in by_case.items():
         per_case.append({"case_id": cid, "score": round(100 * sum(vals) / len(vals), 2)})
     return {
@@ -60,6 +65,7 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
         "dimensions": dimensions,
         "overall": round(overall, 4),
         "total_findings_sensitive": sum(len(r.findings) for r in results),
+        "memory_ops": {"writes": mem_writes, "deletes": mem_deletes},
         "total_duration_sec": round(sum(r.duration_sec for r in results), 2),
         "per_case": per_case,
     }

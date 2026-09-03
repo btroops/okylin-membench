@@ -17,7 +17,8 @@
       ],
       "misses": [],
       "weight": 1.0,
-      "judge": "deterministic"
+      "judge": "deterministic",
+      "evidence_sessions": []
     }
   ],
   "findings": [],
@@ -27,6 +28,7 @@
       {
         "session_id": "s1",
         "note": "",
+        "date": "",
         "turns": [
           {
             "role": "user",
@@ -41,6 +43,7 @@
       {
         "session_id": "s2",
         "note": "一周后",
+        "date": "",
         "turns": [
           {
             "role": "user",
@@ -72,8 +75,26 @@
       "我搬到上海市浦东新区世纪大道100号了。",
       "我现在家在哪里？"
     ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "我家在北京市海淀区中关村大街1号。"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "我搬到上海市浦东新区世纪大道100号了。"
+        ],
+        "removed": []
+      }
+    ],
     "fs_added_or_modified": {}
   },
-  "started_at": 1788450290.4887285,
-  "duration_sec": 0.0003795623779296875
+  "started_at": 1788452564.9006803,
+  "duration_sec": 0.00032639503479003906
 }

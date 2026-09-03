@@ -56,6 +56,10 @@
 
 - `evidence.transcript`：完整对话轨迹（含探针轮）；
 - `evidence.memory_dump`：智能体记忆库导出（白盒证据）；
+- `evidence.memory_evolution`：**记忆演变轨迹**——每个 session 结束后的记忆库
+  快照 diff（added/removed/n_items）。终态指标无法区分的三种病因在此可分：
+  从未写入（写失败）、写了未删（边界/遗忘失败）、写了且覆盖（健康）；
+  汇总层的 `memory_ops.writes/deletes` 进入 summary；
 - `evidence.fs_added_or_modified`：评测期间新增/修改的文件（行动轨迹）；
 - `rows[]`：逐探针 `{verdict, score, reason, hits, misses}`；
 - `findings[]`：敏感信息落库/落盘扫描结果。
