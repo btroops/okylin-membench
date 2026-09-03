@@ -255,9 +255,32 @@ class SmartMemoryAgent(AgentAdapter):
         return items  # 敏感信息从不进入这里
 
     # ---- 对话 -----------------------------------------------------------
+    _RETRACT_RE = re.compile(
+        r"(?:忘掉|删除|作废|清掉|撤回)[^。;；\n]{0,14}?"
+        r"(家庭地址|公司地址|地址|电话|手机号|默认编辑器|编辑器|昵称|姓名)")
+
+    _RETRACT_MAP = {
+        "地址": ["家庭地址", "公司地址"], "家庭地址": ["家庭地址"],
+        "公司地址": ["公司地址"], "电话": ["电话"], "手机号": ["电话"],
+        "编辑器": ["默认编辑器"], "默认编辑器": ["默认编辑器"],
+        "昵称": ["昵称"], "姓名": ["姓名"],
+    }
+
     def send_user(self, content: str) -> str:
         if content.startswith("/write"):
             return self._handle_write(content)
+        # 显式撤回（selective forgetting 的命令式形态）：把指定记忆从库中删除
+        m = self._RETRACT_RE.search(content)
+        if m and not QUESTION_RE.search(content):
+            removed = []
+            for key in self._RETRACT_MAP.get(m.group(1), []):
+                if key in self._slots:
+                    del self._slots[key]
+                    self._slot_origin.pop(key, None)
+                    removed.append(key)
+            if removed:
+                self._last_trace = []
+                return "好的，已删除你之前说的%s。" % "、".join(removed)
         self._last_trace = []
         reply = self._answer(content)
         self._learn(content)

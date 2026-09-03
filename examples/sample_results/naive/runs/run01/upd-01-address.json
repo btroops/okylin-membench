@@ -3,6 +3,7 @@
   "case_id": "upd-01-address",
   "dimension": "dynamic_update",
   "run_index": 1,
+  "difficulty": "easy",
   "rows": [
     {
       "probe_id": "staleness_scan",
@@ -122,6 +123,6 @@
     ],
     "fs_added_or_modified": {}
   },
-  "started_at": 1788456220.5518825,
-  "duration_sec": 0.0003323554992675781
+  "started_at": 1788477311.1126454,
+  "duration_sec": 0.00037932395935058594
 }

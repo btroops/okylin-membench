@@ -10,6 +10,14 @@ from . import DIMENSIONS
 from .runner import CaseResult
 
 
+def _difficulty_breakdown(results: List[CaseResult]) -> Dict[str, float]:
+    by = defaultdict(list)
+    for r in results:
+        if r.score is not None:
+            by[r.difficulty].append(float(r.score))
+    return {d: round(100 * sum(v) / len(v), 1) for d, v in sorted(by.items())}
+
+
 def fama_for_rows(rows: List[dict]) -> float:
     """Memora 式 criteria 级 FAMA（Forgetting-Aware Memory Accuracy）。
 
@@ -87,8 +95,11 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
         for step in evo:
             mem_writes += len(step.get("added", []))
             mem_deletes += len(step.get("removed", []))
+    case_difficulty = {r.case_id: r.difficulty for r in results}
     for cid, vals in by_case.items():
-        per_case.append({"case_id": cid, "score": round(100 * sum(vals) / len(vals), 2)})
+        per_case.append({"case_id": cid,
+                         "difficulty": case_difficulty.get(cid, "medium"),
+                         "score": round(100 * sum(vals) / len(vals), 2)})
     return {
         "agent": agent_name,
         "runs": runs,
@@ -101,6 +112,7 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
             1 for r in results for row in r.rows
             if row.get("probe_id") == "staleness_scan" and row.get("score") == 0.0),
         "fama_mean": round(sum(fama_values) / len(fama_values), 4) if fama_values else None,
+        "difficulty_breakdown": _difficulty_breakdown(results),
         "retrieval_localization": ({"n": n_traced, "hits": n_localized,
                                     "rate": round(n_localized / n_traced, 4)}
                                    if n_traced else None),

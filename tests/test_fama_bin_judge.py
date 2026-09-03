@@ -330,3 +330,49 @@ class TestCriteriaFama(unittest.TestCase):
         case_score = [c["score"] for c in smart["per_case"]
                       if c["case_id"] == "ret-01-name-editor"][0]
         self.assertAlmostEqual(smart["fama_mean"] * 100, case_score, places=4)
+
+
+class TestMemoryMaintenance(unittest.TestCase):
+    """记忆维护双探针：去重（memory_max_count）+ 显式撤回。"""
+
+    def _case(self, case_id):
+        return next(c for c in load_cases([os.path.join(PKG, "cases")])
+                    if c.case_id == case_id)
+
+    def _run(self, name, case):
+        from membench.agents import create_agent
+        from membench.runner import run_case
+        return run_case(create_agent(name), case, run_index=1,
+                        workroot=tempfile.mkdtemp())
+
+    def test_dedup_probe_catches_naive(self):
+        r = self._run("naive", self._case("ret-05-dedup"))
+        dedup = [x for x in r.rows if x["probe_id"] == "p1"]
+        self.assertEqual(dedup[0]["verdict"], "improper_persistence")
+        self.assertIn("出现 3 次", dedup[0]["reason"])
+
+    def test_dedup_probe_passes_smart(self):
+        r = self._run("smart", self._case("ret-05-dedup"))
+        self.assertEqual(r.score, 1.0)  # 槽位覆盖天然去重
+
+    def test_retraction_discriminates(self):
+        case = self._case("upd-05-retract")
+        naive = self._run("naive", case)
+        smart = self._run("smart", case)
+        self.assertLess(naive.score, 0.5)
+        self.assertEqual(smart.score, 1.0)
+        # naive 必须以 improper_reuse/miss 类失败，而非正确
+        self.assertTrue(all(x["verdict"] != "correct"
+                            for x in naive.rows if x["score"] == 0.0))
+
+
+class TestDifficultyBreakdown(unittest.TestCase):
+    def test_summary_has_difficulty_breakdown(self):
+        from membench.agents import create_agent
+        from membench.runner import run_suite
+        cases = load_cases([os.path.join(PKG, "cases")])
+        s = run_suite(create_agent("smart"), cases, out_dir=tempfile.mkdtemp(),
+                      runs=1, quiet=True)
+        self.assertTrue(s.get("difficulty_breakdown"))
+        for d in ("easy", "medium", "hard"):
+            self.assertIn(d, s["difficulty_breakdown"])

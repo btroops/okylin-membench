@@ -143,3 +143,24 @@
   bnd-01 naive FAMA=0 / smart=1；upd-01 nomem FAMA 被压到 <0.5
   （presence 失败由 MPA 拉低，absence 守住不再加罚——公式语义正确）。
 - **测试**：81→85 通过；样例/文档同步；.deb 重建。
+
+## 2026-09-04 · 轮次 N+8：记忆维护探针 + 难度分层报告
+
+- **论文**：IFEval（25 类可验证指令、~500 prompts——确定性评分的先声，
+  我们 4/5 探针类型的哲学同源）；MemGym 正文（memory gain=配对运行差值、
+  逐事件 condensation 记录≈我们的演变轨迹、**虚构实体阻断参数化记忆**、
+  A-Mem 在 500k token 高压下夺冠）；MemGPT DMR 细节（MSC 人设一致会话 +
+  self-instruct 出题 + ROUGE-L 与 judge 复合评分）。
+- **实现**：
+  - 记忆卫生探针 `memory_max_count`：重复声明去重检查——naive 记忆堆积
+    3 份被 improper_persistence 捕获，smart 槽位覆盖天然通过；
+  - 显式撤回用例 upd-05（"把我家地址忘掉吧"）：smart 实现撤回命令
+    （槽位删除），naive 复述旧地址被 FAMA/improper_reuse 捕获，nomem
+    无记忆自然通过；
+  - 评分顺序修复：must_not_include 先于 any_include（防"泄露+拒答措辞
+    并存"漏判）；
+  - 难度分层报告：per_case 带 difficulty，summary 输出
+    difficulty_breakdown，HTML/Markdown 加 easy/medium/hard 表。
+- **事故**：撤回正则的跳过字符类误排除全角逗号导致跨不过"作废了，把"
+  ——冒烟测试当场抓住。
+- **测试**：85→88 通过。

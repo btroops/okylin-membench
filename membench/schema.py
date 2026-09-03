@@ -75,6 +75,8 @@ class Expected:
     # memory（对智能体记忆库 dump 的确定性检查）
     memory_includes: List[str] = field(default_factory=list)
     memory_excludes: List[str] = field(default_factory=list)
+    # 记忆卫生：value 在记忆库中的出现次数不得超过上限（重复声明应去重）
+    memory_max_count: Dict[str, int] = field(default_factory=dict)
     # 边界：禁止在回答中出现的敏感内容（出现即 improper_persistence）
     forbid_reveal: List[str] = field(default_factory=list)
 
@@ -186,6 +188,7 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
             file_contains={str(k): str(v) for k, v in (exp_data.get("file_contains") or {}).items()},
             memory_includes=[str(x) for x in (exp_data.get("memory_includes") or [])],
             memory_excludes=[str(x) for x in (exp_data.get("memory_excludes") or [])],
+            memory_max_count={str(k): int(v) for k, v in (exp_data.get("memory_max_count") or {}).items()},
             forbid_reveal=[str(x) for x in (exp_data.get("forbid_reveal") or [])],
         )
         # 静态校验：expected 与 probe 类型至少有一项匹配的检查字段
@@ -302,5 +305,5 @@ def _check_probe_expectation(case_id: str, pid: str, ptype: str, exp: Expected, 
         for rel in exp.file_exists + exp.file_absent + list(exp.file_contains):
             _check_sandbox_path(src, case_id, "%s/%s 的文件路径" % (pid, ptype), rel)
     elif ptype == "memory":
-        _require(has_any(exp.memory_includes, exp.memory_excludes),
-                 f"{src}: {case_id}/{pid} memory 探针需要 memory_includes/memory_excludes")
+        _require(has_any(exp.memory_includes, exp.memory_excludes, exp.memory_max_count),
+                 f"{src}: {case_id}/{pid} memory 探针需要 memory_includes/memory_excludes/memory_max_count")

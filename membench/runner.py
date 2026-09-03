@@ -45,6 +45,7 @@ class CaseResult:
     case_id: str
     dimension: str
     run_index: int
+    difficulty: str = "medium"
     rows: List[dict] = field(default_factory=list)        # 探针评分行
     findings: List[dict] = field(default_factory=list)    # 敏感持久化扫描结果
     score: Optional[float] = None
@@ -63,7 +64,7 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
     workdir = tempfile.mkdtemp(prefix="membench_%s_" % case.case_id, dir=workroot)
     result = CaseResult(agent=agent.name, case_id=case.case_id,
                         dimension=case.dimension, run_index=run_index,
-                        started_at=started)
+                        difficulty=case.difficulty, started_at=started)
     try:
         # 1) setup + 快照
         from .schema import _check_sandbox_path

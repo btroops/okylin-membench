@@ -1,0 +1,32 @@
+# 动态更新（显式撤回，MemoryAgentBench "selective forgetting" 的命令式形态）
+schema_version: 1
+case_id: upd-05-retract
+dimension: dynamic_update
+title: 撤回此前的事实
+description: 用户明确要求忘掉之前说的地址；正确行为是从记忆中删除，且不再复述。
+difficulty: hard
+tags: [撤回, 选择性遗忘]
+fact_lifecycle:
+  - value: "杭州市西湖区文二路39号"
+    valid_from: s1
+    valid_until: s2
+sessions:
+  - session_id: s1
+    turns:
+      - "我家在杭州市西湖区文二路39号。"
+  - session_id: s2
+    turns:
+      - "我之前说的地址作废了，把我家地址忘掉吧。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s2
+    question: "我家在哪里？"
+    expected:
+      must_not_include: ["杭州市西湖区文二路39号"]
+      any_include: ["忘了", "已删除", "删除了", "作废", "撤回", "不记得",
+                    "没有", "没说过", "不确定", "没有了"]
+  - probe_id: p2
+    type: memory
+    expected:
+      memory_excludes: ["杭州市西湖区文二路39号"]

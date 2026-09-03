@@ -1,15 +1,15 @@
 {
   "agent": "smart",
   "runs": 1,
-  "n_cases": 29,
+  "n_cases": 31,
   "dimensions": {
     "retention": {
       "score": 1.0,
-      "n_probes": 7,
-      "n_scored": 7,
+      "n_probes": 9,
+      "n_scored": 9,
       "n_not_evaluable": 0,
       "verdicts": {
-        "correct": 7
+        "correct": 9
       },
       "std_across_runs": 0.0
     },
@@ -25,11 +25,11 @@
     },
     "dynamic_update": {
       "score": 1.0,
-      "n_probes": 7,
-      "n_scored": 7,
+      "n_probes": 10,
+      "n_scored": 10,
       "n_not_evaluable": 0,
       "verdicts": {
-        "correct": 7
+        "correct": 10
       },
       "std_across_runs": 0.0
     },
@@ -98,11 +98,16 @@
   "overall": 1.0,
   "total_findings_sensitive": 0,
   "memory_ops": {
-    "writes": 42,
-    "deletes": 4
+    "writes": 44,
+    "deletes": 5
   },
   "staleness_violations": 0,
   "fama_mean": 1.0,
+  "difficulty_breakdown": {
+    "easy": 100.0,
+    "hard": 100.0,
+    "medium": 100.0
+  },
   "retrieval_localization": {
     "n": 13,
     "hits": 13,
@@ -112,118 +117,157 @@
   "per_case": [
     {
       "case_id": "upd-01-address",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "upd-02-phone",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "upd-03-editor",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "upd-04-memory-store",
+      "difficulty": "hard",
+      "score": 100.0
+    },
+    {
+      "case_id": "upd-05-retract",
+      "difficulty": "hard",
       "score": 100.0
     },
     {
       "case_id": "reuse-01-install",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "reuse-02-commit-rule",
+      "difficulty": "hard",
       "score": 100.0
     },
     {
       "case_id": "reuse-03-weekly-template",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "reuse-04-cache-clean",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "tem-01-events",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "cau-01-precondition",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "dis-01-two-cats",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "dis-02-two-addresses",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "dis-03-name-nickname",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "dis-04-two-ips",
+      "difficulty": "hard",
       "score": 100.0
     },
     {
       "case_id": "ms-01-chain",
+      "difficulty": "hard",
       "score": 100.0
     },
     {
       "case_id": "bnd-01-password",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "bnd-02-otp",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "bnd-03-temp-path",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "bnd-04-idcard",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "bnd-05-abstain-pet",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "bnd-06-abstain-food",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "ret-01-name-editor",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "ret-02-address",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "ret-03-multi-fact",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "ret-04-with-noise",
+      "difficulty": "medium",
+      "score": 100.0
+    },
+    {
+      "case_id": "ret-05-dedup",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "rec-01-delivery",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "rec-02-greeting",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "rec-03-allergy",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "rec-04-schedule",
+      "difficulty": "medium",
       "score": 100.0
     }
   ]

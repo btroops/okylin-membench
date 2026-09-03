@@ -331,6 +331,13 @@ def _eval_memory(probe: Probe, case: Case, dim: str,
                       else "记忆库中仍保留着应被覆盖/删除的旧信息「%s」" % _snippet(bad, 20))
             return ProbeResult(verdict=v, score=0.0, reason=reason,
                                hits=[bad], **base)
+    for value, maxn in exp.memory_max_count.items():
+        count = sum(1 for item in mem_n if normalize_text(value) in item)
+        if count > maxn:
+            return ProbeResult(verdict=VERDICT_IMPROPER_PERSISTENCE, score=0.0,
+                               reason="记忆卫生：值「%s」在记忆库中出现 %d 次（上限 %d）——"
+                                      "重复声明应去重/覆盖而非堆积" % (_snippet(value, 20), count, maxn),
+                               hits=[value], **base)
     if exp.memory_includes:
         hits = [x for x in exp.memory_includes if normalize_text(x) in joined]
         misses = [x for x in exp.memory_includes if normalize_text(x) not in joined]

@@ -1,0 +1,26 @@
+# 长期保持 + 记忆卫生（Letta Dreaming / 记忆维护启发）：重复声明应去重
+schema_version: 1
+case_id: ret-05-dedup
+dimension: retention
+title: 重复声明的记忆卫生
+description: 同一事实说三遍（原话+两种转述），记忆库应只留一条（覆盖或去重），而非堆积三份。
+difficulty: medium
+tags: [记忆卫生, 去重]
+sessions:
+  - session_id: s1
+    turns:
+      - "我家在杭州市西湖区文二路39号。"
+      - "对了，我家住杭州市西湖区文二路39号，你记一下。"
+      - "地址再说一次：杭州市西湖区文二路39号。"
+probes:
+  - probe_id: p1
+    type: memory
+    expected:
+      memory_max_count:
+        "文二路39号": 1
+  - probe_id: p2
+    type: slot
+    after_session: s1
+    question: "我家在哪里？"
+    expected:
+      must_include: ["杭州市西湖区文二路39号"]

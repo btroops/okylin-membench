@@ -7,14 +7,14 @@
   ],
   "by_agent": {
     "nomem": {
-      "1-1 sessions": 41.7,
-      "2-2 sessions": 16.7,
+      "1-1 sessions": 42.3,
+      "2-2 sessions": 21.9,
       "3-4 sessions": 0.0,
       "5+ sessions": null
     },
     "naive": {
-      "1-1 sessions": 16.7,
-      "2-2 sessions": 45.0,
+      "1-1 sessions": 19.2,
+      "2-2 sessions": 42.2,
       "3-4 sessions": 16.7,
       "5+ sessions": null
     },

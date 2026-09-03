@@ -49,6 +49,14 @@ def build_markdown(summaries: List[dict], cases=None) -> str:
             cells = [("%.0f" % v) if v is not None else "-" for v in
                      (per_bin.get(lab) for lab in bins["bins"])]
             lines.append("| %s | %s |" % (a, " | ".join(cells)))
+    diff_rows = {s["agent"]: s.get("difficulty_breakdown", {}) for s in summaries}
+    diff_keys = ["easy", "medium", "hard"]
+    if any(diff_rows.values()):
+        lines += ["", "## 难度分层得分", "",
+                  "| 智能体 | easy | medium | hard |", "|---|---|---|---|"]
+        for a, per in diff_rows.items():
+            lines.append("| %s | %s |" % (a, " | ".join(
+                ("%.0f" % per[k]) if k in per else "-" for k in diff_keys)))
     lines += ["", "## 五分类裁决分布", ""]
     for s in summaries:
         lines.append("### %s" % s["agent"])
@@ -92,6 +100,16 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
                     % (i, r["agent"], _cls(r["overall"]), 100 * r["overall"],
                        ("%.1f" % (100 * fa)) if fa is not None else "-"))
     html.append("</table>")
+    diff_rows = {s["agent"]: s.get("difficulty_breakdown", {}) for s in summaries}
+    if any(diff_rows.values()):
+        html.append("<h2>难度分层得分</h2><table><tr><th>智能体</th>"
+                    "<th>easy</th><th>medium</th><th>hard</th></tr>")
+        for a, per in diff_rows.items():
+            html.append("<tr><td>%s</td>" % a)
+            for k in ("easy", "medium", "hard"):
+                html.append("<td>%s</td>" % (("%.0f" % per[k]) if k in per else "-"))
+            html.append("</tr>")
+        html.append("</table>")
     if cases is not None:
         bins = bin_report_by_load(cases, summaries)
         html.append("<h2>记忆负担分档对比</h2><p class='note'>沿用 BEAM 思路：按用例 session 数分档，观察随记忆负担增长的退化曲线。</p>")

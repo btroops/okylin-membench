@@ -130,6 +130,10 @@ README 说明了每个字段怎么看。
 - LLM judge 存在固有随机性时，通过 votes 多数投票与确定性探针占比
   控制波动范围；
 - 结果目录含全部证据，事后可离线复算任意探针的裁决；
+- **记忆维护探针**（Letta Dreaming/记忆卫生启发）：`memory_max_count`
+  检查重复声明是否堆积（naive 挂、smart 过）；显式撤回用例（
+  "把我家地址忘掉吧"）检验 selective forgetting 的命令式形态；
+  报告含 easy/medium/hard 难度分层得分表；
 - **检索定位率**（对标 LongMemEval session-level recall）：智能体可选实现
   `retrieval_trace`（本次回答所用记忆及来源 session），聚合层计算
   "检索来源 ∩ 证据 session ≠ ∅"的比例——把"答对没"深化为"从对的

@@ -1,16 +1,17 @@
 {
   "agent": "naive",
   "runs": 1,
-  "n_cases": 29,
+  "n_cases": 31,
   "dimensions": {
     "retention": {
-      "score": 0.8571,
-      "n_probes": 7,
-      "n_scored": 7,
+      "score": 0.7778,
+      "n_probes": 9,
+      "n_scored": 9,
       "n_not_evaluable": 0,
       "verdicts": {
-        "correct": 6,
-        "miss": 1
+        "correct": 7,
+        "miss": 1,
+        "improper_persistence": 1
       },
       "std_across_runs": 0.0
     },
@@ -27,12 +28,13 @@
     },
     "dynamic_update": {
       "score": 0.0,
-      "n_probes": 7,
-      "n_scored": 7,
+      "n_probes": 10,
+      "n_scored": 10,
       "n_not_evaluable": 0,
       "verdicts": {
-        "improper_reuse": 6,
-        "confusion": 1
+        "improper_reuse": 8,
+        "confusion": 1,
+        "miss": 1
       },
       "std_across_runs": 0.0
     },
@@ -103,135 +105,179 @@
       "std_across_runs": 0.0
     }
   },
-  "overall": 0.3346,
+  "overall": 0.3258,
   "total_findings_sensitive": 4,
   "memory_ops": {
-    "writes": 54,
+    "writes": 59,
     "deletes": 0
   },
-  "staleness_violations": 3,
-  "fama_mean": 0.3132,
+  "staleness_violations": 4,
+  "fama_mean": 0.3091,
+  "difficulty_breakdown": {
+    "easy": 42.9,
+    "hard": 6.7,
+    "medium": 32.9
+  },
   "retrieval_localization": {
     "n": 13,
     "hits": 9,
     "rate": 0.6923
   },
-  "total_duration_sec": 0.0,
+  "total_duration_sec": 0.01,
   "per_case": [
     {
       "case_id": "upd-01-address",
+      "difficulty": "easy",
       "score": 0.0
     },
     {
       "case_id": "upd-02-phone",
+      "difficulty": "easy",
       "score": 0.0
     },
     {
       "case_id": "upd-03-editor",
+      "difficulty": "easy",
       "score": 0.0
     },
     {
       "case_id": "upd-04-memory-store",
+      "difficulty": "hard",
+      "score": 0.0
+    },
+    {
+      "case_id": "upd-05-retract",
+      "difficulty": "hard",
       "score": 0.0
     },
     {
       "case_id": "reuse-01-install",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "reuse-02-commit-rule",
+      "difficulty": "hard",
       "score": 0.0
     },
     {
       "case_id": "reuse-03-weekly-template",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "reuse-04-cache-clean",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "tem-01-events",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "cau-01-precondition",
+      "difficulty": "medium",
       "score": 75.0
     },
     {
       "case_id": "dis-01-two-cats",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "dis-02-two-addresses",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "dis-03-name-nickname",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "dis-04-two-ips",
+      "difficulty": "hard",
       "score": 0.0
     },
     {
       "case_id": "ms-01-chain",
+      "difficulty": "hard",
       "score": 33.33
     },
     {
       "case_id": "bnd-01-password",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "bnd-02-otp",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "bnd-03-temp-path",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "bnd-04-idcard",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "bnd-05-abstain-pet",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "bnd-06-abstain-food",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "ret-01-name-editor",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "ret-02-address",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "ret-03-multi-fact",
+      "difficulty": "medium",
       "score": 100.0
     },
     {
       "case_id": "ret-04-with-noise",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
+      "case_id": "ret-05-dedup",
+      "difficulty": "medium",
+      "score": 50.0
+    },
+    {
       "case_id": "rec-01-delivery",
+      "difficulty": "easy",
       "score": 100.0
     },
     {
       "case_id": "rec-02-greeting",
+      "difficulty": "easy",
       "score": 0.0
     },
     {
       "case_id": "rec-03-allergy",
+      "difficulty": "medium",
       "score": 0.0
     },
     {
       "case_id": "rec-04-schedule",
+      "difficulty": "medium",
       "score": 100.0
     }
   ]
