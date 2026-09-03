@@ -125,7 +125,11 @@ README 说明了每个字段怎么看。
   `tests/test_e2e.py::test_stability_deterministic`）；
 - LLM judge 存在固有随机性时，通过 votes 多数投票与确定性探针占比
   控制波动范围；
-- 结果目录含全部证据，事后可离线复算任意探针的裁决。
+- 结果目录含全部证据，事后可离线复算任意探针的裁决；
+- **检索定位率**（对标 LongMemEval session-level recall）：智能体可选实现
+  `retrieval_trace`（本次回答所用记忆及来源 session），聚合层计算
+  "检索来源 ∩ 证据 session ≠ ∅"的比例——把"答对没"深化为"从对的
+  session 取没"，能单独量化"取错来源"型失败。
 
 ## 9. 与开源主流长期记忆评测的对比与差异化
 

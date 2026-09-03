@@ -87,6 +87,9 @@ class NoMemoryAgent(AgentAdapter):
     def memory_dump(self) -> Optional[List[str]]:
         return []
 
+    def retrieval_trace(self, query: str) -> Optional[List[dict]]:
+        return []
+
 
 class NaiveMemoryAgent(AgentAdapter):
     """全量照记型：把所有用户消息原样存档，回答时回放"最像"的那条。
@@ -97,44 +100,54 @@ class NaiveMemoryAgent(AgentAdapter):
     name = "naive"
 
     def __init__(self) -> None:
-        self._store: List[str] = []
+        self._store: List[Tuple[str, str]] = []   # (session_id, content)
         self._workdir = "."
+        self._current_session = ""
+        self._last_trace: List[dict] = []
 
     def new_episode(self, workdir: str) -> None:
         self._store = []
+        self._last_trace = []
         self._workdir = workdir
 
     def session_start(self, session_id: str) -> None:
-        pass
+        self._current_session = session_id
 
     def send_user(self, content: str) -> str:
         if content.startswith("/write"):
             res = _write_file(self._workdir, content)
             if res:
-                self._store.append(content)
+                self._store.append((self._current_session, content))
                 return "已写入。"
             return "写入失败。"
-        reply = self._recall(content)
-        self._store.append(content)
+        reply, item, sid = self._recall(content)
+        self._last_trace = ([{"content": item, "session_origin": sid}]
+                            if sid is not None else [])
+        self._store.append((self._current_session, content))
         return reply
 
-    def _recall(self, question: str) -> str:
-        """回放与问题字符重合度最高的历史消息；并列时取最早的（永不更新）。"""
-        best, best_score = None, 0.0
-        for item in self._store:  # 当前问题尚未入 store
+    def _recall(self, question: str):
+        """回放与问题字符重合度最高的历史消息；并列时取最早的（永不更新）。
+
+        返回 (回复文本, 被回放消息原文, 来源 session_id)。"""
+        best, best_score, best_sid = None, 0.0, None
+        for sid, item in self._store:  # 当前问题尚未入 store
             overlap = _char_overlap(question, item)
             if overlap > best_score:
-                best, best_score = item, overlap
+                best, best_score, best_sid = item, overlap, sid
         if best is None or best_score <= 0.05:
-            return IDK_REPLY
+            return IDK_REPLY, None, None
         # 直接把旧消息"背"出来 —— 全量照记智能体的典型失败模式
-        return re.sub(r"^(我的|我想|请记住[:：]?)", "你说过：", best)
+        return re.sub(r"^(我的|我想|请记住[:：]?)", "你说过：", best), best, best_sid
 
     def session_end(self) -> None:
         pass  # 已实时落库
 
     def memory_dump(self) -> Optional[List[str]]:
-        return list(self._store)
+        return [c for _sid, c in self._store]
+
+    def retrieval_trace(self, query: str) -> Optional[List[dict]]:
+        return list(self._last_trace)
 
 
 def _char_overlap(a: str, b: str) -> float:
@@ -199,24 +212,31 @@ class SmartMemoryAgent(AgentAdapter):
 
     def __init__(self) -> None:
         self._slots: Dict[str, str] = {}      # 槽位事实
+        self._slot_origin: Dict[str, str] = {}  # 槽位 -> 最后写入的 session
+        self._proc_origin: Dict[str, str] = {}  # 安装目标 -> 学到的 session
+        self._op_origin: Dict[str, str] = {}    # 运维操作 -> 学到的 session
         self._procs: Dict[str, str] = {}      # 安装目标 -> 命令模板（{pkg} 占位）
         self._ops: Dict[str, str] = {}        # 运维操作 -> 命令
         self._templates: Dict[str, str] = {}  # 模板/规范
         self._commit_prefix: str = ""         # 提交信息规范前缀
         self._events: List[tuple] = []        # (date, event) 按日期升序
         self._installed: List[str] = []       # 多 session 累积的安装列表
+        self._current_session = ""
+        self._last_trace: List[dict] = []
         self._workdir = "."
 
     # ---- 生命周期 -------------------------------------------------------
     def new_episode(self, workdir: str) -> None:
         self._slots, self._procs, self._ops, self._templates = {}, {}, {}, {}
+        self._slot_origin, self._proc_origin, self._op_origin = {}, {}, {}
         self._commit_prefix = ""
         self._events = []
         self._installed = []
+        self._last_trace = []
         self._workdir = workdir
 
     def session_start(self, session_id: str) -> None:
-        pass
+        self._current_session = session_id
 
     def session_end(self) -> None:
         pass
@@ -238,9 +258,13 @@ class SmartMemoryAgent(AgentAdapter):
     def send_user(self, content: str) -> str:
         if content.startswith("/write"):
             return self._handle_write(content)
+        self._last_trace = []
         reply = self._answer(content)
         self._learn(content)
         return reply
+
+    def retrieval_trace(self, query: str) -> Optional[List[dict]]:
+        return list(self._last_trace)
 
     def _handle_write(self, content: str) -> str:
         m = re.match(r"^/write\s+(\S+)\s*(.*)$", content, re.DOTALL)
@@ -273,6 +297,7 @@ class SmartMemoryAgent(AgentAdapter):
         def put(key: str, val: str) -> None:
             if val:
                 self._slots[key] = _clean_value(val)
+                self._slot_origin[key] = self._current_session
 
         for pat, key in [(self._RE_HOME_UPDATE, "家庭地址"),
                          (self._RE_HOME, "家庭地址"),
@@ -334,6 +359,7 @@ class SmartMemoryAgent(AgentAdapter):
                 self._procs[target] = cmd.replace(target, "{pkg}")
             else:
                 self._procs[target] = cmd
+            self._proc_origin[target] = self._current_session
             if target not in self._installed:
                 self._installed.append(target)
         else:
@@ -350,6 +376,7 @@ class SmartMemoryAgent(AgentAdapter):
         if m:
             cmd = re.split(r"[，,]", m.group(2))[0].strip()  # 命令后可能跟其他分句
             self._ops[m.group(1)] = cmd
+            self._op_origin[m.group(1)] = self._current_session
         m = self._RE_COMMIT_RULE.search(sent)
         if m:
             self._commit_prefix = m.group(1)
@@ -381,16 +408,29 @@ class SmartMemoryAgent(AgentAdapter):
                         cmd = v
                         break
             if cmd:
+                origin = self._proc_origin.get(target) or next(
+                    (self._proc_origin[k] for k in self._procs
+                     if "{pkg}" in self._procs[k] and k in self._proc_origin), None)
+                self._last_trace = ([{"content": cmd.replace("{pkg}", target),
+                                      "session_origin": origin}] if origin else [])
                 return "按你之前教我的方式，执行：%s" % cmd.replace("{pkg}", target)
             return IDK_REPLY
         # 运维操作复用
         op = self._match_op(msg)
         if op:
+            origin = self._op_origin.get(op)
+            if origin:
+                self._last_trace = [{"content": "%s = %s" % (op, self._ops[op]),
+                                     "session_origin": origin}]
             return "好的，执行：%s" % self._ops[op]
         # 事实问答
         slot = self._probe_slot(msg)
         if slot:
             if slot in self._slots:
+                origin = self._slot_origin.get(slot)
+                if origin:
+                    self._last_trace = [{"content": "%s = %s" % (slot, self._slots[slot]),
+                                         "session_origin": origin}]
                 return "你告诉我的是：%s" % self._slots[slot]
             return IDK_REPLY
         # 模板复用

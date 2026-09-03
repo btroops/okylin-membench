@@ -19,12 +19,14 @@ probes:
   - probe_id: p1
     type: slot
     after_session: s2
+    evidence_sessions: ["s1"]
     question: "我叫什么名字？"
     expected:
       must_include: ["小明"]
   - probe_id: p2
     type: choice
     after_session: s2
+    evidence_sessions: ["s1"]
     question: "以下哪个是我的默认编辑器？A. emacs B. vim C. nano"
     expected:
       choices: ["emacs", "vim", "nano"]

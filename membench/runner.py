@@ -179,10 +179,15 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
                workdir: str, judge_free: Optional[FreeJudge]) -> dict:
     """发出探针并评分；fs 探针不发消息。"""
     reply = ""
+    trace = None
     if probe.type != "fs" and probe.question:
         agent.session_start("probe:%s" % probe.probe_id)
         try:
             reply = agent.send_user(probe.question)
+            try:
+                trace = agent.retrieval_trace(probe.question)
+            except AgentError:
+                trace = None
         finally:
             agent.session_end()
 
@@ -195,12 +200,14 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
             "reason": jd.get("reason", ""), "reply": reply,
             "hits": [], "misses": [], "weight": probe.weight, "judge": "llm",
             "evidence_sessions": probe.evidence_sessions,
+            "retrieval_trace": trace,
         }
     pr: ProbeResult = evaluate_probe(probe, case, reply=reply,
                                      memory_items=None, workdir=workdir)
     row = asdict(pr)
     row["judge"] = "deterministic"
     row["evidence_sessions"] = probe.evidence_sessions
+    row["retrieval_trace"] = trace
     return row
 
 

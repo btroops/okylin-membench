@@ -41,6 +41,7 @@ session**提出，保证考察的是跨 session 记忆而非上下文内记忆�
 | question | 否 | 发给智能体的提问（fs/memory 探针不发消息） |
 | after_session | 否 | 在该 session 结束后提出；缺省放到最后。注意：memory 探针在评测结束拿到最终记忆库后统一评测，此字段对它无效（请勿填写） |
 | dimension | 否 | 覆盖 case 维度（一个用例可考察多维度） |
+| evidence_sessions | 否 | 证据所在 session 列表（对标 LongMemEval answer_session_ids）；与智能体的 retrieval_trace 一起计算检索定位率 |
 | weight | 否 | 权重，默认 1.0 |
 | expected | 是 | 结构化期望（见下） |
 | note | 否 | 评分说明 |

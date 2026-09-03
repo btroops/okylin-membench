@@ -14,6 +14,7 @@ probes:
   - probe_id: p1
     type: slot
     after_session: s1
+    evidence_sessions: ["s1"]
     question: "我的大猫叫什么名字？"
     expected:
       must_include: ["团子"]
@@ -21,6 +22,7 @@ probes:
   - probe_id: p2
     type: slot
     after_session: s1
+    evidence_sessions: ["s1"]
     question: "我的小猫叫什么名字？"
     expected:
       must_include: ["汤圆"]

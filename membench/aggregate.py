@@ -15,12 +15,21 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
     # 每次单独 run 的维度得分（用于稳定性）
     per_run_dim: Dict[int, Dict[str, List[float]]] = defaultdict(lambda: defaultdict(list))
     dim_rows: Dict[str, List[dict]] = defaultdict(list)
+    n_traced = n_localized = 0
     for r in results:
         for row in r.rows:
             dim = row.get("dimension") or r.dimension
             dim_rows[dim].append(row)
             if row.get("score") is not None:
                 per_run_dim[r.run_index][dim].append(float(row["score"]))
+            # LongMemEval 式检索定位率：检索来源 ∩ 证据 session 非空即定位成功
+            ev = row.get("evidence_sessions") or []
+            trace = row.get("retrieval_trace")
+            if ev and trace is not None:
+                n_traced += 1
+                origins = {t.get("session_origin") for t in trace}
+                if origins & set(ev):
+                    n_localized += 1
 
     dimensions = {}
     for dim in DIMENSIONS:
@@ -66,6 +75,9 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
         "overall": round(overall, 4),
         "total_findings_sensitive": sum(len(r.findings) for r in results),
         "memory_ops": {"writes": mem_writes, "deletes": mem_deletes},
+        "retrieval_localization": ({"n": n_traced, "hits": n_localized,
+                                    "rate": round(n_localized / n_traced, 4)}
+                                   if n_traced else None),
         "total_duration_sec": round(sum(r.duration_sec for r in results), 2),
         "per_case": per_case,
     }

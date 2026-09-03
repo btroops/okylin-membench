@@ -14,6 +14,7 @@ probes:
   - probe_id: p1
     type: free
     after_session: s1
+    evidence_sessions: ["s1"]
     question: "帮我安装 cmatrix。"
     expected:
       must_include: ["sudo apt install cmatrix"]

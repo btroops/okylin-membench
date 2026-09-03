@@ -36,5 +36,14 @@ class AgentAdapter:
     def memory_dump(self) -> Optional[List[str]]:
         return None
 
+    def retrieval_trace(self, query: str) -> Optional[List[dict]]:
+        """可选：返回本次回答检索使用了哪些记忆及其来源 session。
+
+        [{"content": "...", "session_origin": "s1"}, ...]
+        返回 None 表示不支持检索追踪；返回 [] 表示检索为空。
+        用于 LongMemEval 式"检索定位率"指标（从正确的 session 取记忆）。
+        """
+        return None
+
     def close(self) -> None:
         pass

@@ -18,7 +18,15 @@
       "misses": [],
       "weight": 1.0,
       "judge": "deterministic",
-      "evidence_sessions": []
+      "evidence_sessions": [
+        "s2"
+      ],
+      "retrieval_trace": [
+        {
+          "content": "我家在北京市海淀区中关村大街1号。",
+          "session_origin": "s1"
+        }
+      ]
     }
   ],
   "findings": [],
@@ -95,6 +103,6 @@
     ],
     "fs_added_or_modified": {}
   },
-  "started_at": 1788452564.9006803,
-  "duration_sec": 0.00032639503479003906
+  "started_at": 1788453572.529204,
+  "duration_sec": 0.0002970695495605469
 }

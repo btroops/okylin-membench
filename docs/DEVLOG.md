@@ -71,3 +71,22 @@
   中间值按 FAMA 判 improper_reuse）；smart 全对、naive improper_reuse。
 - **测试**：75 通过；样例结果、README/DESIGN 同步；.deb 重建。
 - **挂账**：检索定位率协议扩展、干扰项难度旋钮、逐条记忆 validity interval。
+
+## 2026-09-04 · 轮次 N+4：系列二精读 + 检索定位率
+
+- **系列二精读**（RESEARCH.md）：MemGPT/Letta（MemFS git 化 + Dreaming
+  后台整理——工业记忆系统在"文件化"，印证 fs 证据设计）、Mem0（LOCOMO
+  上 vs 全文基线 -91% 时延；四类问题已被我们九维覆盖）、A-MEM
+  （Zettelkasten 演化式笔记——我们 memory_evolution 的评测对象）。
+- **检索定位率落地**（LongMemEval session-level recall 对标）：
+  - 适配层新增可选 `retrieval_trace(query)`：返回本次回答所用记忆条目
+    及其来源 session（naive 记录被回放消息的 session；smart 记录槽位/
+    安装模板/运维命令的写入 session；nomem 恒空；subproc 协议可扩展）；
+  - 聚合层：evidence_sessions × retrieval_trace 求交集，summary 输出
+    `retrieval_localization: {n, hits, rate}`；
+  - 12 个手写用例标注 evidence_sessions（memory 探针不标注——不发消息）；
+  - 实测：nomem 0%（什么都不取）/ naive 69%（常从旧 session 取——与其
+    confusion 裁决一致）/ smart 100%（修掉了 op 分支不填 trace 的缺口）。
+- **意义**：评分从"答对没"进化到"从对的 session 取没"——终态指标对、
+  但过程取错来源的失败（如 naive 在 upd-01 上答旧地址）首次被单独量化。
+- **测试**：75 通过；样例/文档同步；.deb 重建。

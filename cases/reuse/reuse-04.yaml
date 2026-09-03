@@ -14,6 +14,7 @@ probes:
   - probe_id: p1
     type: free
     after_session: s1
+    evidence_sessions: ["s1"]
     question: "系统有点满，帮我清理下缓存。"
     expected:
       must_include: ["sudo apt clean"]
