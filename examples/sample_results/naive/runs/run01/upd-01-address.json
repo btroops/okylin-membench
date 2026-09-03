@@ -8,6 +8,7 @@
       "probe_id": "staleness_scan",
       "probe_type": "scan",
       "dimension": "dynamic_update",
+      "role": "absence",
       "verdict": "improper_reuse",
       "score": 0.0,
       "reason": "事实「北京市海淀区中关村大街1号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
@@ -43,7 +44,8 @@
           "content": "我家在北京市海淀区中关村大街1号。",
           "session_origin": "s1"
         }
-      ]
+      ],
+      "role": "presence"
     }
   ],
   "findings": [],
@@ -120,6 +122,6 @@
     ],
     "fs_added_or_modified": {}
   },
-  "started_at": 1788455431.197025,
-  "duration_sec": 0.00031566619873046875
+  "started_at": 1788456220.5518825,
+  "duration_sec": 0.0003323554992675781
 }

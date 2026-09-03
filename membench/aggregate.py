@@ -10,6 +10,26 @@ from . import DIMENSIONS
 from .runner import CaseResult
 
 
+def fama_for_rows(rows: List[dict]) -> float:
+    """Memora 式 criteria 级 FAMA（Forgetting-Aware Memory Accuracy）。
+
+      FAMA = max(0, MPA - λ·(1-FAA))
+      MPA  = presence 判据平均得分（应记信息的满足率）
+      FAA  = absence 判据通过率（该遗忘/不该泄露的信息确实没驻留）
+      λ    = absence 判据占总判据的比例
+
+    rows 中 role 字段区分判据角色（扫描行/探针行统一处理）。
+    """
+    presence = [float(r["score"]) for r in rows
+                if r.get("role") == "presence" and r.get("score") is not None]
+    absence = [float(r["score"]) for r in rows
+               if r.get("role") == "absence" and r.get("score") is not None]
+    mpa = sum(presence) / len(presence) if presence else 1.0
+    faa = (sum(absence) / len(absence)) if absence else 1.0
+    lam = len(absence) / (len(presence) + len(absence)) if (presence or absence) else 0.0
+    return max(0.0, mpa - lam * (1.0 - faa))
+
+
 def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -> dict:
     """单智能体聚合。results 覆盖全部 run × 全部用例。"""
     # 每次单独 run 的维度得分（用于稳定性）
@@ -57,10 +77,12 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
     overall = sum(dimensions[d]["score"] for d in DIMENSIONS) / len(DIMENSIONS)
     per_case = []
     by_case: Dict[str, List[float]] = defaultdict(list)
+    fama_values: List[float] = []
     mem_writes = mem_deletes = 0
     for r in results:
         if r.score is not None:
             by_case[r.case_id].append(float(r.score))
+        fama_values.append(fama_for_rows(r.rows))
         evo = (r.evidence or {}).get("memory_evolution") or []
         for step in evo:
             mem_writes += len(step.get("added", []))
@@ -77,7 +99,8 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
         "memory_ops": {"writes": mem_writes, "deletes": mem_deletes},
         "staleness_violations": sum(
             1 for r in results for row in r.rows
-            if row.get("probe_id") == "staleness_scan"),
+            if row.get("probe_id") == "staleness_scan" and row.get("score") == 0.0),
+        "fama_mean": round(sum(fama_values) / len(fama_values), 4) if fama_values else None,
         "retrieval_localization": ({"n": n_traced, "hits": n_localized,
                                     "rate": round(n_localized / n_traced, 4)}
                                    if n_traced else None),

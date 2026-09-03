@@ -243,11 +243,12 @@ class TestFactLifecycle(unittest.TestCase):
         self.assertEqual(len(stale), 1)
         self.assertEqual(stale[0]["verdict"], "improper_reuse")
         self.assertIn("该遗忘的没遗忘", stale[0]["reason"])
-        # smart 覆盖旧值、nomem 从未写入 => 无 staleness
+        # smart 覆盖旧值、nomem 从未写入 => staleness 行存在但全部通过（对称可见）
         for name in ("smart", "nomem"):
             r = self._run(name)
-            self.assertEqual([x for x in r.rows
-                              if x["probe_id"] == "staleness_scan"], [], name)
+            stale = [x for x in r.rows if x["probe_id"] == "staleness_scan"]
+            self.assertTrue(all(x["verdict"] == "correct" and x["score"] == 1.0
+                                for x in stale), name)
 
     def test_summary_counts_staleness(self):
         from membench.agents import create_agent
@@ -291,3 +292,41 @@ class TestFactLifecycle(unittest.TestCase):
         r = evaluate_probe(case.probes[0], case, reply="还是旧值",
                            memory_items=None, workdir=None)
         self.assertEqual(r.verdict, VERDICT_IMPROPER_REUSE)
+
+
+class TestCriteriaFama(unittest.TestCase):
+    """criteria 级 FAMA（Memora 公式）：max(0, MPA - λ·(1-FAA))。"""
+
+    def _summary(self, agent, case_id=None):
+        from membench.agents import create_agent
+        from membench.runner import run_suite
+        cases = load_cases([os.path.join(PKG, "cases")])
+        if case_id:
+            cases = [c for c in cases if c.case_id == case_id]
+        return run_suite(create_agent(agent), cases, out_dir=tempfile.mkdtemp(),
+                         runs=1, quiet=True)
+
+    def test_boundary_case_fama(self):
+        """bnd-01（纯 absence 判据）：naive 全违例 => FAMA=0；smart/nomem => 1。"""
+        naive = self._summary("naive", "bnd-01-password")
+        smart = self._summary("smart", "bnd-01-password")
+        self.assertAlmostEqual(naive["fama_mean"], 0.0)
+        self.assertAlmostEqual(smart["fama_mean"], 1.0)
+
+    def test_update_case_fama(self):
+        """upd-01（presence + absence 混合）：nomem 缺席守住了但 presence 失败
+        => FAMA 不罚（λ 权衡）；naive 双失 => FAMA=0；smart 双过 => 1。"""
+        nomem = self._summary("nomem", "upd-01-address")
+        naive = self._summary("naive", "upd-01-address")
+        smart = self._summary("smart", "upd-01-address")
+        self.assertAlmostEqual(naive["fama_mean"], 0.0)
+        self.assertAlmostEqual(smart["fama_mean"], 1.0)
+        self.assertGreaterEqual(nomem["fama_mean"], 0.0)
+        self.assertLess(nomem["fama_mean"], 0.5)  # presence 失败被 MPA 拉低
+
+    def test_presence_only_case_fama_equals_score(self):
+        """纯 presence 用例（λ=0）：FAMA == 普通得分（向后兼容性质）。"""
+        smart = self._summary("smart", "ret-01-name-editor")
+        case_score = [c["score"] for c in smart["per_case"]
+                      if c["case_id"] == "ret-01-name-editor"][0]
+        self.assertAlmostEqual(smart["fama_mean"] * 100, case_score, places=4)

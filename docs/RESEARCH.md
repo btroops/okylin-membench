@@ -162,6 +162,42 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
   runner 在每个 session 边界对记忆库快照做**过期扫描**：失效事实仍在 =>
   improper_reuse 发现（"该遗忘的没遗忘"，Memora FAA 对应物）。
 
+### A-MEM 正文核实（补，arXiv:2502.12110 HTML）
+
+- **笔记七元组**：原始内容/时间戳/关键词(≥3)/标签/上下文描述/嵌入向量/
+  链接集合（all-minilm-l6-v2）。
+- **演化机制**：新笔记到达 → 与全部既有笔记算余弦相似取 top-k → LLM 分析
+  共同属性决定建链 → 对每个邻居评估可执行 "strengthen"（加固连接）或
+  "update_neighbor"（修订上下文/标签）——历史笔记的表示随新记忆**被改写**。
+- **LOCOMO 多跳 QA 实测**：GPT-4o-mini 45.85 F1 vs LoCoMo 基线 18.41
+  （≥2 倍优势）；token 成本 ~1.2-2.5k vs ~16.9k。
+- **消融**：去掉链接生成+记忆演化，多跳 F1 45.85 → 24.55——两个模块互补，
+  链接是组织基础、演化是精炼。
+- **对 membench**：我们的 memory_evolution 轨迹 + staleness 扫描评测的
+  正是 "update_neighbor" 类操作是否做对——演化式记忆系统现在有了
+  过程级考卷。
+
+### MemoryAgentBench（arXiv:2507.05257）— 摘要级
+
+- **四能力**：accurate retrieval / test-time learning / long-range
+  understanding / **selective forgetting**——最后者与我们的 staleness
+  扫描 + FAA 直接对应（独立工作再次确认"选择性遗忘"是一等评测能力）。
+- **构造**：把既有长上下文数据集改造为**增量多轮**格式（批评静态
+  book-QA 式评测），覆盖四能力的人工校验集。
+- **发现**：现有方法（含外部记忆模块与工具集成）无一掌握全部四能力。
+
+### MemGym（arXiv:2605.20833，2026.05）— 摘要级
+
+- **定位**：既有记忆基准是"聊天式保留"，忽略**执行过程中的动态记忆形成**
+  ——统一多个 agent gym（tau2-bench/SWE-Gym/WebArena-Infinity 等）于
+  单一记忆-推理接口。
+- **指标思想（值得学）**：**memory-isolated scores**——把记忆表现与推理/
+  检索/工具使用能力解耦，避免混淆变量；MemRM 轻量奖励模型替代昂贵的
+  Docker 全程回放。
+- **membench 对照**：我们的确定性探针（slot/choice/fs/memory）天然把
+  "记忆"与"推理"部分解耦（答错原因可归因到没记住而非不会推）；跨 session
+  分档（bin）是他们的长度分轴的 session 版。
+
 ### 系列二小结（对 membench 的三点强化）
 
 1. **操作分类学对齐**：Mem0 的记忆操作（增/改/删）与我们的演变轨迹

@@ -125,3 +125,21 @@
 - **实测**：naive 在 upd-01 上产生 1 条 staleness 发现（"事实…已在 s2 失效，
   但记忆库仍保留"）；smart/nomem 为 0——三种病因的过程级判别补全。
 - **测试**：77→81 通过；样例/文档同步；.deb 重建。
+
+## 2026-09-04 · 轮次 N+7：criteria 级 FAMA + 对称缺席判据
+
+- **论文**：A-Mem 正文（笔记七元组、strengthen/update_neighbor 演化、
+  LOCOMO 多跳 2 倍优势与消融数据——演化式记忆系统从此有过程级考卷）；
+  MemoryAgentBench（四能力含 selective forgetting，独立确认我们 staleness
+  方向）；MemGym（memory-isolated scores 解耦思想，长度可控管线）。
+- **实现（Memora 公式忠实落地）**：
+  - `FAMA = max(0, MPA − λ·(1−FAA))`：探针按 expected 字段自动推断
+    判据角色（absence=forbid_reveal/memory_excludes；其余 presence）；
+  - **对称缺席判据**：敏感扫描与 staleness 的"通过"也产出可见行
+    （此前只记失败——修复了 FAA 分母缺失的度量偏差，nomem 总分从 11.1
+    修正为 15.9，其"什么都不存"的边界纪律首次获得应得分）；
+  - 聚合 `fama_mean` 入 summary；HTML/Markdown 排名表加 FAMA 列；
+- **性质测试**：纯 presence 用例 FAMA == 普通分（λ=0 向后兼容）；
+  bnd-01 naive FAMA=0 / smart=1；upd-01 nomem FAMA 被压到 <0.5
+  （presence 失败由 MPA 拉低，absence 守住不再加罚——公式语义正确）。
+- **测试**：81→85 通过；样例/文档同步；.deb 重建。

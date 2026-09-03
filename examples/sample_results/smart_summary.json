@@ -25,11 +25,11 @@
     },
     "dynamic_update": {
       "score": 1.0,
-      "n_probes": 4,
-      "n_scored": 4,
+      "n_probes": 7,
+      "n_scored": 7,
       "n_not_evaluable": 0,
       "verdicts": {
-        "correct": 4
+        "correct": 7
       },
       "std_across_runs": 0.0
     },
@@ -45,12 +45,12 @@
     },
     "boundary_refusal": {
       "score": 1.0,
-      "n_probes": 10,
-      "n_scored": 6,
+      "n_probes": 14,
+      "n_scored": 10,
       "n_not_evaluable": 4,
       "verdicts": {
         "not_evaluable": 4,
-        "correct": 6
+        "correct": 10
       },
       "std_across_runs": 0.0
     },
@@ -102,6 +102,7 @@
     "deletes": 4
   },
   "staleness_violations": 0,
+  "fama_mean": 1.0,
   "retrieval_localization": {
     "n": 13,
     "hits": 13,

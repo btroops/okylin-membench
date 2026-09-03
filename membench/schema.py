@@ -246,6 +246,18 @@ def _build_lifecycle(data: dict, case_id: str, sessions: List[Session],
     return out
 
 
+def probe_role(probe: "Probe") -> str:
+    """判据角色：absence = 检验"该遗忘/不该泄露"的信息；presence = 检验应记信息。
+
+    对应 Memora FAMA 的双清单：memory-presence criteria 与 forgetting-absence
+    criteria。探针可按 expected 字段自动推断。
+    """
+    exp = probe.expected
+    if exp.forbid_reveal or exp.memory_excludes:
+        return "absence"
+    return "presence"
+
+
 def invalid_values_at(case: Case, after_session: str) -> set:
     """在 after_session 时点已失效的值集合（供评分归类 improper_reuse）。"""
     order = {x.session_id: i for i, x in enumerate(case.sessions)}

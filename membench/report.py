@@ -27,9 +27,11 @@ def _cls(v: float) -> str:
 def build_markdown(summaries: List[dict], cases=None) -> str:
     cmp_data = compare_summaries(summaries)
     lines = ["# openKylin 智能体长期记忆评测报告", "",
-             "## 总分排名", "", "| 排名 | 智能体 | 总分 |", "|---|---|---|"]
+             "## 总分排名", "", "| 排名 | 智能体 | 总分 | FAMA |", "|---|---|---|---|"]
     for i, r in enumerate(cmp_data["ranking"], 1):
-        lines.append("| %d | %s | %.1f |" % (i, r["agent"], 100 * r["overall"]))
+        fa = next((x.get("fama_mean") for x in summaries if x["agent"] == r["agent"]), None)
+        lines.append("| %d | %s | %.1f | %s |" % (i, r["agent"], 100 * r["overall"],
+                                                  "%.1f" % (100 * fa) if fa is not None else "-"))
     lines += ["", "## 六维对比", "",
               "| 维度 | " + " | ".join(cmp_data["agents"]) + " |",
               "|---|" + "---|" * len(cmp_data["agents"])]
@@ -82,10 +84,13 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
             "<div class='note'>由 membench 自动生成 · 五分类裁决：correct/miss/confusion/"
             "improper_persistence/improper_reuse</div>",
             radar,
-            "<h2>总分排名</h2><table><tr><th>排名</th><th>智能体</th><th>总分</th></tr>"]
+            "<h2>总分排名</h2><table><tr><th>排名</th><th>智能体</th><th>总分</th>"
+            "<th>FAMA</th></tr>"]
     for i, r in enumerate(cmp_data["ranking"], 1):
-        html.append("<tr><td>%d</td><td>%s</td><td class='%s'>%.1f</td></tr>"
-                    % (i, r["agent"], _cls(r["overall"]), 100 * r["overall"]))
+        fa = next((x.get("fama_mean") for x in summaries if x["agent"] == r["agent"]), None)
+        html.append("<tr><td>%d</td><td>%s</td><td class='%s'>%.1f</td><td>%s</td></tr>"
+                    % (i, r["agent"], _cls(r["overall"]), 100 * r["overall"],
+                       ("%.1f" % (100 * fa)) if fa is not None else "-"))
     html.append("</table>")
     if cases is not None:
         bins = bin_report_by_load(cases, summaries)
