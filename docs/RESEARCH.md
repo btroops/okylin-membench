@@ -281,3 +281,39 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
    同长一字符差、互不为子串防"超串陷阱"），种子可复现。
 6. ✅ 检索定位率协议扩展：subproc 新增 retrieval_trace_request 消息，
    不支持的智能体优雅降级为 None（每 episode 只探测一次）。
+
+## 系列四：OS 集成与生态（扣"与 openKylin 架构集成"15% 评分项）
+
+### AIOS（arXiv:2403.16971，COLM 2025）— 摘要级
+
+- **设计**：AIOS 内核把"调度、上下文管理、内存管理、存储管理、访问控制"
+  五类服务从智能体应用中隔离出来，作为智能体与底层资源间的仲裁层；
+  SDK 暴露 API。多框架智能体并发共享 LLM/工具容量，最高 2.1x 提速。
+- **对 membench**：与 openKylin 智能体操作系统的对接位 = 我们的证据接口
+  （stdio-JSONL / OpenAI 兼容 / 文件快照）即"内核服务旁路采集"——
+  评测器不需要侵入内核，只需读智能体落盘产物。
+
+### 记忆综述（arXiv:2603.07670，2026.03）— 摘要级
+
+- **分类学**：记忆 = write–manage–read 循环；机制五家族（上下文压缩/
+  检索增强/反思自改进/分级虚拟上下文/策略学习管理）。
+- **领域趋势**：从静态召回基准转向"记忆与决策交织的多 session 智能体
+  测试"——与我们的定位一致。
+- **开放挑战五项**：持续整合、因果接地检索、可信反思、**learned
+  forgetting**、多模态具身记忆。membench 已覆盖 learned forgetting 的
+  评测面（staleness 扫描 + FAA）。
+- **用法**：答辩时用该综述的分类学给我们的九维"上坐标系"。
+
+### OpenClaw（赛题点名生态智能体）— 官方文档级
+
+- **记忆模型（逐字核实）**：工作区纯 Markdown 文件——USER.md（稳定偏好）、
+  MEMORY.md（持久事实，每 session 注入）、memory/日期.md（日记，索引不
+  注入）、DREAMS.md（Dreaming 整理摘要）；检索 = memory_search（向量+关键词
+  混合，可插拔 SQLite/Honcho/LanceDB）；**Dreaming 为默认后台整理**，
+  压缩前先做 memory-flush。
+- **重大落地结论**：OpenClaw 的记忆就是**磁盘上可读的文件**——membench 的
+  fs 快照通道无需任何侵入即可捕获其记忆写入/更新；写一个 50 行的协议
+  shim（读 MEMORY.md 作为 memory_dump）即可把它接入白盒评测。这直接
+  回应赛题"面向 openKylin 生态已支持的主流智能体框架"。
+- **行业收敛**：Letta MemFS 与 OpenClaw 文件化不谋而合——文件化记忆 +
+  后台整理 + 混合检索是 2026 年的收敛形态，membench 的证据设计押中。

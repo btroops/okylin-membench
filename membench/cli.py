@@ -183,6 +183,11 @@ def cmd_report(args) -> int:
     return 0
 
 
+def cmd_doctor(args) -> int:
+    from .doctor import main as doctor_main
+    return doctor_main()
+
+
 def cmd_demo(args) -> int:
     """全流程演示：三个内置智能体 × 内置用例集 → 对比报告。"""
     from .agents import create_agent
@@ -231,6 +236,9 @@ def main(argv: List[str] = None) -> int:
     p.add_argument("--quiet", action="store_true", help="不打印逐用例进度")
     p.add_argument("-o", "--out", default="membench_results")
     p.set_defaults(fn=cmd_run)
+
+    p = sub.add_parser("doctor", help="openKylin 环境自检（复现前先跑一遍）")
+    p.set_defaults(fn=cmd_doctor)
 
     p = sub.add_parser("gen", help="按模板批量生成用例（数据生成方式演示）")
     p.add_argument("-o", "--out", default="cases_generated")

@@ -29,6 +29,7 @@ OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测工具。
 
 ```bash
 # 仓库内直接运行
+python3 -m membench.cli doctor          # 环境自检（openKylin 复现前先跑）
 python3 -m membench.cli demo            # 三个内置智能体全流程演示
 python3 -m membench.cli list            # 查看内置 24 个用例
 python3 -m membench.cli validate        # 数据集静态校验
@@ -106,7 +107,7 @@ membench demo
 ## 运行测试
 
 ```bash
-python3 -m unittest discover -s tests   # 88 个单元/端到端测试（31 用例 + 24 模板 / 9 维度；含 FAMA 双清单、记忆维护探针与难度分层）
+python3 -m unittest discover -s tests   # 89 个单元/端到端测试（31 用例 + 24 模板 / 9 维度；含 doctor 自检、FAMA 双清单与记忆维护探针）
 ```
 
 ## 许可证

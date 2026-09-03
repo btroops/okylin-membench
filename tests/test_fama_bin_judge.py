@@ -376,3 +376,17 @@ class TestDifficultyBreakdown(unittest.TestCase):
         self.assertTrue(s.get("difficulty_breakdown"))
         for d in ("easy", "medium", "hard"):
             self.assertIn(d, s["difficulty_breakdown"])
+
+
+class TestDoctor(unittest.TestCase):
+    """membench doctor：8 项环境自检在健康环境全过、退出码 0。"""
+
+    def test_doctor_all_pass(self):
+        from membench.doctor import run_checks
+        checks = run_checks()
+        names = {c["name"] for c in checks}
+        self.assertEqual(names, {"python>=3.8", "pyyaml", "cases",
+                                 "builtin-agents", "subproc-protocol",
+                                 "tmp-writable", "utf8-stdout", "cjk-fonts"})
+        fails = [c for c in checks if c["status"] == "FAIL"]
+        self.assertEqual(fails, [], checks)
