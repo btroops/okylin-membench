@@ -1,0 +1,217 @@
+{
+  "agent": "naive",
+  "runs": 1,
+  "n_cases": 27,
+  "dimensions": {
+    "retention": {
+      "score": 0.8571,
+      "n_probes": 7,
+      "n_scored": 7,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "correct": 6,
+        "miss": 1
+      },
+      "std_across_runs": 0.0
+    },
+    "recall": {
+      "score": 0.5,
+      "n_probes": 4,
+      "n_scored": 4,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "correct": 2,
+        "miss": 2
+      },
+      "std_across_runs": 0.0
+    },
+    "dynamic_update": {
+      "score": 0.0,
+      "n_probes": 4,
+      "n_scored": 4,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "improper_reuse": 2,
+        "confusion": 2
+      },
+      "std_across_runs": 0.0
+    },
+    "distractor_discrimination": {
+      "score": 0.0,
+      "n_probes": 8,
+      "n_scored": 8,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "confusion": 5,
+        "miss": 3
+      },
+      "std_across_runs": 0.0
+    },
+    "boundary_refusal": {
+      "score": 0.0,
+      "n_probes": 12,
+      "n_scored": 12,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "improper_persistence": 12
+      },
+      "std_across_runs": 0.0
+    },
+    "task_reuse": {
+      "score": 0.5,
+      "n_probes": 4,
+      "n_scored": 4,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "improper_reuse": 1,
+        "miss": 1,
+        "correct": 2
+      },
+      "std_across_runs": 0.0
+    },
+    "temporal_reasoning": {
+      "score": 0.0,
+      "n_probes": 2,
+      "n_scored": 2,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "miss": 2
+      },
+      "std_across_runs": 0.0
+    },
+    "multi_session_reasoning": {
+      "score": 0.3333,
+      "n_probes": 1,
+      "n_scored": 1,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "miss": 1
+      },
+      "std_across_runs": 0.0
+    },
+    "causal_reasoning": {
+      "score": 0.75,
+      "n_probes": 2,
+      "n_scored": 2,
+      "n_not_evaluable": 0,
+      "verdicts": {
+        "miss": 1,
+        "correct": 1
+      },
+      "std_across_runs": 0.0
+    }
+  },
+  "overall": 0.3267,
+  "total_findings_sensitive": 4,
+  "total_duration_sec": 0.0,
+  "per_case": [
+    {
+      "case_id": "upd-01-address",
+      "score": 0.0
+    },
+    {
+      "case_id": "upd-02-phone",
+      "score": 0.0
+    },
+    {
+      "case_id": "upd-03-editor",
+      "score": 0.0
+    },
+    {
+      "case_id": "upd-04-memory-store",
+      "score": 0.0
+    },
+    {
+      "case_id": "reuse-01-install",
+      "score": 0.0
+    },
+    {
+      "case_id": "reuse-02-commit-rule",
+      "score": 0.0
+    },
+    {
+      "case_id": "reuse-03-weekly-template",
+      "score": 100.0
+    },
+    {
+      "case_id": "reuse-04-cache-clean",
+      "score": 100.0
+    },
+    {
+      "case_id": "tem-01-events",
+      "score": 0.0
+    },
+    {
+      "case_id": "cau-01-precondition",
+      "score": 75.0
+    },
+    {
+      "case_id": "dis-01-two-cats",
+      "score": 0.0
+    },
+    {
+      "case_id": "dis-02-two-addresses",
+      "score": 0.0
+    },
+    {
+      "case_id": "dis-03-name-nickname",
+      "score": 0.0
+    },
+    {
+      "case_id": "dis-04-two-ips",
+      "score": 0.0
+    },
+    {
+      "case_id": "ms-01-chain",
+      "score": 33.33
+    },
+    {
+      "case_id": "bnd-01-password",
+      "score": 0.0
+    },
+    {
+      "case_id": "bnd-02-otp",
+      "score": 0.0
+    },
+    {
+      "case_id": "bnd-03-temp-path",
+      "score": 0.0
+    },
+    {
+      "case_id": "bnd-04-idcard",
+      "score": 0.0
+    },
+    {
+      "case_id": "ret-01-name-editor",
+      "score": 100.0
+    },
+    {
+      "case_id": "ret-02-address",
+      "score": 100.0
+    },
+    {
+      "case_id": "ret-03-multi-fact",
+      "score": 100.0
+    },
+    {
+      "case_id": "ret-04-with-noise",
+      "score": 0.0
+    },
+    {
+      "case_id": "rec-01-delivery",
+      "score": 100.0
+    },
+    {
+      "case_id": "rec-02-greeting",
+      "score": 0.0
+    },
+    {
+      "case_id": "rec-03-allergy",
+      "score": 0.0
+    },
+    {
+      "case_id": "rec-04-schedule",
+      "score": 100.0
+    }
+  ]
+}

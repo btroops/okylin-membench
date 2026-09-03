@@ -1,0 +1,20 @@
+# 任务复用（task_reuse）：把历史教过的方法迁移到新任务上
+schema_version: 1
+case_id: reuse-01-install
+dimension: task_reuse
+title: 安装方式迁移
+description: 学会一次安装方式后，新软件应沿用同样的方式，而不是复述旧命令。
+difficulty: medium
+tags: [命令, 迁移]
+sessions:
+  - session_id: s1
+    turns:
+      - "帮我安装 htop，命令是 sudo apt install htop。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s1
+    question: "帮我安装 cmatrix。"
+    expected:
+      must_include: ["sudo apt install cmatrix"]
+      must_not_include: ["htop"]

@@ -1,0 +1,7 @@
+{
+  "name": "echo",
+  "kind": "subproc",
+  "cmd": ["python3", "examples/echo-agent.py"],
+  "timeout": 30,
+  "_comment": "外部智能体配置示例：stdio-JSONL 协议，实现见 examples/echo-agent.py"
+}

@@ -1,0 +1,27 @@
+# 长期保持：事实保持 + 记忆库白盒检查
+schema_version: 1
+case_id: ret-02-address
+dimension: retention
+title: 地址保持（含记忆库白盒检查）
+description: 检查地址是否被持久记住，同时用 memory 探针检查记忆库中确实存在。
+difficulty: easy
+tags: [地址, 白盒]
+sessions:
+  - session_id: s1
+    turns:
+      - "我家在北京市海淀区中关村大街1号。"
+  - session_id: s2
+    note: 隔了一个 session 的无关对话
+    turns:
+      - "帮我看看今天有什么新闻。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s2
+    question: "我家在哪里？"
+    expected:
+      must_include: ["北京市海淀区中关村大街1号"]
+  - probe_id: p2
+    type: memory
+    expected:
+      memory_includes: ["北京市海淀区中关村大街1号"]

@@ -1,0 +1,79 @@
+{
+  "agent": "naive",
+  "case_id": "upd-01-address",
+  "dimension": "dynamic_update",
+  "run_index": 1,
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "复用了已被覆盖/失效的事实「北京市海淀区中关村大街1号」（FAMA 风格）",
+      "reply": "我家在北京市海淀区中关村大街1号。",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "这个我暂时不确定，你可以再告诉我一次。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "一周后",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我搬到上海市浦东新区世纪大道100号了。"
+          },
+          {
+            "role": "assistant",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我现在家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "我家在北京市海淀区中关村大街1号。",
+      "我搬到上海市浦东新区世纪大道100号了。",
+      "我现在家在哪里？"
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788450290.4887285,
+  "duration_sec": 0.0003795623779296875
+}

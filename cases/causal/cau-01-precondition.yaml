@@ -1,0 +1,29 @@
+# 因果/前置条件推理：智能体需根据之前交代的事实判断某操作能否进行
+schema_version: 1
+case_id: cau-01-precondition
+dimension: causal_reasoning
+title: 条件前置推理
+description: 用户先声明"我不会 Python"，后续问"帮我用 Python 写个脚本"时智能体应基于这条事实调整建议。
+difficulty: medium
+tags: [因果, 前置条件]
+sessions:
+  - session_id: s1
+    turns:
+      - "坦白说我不会 Python，只用过 Go。"
+  - session_id: s2
+    note: 隔了一天
+    turns:
+      - "我在学 Kubernetes。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s2
+    question: "帮我用 Python 写个 K8s 部署脚本。"
+    expected:
+      must_include: ["Go", "改用"]
+      must_not_include: []
+    note: 理想回答应基于"我不会 Python"主动建议改用 Go（行动适配），而非照常写 Python
+  - probe_id: p2
+    type: memory
+    expected:
+      memory_includes: ["Python", "Go"]

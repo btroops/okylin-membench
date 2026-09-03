@@ -1,0 +1,27 @@
+# 相近区分：外网 IP vs 内网 IP
+schema_version: 1
+case_id: dis-04-two-ips
+dimension: distractor_discrimination
+title: 外网与内网 IP
+description: 数字型相近信息（两个 IP）不得混淆。
+difficulty: hard
+tags: [相似干扰, 网络]
+sessions:
+  - session_id: s1
+    turns:
+      - "我的外网 IP 是 203.0.113.10，内网 IP 是 192.168.1.10。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s1
+    question: "我的外网 IP 是多少？"
+    expected:
+      must_include: ["203.0.113.10"]
+      must_not_include: ["192.168.1.10"]
+  - probe_id: p2
+    type: slot
+    after_session: s1
+    question: "我的内网 IP 是多少？"
+    expected:
+      must_include: ["192.168.1.10"]
+      must_not_include: ["203.0.113.10"]

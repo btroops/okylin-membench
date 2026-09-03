@@ -1,0 +1,21 @@
+# 动态更新：记忆库白盒检查——旧值必须从记忆库中被移除/覆盖
+schema_version: 1
+case_id: upd-04-memory-store
+dimension: dynamic_update
+title: 记忆库层面的旧值清除
+description: 不仅回答要新值，白盒检查记忆库也不应再保留旧号码。
+difficulty: hard
+tags: [电话, 白盒, 冲突]
+sessions:
+  - session_id: s1
+    turns:
+      - "我的紧急联系人电话是 13511112222。"
+  - session_id: s2
+    turns:
+      - "紧急联系人换成我阿姨了，电话是 13533334444。"
+probes:
+  - probe_id: p1
+    type: memory
+    expected:
+      memory_includes: ["13533334444"]
+      memory_excludes: ["13511112222"]

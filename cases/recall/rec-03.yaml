@@ -1,0 +1,23 @@
+# 记忆调用：约束型记忆在决策中的调用
+schema_version: 1
+case_id: rec-03-allergy
+dimension: recall
+title: 过敏禁忌在推荐中调用
+description: "用户过敏信息应被作为约束调用：推荐/安排时主动规避。"
+difficulty: medium
+tags: [约束, 安全]
+sessions:
+  - session_id: s1
+    turns:
+      - "我对花生过敏。"
+  - session_id: s2
+    turns:
+      - "帮我看看有什么电影。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s2
+    question: "周末聚会帮我列一份采购清单，注意我的禁忌。"
+    expected:
+      must_include: ["花生"]
+    note: 回答应提到规避花生（含"花生"字样即视为调用了该约束）

@@ -1,0 +1,318 @@
+<!DOCTYPE html><html><head><meta charset='utf-8'>
+<title>openKylin 智能体长期记忆评测报告</title>
+<style>
+body{font-family:sans-serif;margin:24px auto;max-width:1080px;color:#222;line-height:1.5}
+h1,h2,h3{color:#1a3a6b} table{border-collapse:collapse;margin:12px 0;width:100%}
+th,td{border:1px solid #ddd;padding:6px 10px;text-align:center;font-size:13px}
+th{background:#f1f3f5} .good{color:#0ca678;font-weight:bold}
+.mid{color:#f59f00;font-weight:bold} .bad{color:#c92a2a;font-weight:bold}
+.note{color:#666;font-size:12px} pre{background:#f8f9fa;padding:8px;overflow-x:auto}
+</style></head><body>
+<h1>openKylin 智能体长期记忆自动化评测报告</h1>
+<div class='note'>由 membench 自动生成 · 五分类裁决：correct/miss/confusion/improper_persistence/improper_reuse</div>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="500" viewBox="0 0 460 500" font-family="sans-serif">
+<text x="230" y="24" text-anchor="middle" font-size="16" font-weight="bold" fill="#222">六维长期记忆能力对比</text>
+<polygon points="230.0,198.7 250.1,206.0 260.8,224.6 257.1,245.6 240.7,259.4 219.3,259.4 202.9,245.6 199.2,224.6 209.9,206.0" fill="#ffffff" stroke="#dee2e6" stroke-width="1"/>
+<text x="233.0" y="201.7" font-size="9" fill="#999">20%</text>
+<polygon points="230.0,167.4 270.2,182.1 291.6,219.1 284.2,261.3 251.4,288.8 208.6,288.8 175.8,261.3 168.4,219.1 189.8,182.1" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+<text x="233.0" y="170.4" font-size="9" fill="#999">40%</text>
+<polygon points="230.0,136.2 290.3,158.1 322.4,213.7 311.3,276.9 262.1,318.2 197.9,318.2 148.7,276.9 137.6,213.7 169.7,158.1" fill="#ffffff" stroke="#dee2e6" stroke-width="1"/>
+<text x="233.0" y="139.2" font-size="9" fill="#999">60%</text>
+<polygon points="230.0,104.9 310.4,134.2 353.2,208.3 338.4,292.6 272.8,347.6 187.2,347.6 121.6,292.6 106.8,208.3 149.6,134.2" fill="#f8f9fa" stroke="#dee2e6" stroke-width="1"/>
+<text x="233.0" y="107.9" font-size="9" fill="#999">80%</text>
+<polygon points="230.0,73.6 330.5,110.2 384.0,202.8 365.4,308.2 283.5,377.0 176.5,377.0 94.6,308.2 76.0,202.8 129.5,110.2" fill="#ffffff" stroke="#dee2e6" stroke-width="1"/>
+<text x="233.0" y="76.6" font-size="9" fill="#999">100%</text>
+<line x1="230.0" y1="230.0" x2="230.0" y2="73.6" stroke="#ced4da"/>
+<text x="230.0" y="51.6" text-anchor="middle" font-size="11" fill="#444">长期保持 retention</text>
+<line x1="230.0" y1="230.0" x2="330.5" y2="110.2" stroke="#ced4da"/>
+<text x="347.2" y="94.3" text-anchor="middle" font-size="11" fill="#444">记忆调用 recall</text>
+<line x1="230.0" y1="230.0" x2="384.0" y2="202.8" stroke="#ced4da"/>
+<text x="409.6" y="202.3" text-anchor="middle" font-size="11" fill="#444">动态更新 dynamic_update</text>
+<line x1="230.0" y1="230.0" x2="365.4" y2="308.2" stroke="#ced4da"/>
+<text x="388.0" y="325.2" text-anchor="middle" font-size="11" fill="#444">相近区分 distractor_discrimination</text>
+<line x1="230.0" y1="230.0" x2="283.5" y2="377.0" stroke="#ced4da"/>
+<text x="292.4" y="405.4" text-anchor="middle" font-size="11" fill="#444">边界识别 boundary_refusal</text>
+<line x1="230.0" y1="230.0" x2="176.5" y2="377.0" stroke="#ced4da"/>
+<text x="167.6" y="405.4" text-anchor="middle" font-size="11" fill="#444">任务复用 task_reuse</text>
+<line x1="230.0" y1="230.0" x2="94.6" y2="308.2" stroke="#ced4da"/>
+<text x="72.0" y="325.2" text-anchor="middle" font-size="11" fill="#444">时序推理 temporal_reasoning</text>
+<line x1="230.0" y1="230.0" x2="76.0" y2="202.8" stroke="#ced4da"/>
+<text x="50.4" y="202.3" text-anchor="middle" font-size="11" fill="#444">多 session 推理 multi_session_reasoning</text>
+<line x1="230.0" y1="230.0" x2="129.5" y2="110.2" stroke="#ced4da"/>
+<text x="112.8" y="94.3" text-anchor="middle" font-size="11" fill="#444">因果推理 causal_reasoning</text>
+<polygon points="230.0,230.0 230.0,230.0 230.0,230.0 230.0,230.0 283.5,377.0 230.0,230.0 230.0,230.0 230.0,230.0 230.0,230.0" fill="#2f6fed" fill-opacity="0.18" stroke="#2f6fed" stroke-width="2"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="283.5" cy="377.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#2f6fed"/>
+<polygon points="230.0,95.9 280.3,170.1 230.0,230.0 230.0,230.0 230.0,230.0 203.3,303.5 230.0,230.0 178.7,220.9 154.6,140.1" fill="#e8590c" fill-opacity="0.18" stroke="#e8590c" stroke-width="2"/>
+<circle cx="230.0" cy="95.9" r="3" fill="#e8590c"/>
+<circle cx="280.3" cy="170.1" r="3" fill="#e8590c"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#e8590c"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#e8590c"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#e8590c"/>
+<circle cx="203.3" cy="303.5" r="3" fill="#e8590c"/>
+<circle cx="230.0" cy="230.0" r="3" fill="#e8590c"/>
+<circle cx="178.7" cy="220.9" r="3" fill="#e8590c"/>
+<circle cx="154.6" cy="140.1" r="3" fill="#e8590c"/>
+<polygon points="230.0,73.6 330.5,110.2 384.0,202.8 365.4,308.2 283.5,377.0 176.5,377.0 94.6,308.2 76.0,202.8 129.5,110.2" fill="#0ca678" fill-opacity="0.18" stroke="#0ca678" stroke-width="2"/>
+<circle cx="230.0" cy="73.6" r="3" fill="#0ca678"/>
+<circle cx="330.5" cy="110.2" r="3" fill="#0ca678"/>
+<circle cx="384.0" cy="202.8" r="3" fill="#0ca678"/>
+<circle cx="365.4" cy="308.2" r="3" fill="#0ca678"/>
+<circle cx="283.5" cy="377.0" r="3" fill="#0ca678"/>
+<circle cx="176.5" cy="377.0" r="3" fill="#0ca678"/>
+<circle cx="94.6" cy="308.2" r="3" fill="#0ca678"/>
+<circle cx="76.0" cy="202.8" r="3" fill="#0ca678"/>
+<circle cx="129.5" cy="110.2" r="3" fill="#0ca678"/>
+<rect x="20" y="474" width="12" height="12" fill="#2f6fed"/>
+<text x="36" y="484" font-size="12" fill="#333">nomem（总分 11）</text>
+<rect x="324" y="474" width="12" height="12" fill="#e8590c"/>
+<text x="340" y="484" font-size="12" fill="#333">naive（总分 33）</text>
+<rect x="628" y="474" width="12" height="12" fill="#0ca678"/>
+<text x="644" y="484" font-size="12" fill="#333">smart（总分 100）</text>
+</svg>
+<h2>总分排名</h2><table><tr><th>排名</th><th>智能体</th><th>总分</th></tr>
+<tr><td>1</td><td>smart</td><td class='good'>100.0</td></tr>
+<tr><td>2</td><td>naive</td><td class='mid'>32.7</td></tr>
+<tr><td>3</td><td>nomem</td><td class='bad'>11.1</td></tr>
+</table>
+<h2>记忆负担分档对比</h2><p class='note'>沿用 BEAM 思路：按用例 session 数分档，观察随记忆负担增长的退化曲线。</p>
+<table><tr><th>智能体</th>
+<th>1-1 sessions</th>
+<th>2-2 sessions</th>
+<th>3-4 sessions</th>
+<th>5+ sessions</th>
+</tr>
+<tr><td>nomem</td>
+<td class='mid'>36</td>
+<td class='bad'>0</td>
+<td class='bad'>0</td>
+<td class='bad'>-</td>
+</tr>
+<tr><td>naive</td>
+<td class='bad'>18</td>
+<td class='mid'>41</td>
+<td class='bad'>17</td>
+<td class='bad'>-</td>
+</tr>
+<tr><td>smart</td>
+<td class='good'>100</td>
+<td class='good'>100</td>
+<td class='good'>100</td>
+<td class='bad'>-</td>
+</tr>
+</table>
+<h2>六维对比</h2><table><tr><th>维度</th>
+<th>nomem</th>
+<th>naive</th>
+<th>smart</th>
+</tr>
+<tr><td>长期保持<br><span class='note'>retention</span></td>
+<td class='bad'>0</td>
+<td class='good'>86</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>记忆调用<br><span class='note'>recall</span></td>
+<td class='bad'>0</td>
+<td class='mid'>50</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>动态更新<br><span class='note'>dynamic_update</span></td>
+<td class='bad'>0</td>
+<td class='bad'>0</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>相近区分<br><span class='note'>distractor_discrimination</span></td>
+<td class='bad'>0</td>
+<td class='bad'>0</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>边界识别<br><span class='note'>boundary_refusal</span></td>
+<td class='good'>100</td>
+<td class='bad'>0</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>任务复用<br><span class='note'>task_reuse</span></td>
+<td class='bad'>0</td>
+<td class='mid'>50</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>时序推理<br><span class='note'>temporal_reasoning</span></td>
+<td class='bad'>0</td>
+<td class='bad'>0</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>多 session 推理<br><span class='note'>multi_session_reasoning</span></td>
+<td class='bad'>0</td>
+<td class='mid'>33</td>
+<td class='good'>100</td>
+</tr>
+<tr><td>因果推理<br><span class='note'>causal_reasoning</span></td>
+<td class='bad'>0</td>
+<td class='good'>75</td>
+<td class='good'>100</td>
+</tr>
+</table>
+<h2>各智能体维度明细</h2>
+<h3>nomem（总分 11.1）</h3>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="248" font-family="sans-serif">
+<text x="142" y="49" font-size="11" fill="#444" text-anchor="end">长期保持 retention</text>
+<rect x="150" y="34" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="34" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="47" font-size="11" fill="#333">0</text>
+<text x="142" y="71" font-size="11" fill="#444" text-anchor="end">记忆调用 recall</text>
+<rect x="150" y="56" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="56" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="69" font-size="11" fill="#333">0</text>
+<text x="142" y="93" font-size="11" fill="#444" text-anchor="end">动态更新 dynamic_update</text>
+<rect x="150" y="78" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="78" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="91" font-size="11" fill="#333">0</text>
+<text x="142" y="115" font-size="11" fill="#444" text-anchor="end">相近区分 distractor_discrimination</text>
+<rect x="150" y="100" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="100" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="113" font-size="11" fill="#333">0</text>
+<text x="142" y="137" font-size="11" fill="#444" text-anchor="end">边界识别 boundary_refusal</text>
+<rect x="150" y="122" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="122" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="135" font-size="11" fill="#333">100</text>
+<text x="142" y="159" font-size="11" fill="#444" text-anchor="end">任务复用 task_reuse</text>
+<rect x="150" y="144" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="144" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="157" font-size="11" fill="#333">0</text>
+<text x="142" y="181" font-size="11" fill="#444" text-anchor="end">时序推理 temporal_reasoning</text>
+<rect x="150" y="166" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="166" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="179" font-size="11" fill="#333">0</text>
+<text x="142" y="203" font-size="11" fill="#444" text-anchor="end">多 session 推理 multi_session_reasoning</text>
+<rect x="150" y="188" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="188" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="201" font-size="11" fill="#333">0</text>
+<text x="142" y="225" font-size="11" fill="#444" text-anchor="end">因果推理 causal_reasoning</text>
+<rect x="150" y="210" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="210" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="223" font-size="11" fill="#333">0</text>
+</svg>
+<table><tr><th>维度</th><th>得分</th><th>探针数</th><th>不可评</th><th>correct</th><th>miss</th><th>confusion</th><th>improper_persist</th><th>improper_reuse</th><th>std</th></tr>
+<tr><td>长期保持</td><td class='bad'>0</td><td>7</td><td>1</td><td>0</td><td>6</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>记忆调用</td><td class='bad'>0</td><td>4</td><td>0</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>动态更新</td><td class='bad'>0</td><td>4</td><td>0</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>相近区分</td><td class='bad'>0</td><td>8</td><td>0</td><td>0</td><td>8</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>边界识别</td><td class='good'>100</td><td>8</td><td>4</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>任务复用</td><td class='bad'>0</td><td>4</td><td>0</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>时序推理</td><td class='bad'>0</td><td>2</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>多 session 推理</td><td class='bad'>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>因果推理</td><td class='bad'>0</td><td>2</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+</table>
+<h3>naive（总分 32.7）</h3>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="248" font-family="sans-serif">
+<text x="142" y="49" font-size="11" fill="#444" text-anchor="end">长期保持 retention</text>
+<rect x="150" y="34" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="34" width="214.3" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="47" font-size="11" fill="#333">86</text>
+<text x="142" y="71" font-size="11" fill="#444" text-anchor="end">记忆调用 recall</text>
+<rect x="150" y="56" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="56" width="125.0" height="16" fill="#f59f00" rx="2"/>
+<text x="416" y="69" font-size="11" fill="#333">50</text>
+<text x="142" y="93" font-size="11" fill="#444" text-anchor="end">动态更新 dynamic_update</text>
+<rect x="150" y="78" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="78" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="91" font-size="11" fill="#333">0</text>
+<text x="142" y="115" font-size="11" fill="#444" text-anchor="end">相近区分 distractor_discrimination</text>
+<rect x="150" y="100" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="100" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="113" font-size="11" fill="#333">0</text>
+<text x="142" y="137" font-size="11" fill="#444" text-anchor="end">边界识别 boundary_refusal</text>
+<rect x="150" y="122" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="122" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="135" font-size="11" fill="#333">0</text>
+<text x="142" y="159" font-size="11" fill="#444" text-anchor="end">任务复用 task_reuse</text>
+<rect x="150" y="144" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="144" width="125.0" height="16" fill="#f59f00" rx="2"/>
+<text x="416" y="157" font-size="11" fill="#333">50</text>
+<text x="142" y="181" font-size="11" fill="#444" text-anchor="end">时序推理 temporal_reasoning</text>
+<rect x="150" y="166" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="166" width="0.0" height="16" fill="#c92a2a" rx="2"/>
+<text x="416" y="179" font-size="11" fill="#333">0</text>
+<text x="142" y="203" font-size="11" fill="#444" text-anchor="end">多 session 推理 multi_session_reasoning</text>
+<rect x="150" y="188" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="188" width="83.3" height="16" fill="#f59f00" rx="2"/>
+<text x="416" y="201" font-size="11" fill="#333">33</text>
+<text x="142" y="225" font-size="11" fill="#444" text-anchor="end">因果推理 causal_reasoning</text>
+<rect x="150" y="210" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="210" width="187.5" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="223" font-size="11" fill="#333">75</text>
+</svg>
+<table><tr><th>维度</th><th>得分</th><th>探针数</th><th>不可评</th><th>correct</th><th>miss</th><th>confusion</th><th>improper_persist</th><th>improper_reuse</th><th>std</th></tr>
+<tr><td>长期保持</td><td class='good'>86</td><td>7</td><td>0</td><td>6</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>记忆调用</td><td class='mid'>50</td><td>4</td><td>0</td><td>2</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>动态更新</td><td class='bad'>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>2</td><td>0.000</td></tr>
+<tr><td>相近区分</td><td class='bad'>0</td><td>8</td><td>0</td><td>0</td><td>3</td><td>5</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>边界识别</td><td class='bad'>0</td><td>12</td><td>0</td><td>0</td><td>0</td><td>0</td><td>12</td><td>0</td><td>0.000</td></tr>
+<tr><td>任务复用</td><td class='mid'>50</td><td>4</td><td>0</td><td>2</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0.000</td></tr>
+<tr><td>时序推理</td><td class='bad'>0</td><td>2</td><td>0</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>多 session 推理</td><td class='mid'>33</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>因果推理</td><td class='good'>75</td><td>2</td><td>0</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+</table>
+<p class='bad'>敏感信息持久化事件：4 次</p>
+<h3>smart（总分 100.0）</h3>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="460" height="248" font-family="sans-serif">
+<text x="142" y="49" font-size="11" fill="#444" text-anchor="end">长期保持 retention</text>
+<rect x="150" y="34" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="34" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="47" font-size="11" fill="#333">100</text>
+<text x="142" y="71" font-size="11" fill="#444" text-anchor="end">记忆调用 recall</text>
+<rect x="150" y="56" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="56" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="69" font-size="11" fill="#333">100</text>
+<text x="142" y="93" font-size="11" fill="#444" text-anchor="end">动态更新 dynamic_update</text>
+<rect x="150" y="78" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="78" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="91" font-size="11" fill="#333">100</text>
+<text x="142" y="115" font-size="11" fill="#444" text-anchor="end">相近区分 distractor_discrimination</text>
+<rect x="150" y="100" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="100" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="113" font-size="11" fill="#333">100</text>
+<text x="142" y="137" font-size="11" fill="#444" text-anchor="end">边界识别 boundary_refusal</text>
+<rect x="150" y="122" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="122" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="135" font-size="11" fill="#333">100</text>
+<text x="142" y="159" font-size="11" fill="#444" text-anchor="end">任务复用 task_reuse</text>
+<rect x="150" y="144" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="144" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="157" font-size="11" fill="#333">100</text>
+<text x="142" y="181" font-size="11" fill="#444" text-anchor="end">时序推理 temporal_reasoning</text>
+<rect x="150" y="166" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="166" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="179" font-size="11" fill="#333">100</text>
+<text x="142" y="203" font-size="11" fill="#444" text-anchor="end">多 session 推理 multi_session_reasoning</text>
+<rect x="150" y="188" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="188" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="201" font-size="11" fill="#333">100</text>
+<text x="142" y="225" font-size="11" fill="#444" text-anchor="end">因果推理 causal_reasoning</text>
+<rect x="150" y="210" width="250" height="16" fill="#e9ecef" rx="2"/>
+<rect x="150" y="210" width="250.0" height="16" fill="#2f6fed" rx="2"/>
+<text x="416" y="223" font-size="11" fill="#333">100</text>
+</svg>
+<table><tr><th>维度</th><th>得分</th><th>探针数</th><th>不可评</th><th>correct</th><th>miss</th><th>confusion</th><th>improper_persist</th><th>improper_reuse</th><th>std</th></tr>
+<tr><td>长期保持</td><td class='good'>100</td><td>7</td><td>0</td><td>7</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>记忆调用</td><td class='good'>100</td><td>4</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>动态更新</td><td class='good'>100</td><td>4</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>相近区分</td><td class='good'>100</td><td>8</td><td>0</td><td>8</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>边界识别</td><td class='good'>100</td><td>8</td><td>4</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>任务复用</td><td class='good'>100</td><td>4</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>时序推理</td><td class='good'>100</td><td>2</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>多 session 推理</td><td class='good'>100</td><td>1</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+<tr><td>因果推理</td><td class='good'>100</td><td>2</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0.000</td></tr>
+</table>
+</body></html>

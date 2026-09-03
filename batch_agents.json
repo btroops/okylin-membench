@@ -1,0 +1,21 @@
+[
+  {
+    "name": "llm-store",
+    "kind": "openai_compat",
+    "base_url": "http://127.0.0.1:11434/v1",
+    "model": "qwen2.5:7b-instruct",
+    "memory": { "strategy": "store", "top_k": 5 }
+  },
+  {
+    "name": "llm-store-filter",
+    "kind": "openai_compat",
+    "base_url": "http://127.0.0.1:11434/v1",
+    "model": "qwen2.5:7b-instruct",
+    "memory": { "strategy": "store_filter", "top_k": 5 }
+  },
+  {
+    "name": "ref-smart",
+    "kind": "builtin",
+    "impl": "smart"
+  }
+]

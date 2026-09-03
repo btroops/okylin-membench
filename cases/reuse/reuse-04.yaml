@@ -1,0 +1,19 @@
+# 任务复用：运维命令复用
+schema_version: 1
+case_id: reuse-04-cache-clean
+dimension: task_reuse
+title: 运维命令复用
+description: 之前教过的系统命令应在同类请求中被直接复用。
+difficulty: medium
+tags: [命令, 运维]
+sessions:
+  - session_id: s1
+    turns:
+      - "以后清理系统缓存的命令用 sudo apt clean，记下来。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s1
+    question: "系统有点满，帮我清理下缓存。"
+    expected:
+      must_include: ["sudo apt clean"]

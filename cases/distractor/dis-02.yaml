@@ -1,0 +1,27 @@
+# 相近区分：家庭地址 vs 公司地址
+schema_version: 1
+case_id: dis-02-two-addresses
+dimension: distractor_discrimination
+title: 家庭与公司地址
+description: 同为主观"地址"的两条信息，须按限定词正确区分。
+difficulty: medium
+tags: [相似干扰, 地址]
+sessions:
+  - session_id: s1
+    turns:
+      - "我家在北京市海淀区中关村大街1号，公司地址在北京市朝阳区望京SOHO-T1。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s1
+    question: "我家在哪里？"
+    expected:
+      must_include: ["北京市海淀区中关村大街1号"]
+      must_not_include: ["望京SOHO"]
+  - probe_id: p2
+    type: slot
+    after_session: s1
+    question: "公司地址在哪里？"
+    expected:
+      must_include: ["望京SOHO-T1"]
+      must_not_include: ["中关村大街1号"]

@@ -1,0 +1,26 @@
+# 长期保持：少量无关信息干扰下的保持
+schema_version: 1
+case_id: ret-04-with-noise
+dimension: retention
+title: 噪声对话干扰下的保持
+description: 中间穿插了多条无关/临时信息，检查目标事实是否仍被保持。
+difficulty: medium
+tags: [噪声, 干扰]
+sessions:
+  - session_id: s1
+    turns:
+      - "我的过敏源是花生。"
+  - session_id: s2
+    note: 噪声与临时信息
+    turns:
+      - "今天午餐随便点了点外卖。"
+      - "刚才那个验证码短信我已经删了。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s2
+    question: "帮我推荐一个安全的零食，注意我的禁忌。"
+    expected:
+      must_include: ["花生"]
+      must_not_include: []
+    note: 回答应体现"避免花生"这一约束

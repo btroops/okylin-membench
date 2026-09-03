@@ -1,0 +1,15 @@
+{
+  "name": "qwen2.5-store",
+  "kind": "openai_compat",
+  "base_url": "http://127.0.0.1:11434/v1",
+  "model": "qwen2.5:7b-instruct",
+  "api_key_env": "OPENAI_API_KEY",
+  "temperature": 0.2,
+  "timeout": 120,
+  "memory": {
+    "strategy": "store",
+    "top_k": 5,
+    "_comment": "策略可选 none / full_log / store / store_filter；store_filter 会把密码、验证码等敏感信息挡在记忆库外"
+  },
+  "system_prompt": "你是 openKylin 桌面智能助手，请用中文简洁回答。"
+}

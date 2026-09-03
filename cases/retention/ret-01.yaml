@@ -1,0 +1,32 @@
+# 长期保持（retention）：应保留的稳定信息是否被持久记住并能在后续使用
+schema_version: 1
+case_id: ret-01-name-editor
+dimension: retention
+title: 基础身份与偏好保持
+description: 用户在早期 session 交代姓名与默认编辑器，隔了无关对话后询问。
+difficulty: easy
+tags: [身份, 偏好]
+sessions:
+  - session_id: s1
+    note: 首次配置
+    turns:
+      - "我叫小明，我用 vim 作为默认编辑器。"
+  - session_id: s2
+    note: 无关闲聊（干扰）
+    turns:
+      - "今天天气不错，帮我查下日历。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s2
+    question: "我叫什么名字？"
+    expected:
+      must_include: ["小明"]
+  - probe_id: p2
+    type: choice
+    after_session: s2
+    question: "以下哪个是我的默认编辑器？A. emacs B. vim C. nano"
+    expected:
+      choices: ["emacs", "vim", "nano"]
+      answer: "vim"
+      distractor_labels: [0, 2]

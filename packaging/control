@@ -1,0 +1,22 @@
+Package: membench
+Version: 0.1.0-1
+Section: utils
+Priority: optional
+Architecture: all
+Depends: python3 (>= 3.8), python3-yaml
+Suggests: ollama
+Installed-Size: 300
+Maintainer: openKylin membench contributors <membench@opendev.example>
+Homepage: https://gitee.com/openkylin/membench
+Description: openKylin 智能体长期记忆自动化评测基准
+ membench 面向 openKylin 生态中的智能体（KylinBot / kylin-agent /
+ OpenClaw / HermesAgent 或任意 OpenAI 兼容服务），提供长期记忆能力的
+ 自动化评测：
+  - 六维指标：长期保持 / 记忆调用 / 动态更新 / 相近区分 / 边界识别 / 任务复用
+  - 五分类裁决：correct / miss / confusion / improper_persistence / improper_reuse
+  - 多证据源：对话轨迹、记忆库白盒导出、文件系统行动产物
+  - 确定性优先评分，支持多智能体批量对比与雷达图报告
+ 用法示例：
+  membench demo                          # 三内置智能体全流程演示
+  membench run --agent smart --runs 3    # 对指定智能体评测 3 次取稳定性
+  membench report <结果目录>...           # 汇总生成对比报告（HTML/Markdown）

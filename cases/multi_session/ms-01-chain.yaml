@@ -1,0 +1,32 @@
+# 多 session 推理：身份 + 工具偏好 + 当前项目三个信息分布在三个 session
+schema_version: 1
+case_id: ms-01-chain
+dimension: multi_session_reasoning
+title: 多 session 信息组合回答
+description: 智能体需要把 s1（身份）、s2（工具偏好）、s3（当前项目）三个信息串联起来回答一句话。
+difficulty: hard
+tags: [多session, 推理]
+sessions:
+  - session_id: s1
+    turns:
+      - "我叫小李，职业是后端工程师。"
+  - session_id: s2
+    note: 隔了一天
+    turns:
+      - "我的默认编辑器是 neovim。"
+  - session_id: s3
+    note: 又隔了两天
+    turns:
+      - "我最近在做 KubeRay 这个项目。"
+  - session_id: s4
+    note: 闲聊
+    turns:
+      - "今天点了个外卖。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s4
+    question: "请用一句话介绍我的身份、工具偏好和最近项目。"
+    expected:
+      must_include: ["小李", "neovim", "KubeRay"]
+      must_not_include: []

@@ -1,0 +1,22 @@
+# 记忆调用（recall）：在后续交互中正确取用记忆完成实际请求
+schema_version: 1
+case_id: rec-01-delivery
+dimension: recall
+title: 快递收货地址调用
+description: 记住的地址要能在实际请求（填收货地址）中被调用。
+difficulty: easy
+tags: [地址, 应用]
+sessions:
+  - session_id: s1
+    turns:
+      - "我家在北京市海淀区中关村大街1号。"
+  - session_id: s2
+    turns:
+      - "帮我订一杯咖啡。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s2
+    question: "我有个快递要寄回家，收货地址填哪里？"
+    expected:
+      must_include: ["北京市海淀区中关村大街1号"]

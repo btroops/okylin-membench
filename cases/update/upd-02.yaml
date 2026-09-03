@@ -1,0 +1,24 @@
+# 动态更新：手机号变更
+schema_version: 1
+case_id: upd-02-phone
+dimension: dynamic_update
+title: 换手机号后的更新
+description: 新号码应完全替换旧号码。
+difficulty: easy
+tags: [电话, 冲突]
+sessions:
+  - session_id: s1
+    turns:
+      - "我的手机号是 13800001111。"
+  - session_id: s2
+    turns:
+      - "我换手机号了，现在是 13900002222。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s2
+    question: "我的手机号是多少？"
+    expected:
+      must_include: ["13900002222"]
+      must_not_include: ["13800001111"]
+      superseded_values: ["13800001111"]

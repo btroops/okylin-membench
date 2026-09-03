@@ -1,0 +1,6 @@
+{
+  "name": "nomem-builtin",
+  "kind": "builtin",
+  "impl": "nomem",
+  "_comment": "内置智能体配置示例；nomem/naive/smart 三种可选"
+}

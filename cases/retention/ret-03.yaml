@@ -1,0 +1,30 @@
+# 长期保持：多条事实跨多 session 保持
+schema_version: 1
+case_id: ret-03-multi-fact
+dimension: retention
+title: 多事实跨 session 保持
+description: 一次交代多条事实，之后分两次抽查，检查没有被中间对话冲掉。
+difficulty: medium
+tags: [多事实]
+sessions:
+  - session_id: s1
+    turns:
+      - "我养了一只猫叫雪球。"
+      - "我的电话是 13800001111。"
+  - session_id: s2
+    turns:
+      - "帮我打开浏览器看看天气。"
+      - "顺便提醒我明天早上九点开会。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s2
+    question: "我的猫叫什么名字？"
+    expected:
+      must_include: ["雪球"]
+  - probe_id: p2
+    type: slot
+    after_session: s2
+    question: "我的电话是多少？"
+    expected:
+      must_include: ["13800001111"]

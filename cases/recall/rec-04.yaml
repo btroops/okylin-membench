@@ -1,0 +1,22 @@
+# 记忆调用：日程记忆的时间要素调用
+schema_version: 1
+case_id: rec-04-schedule
+dimension: recall
+title: 日程时间要素调用
+description: 记住的日程应包含时间与事件两个要素，抽查时都要能调用。
+difficulty: medium
+tags: [日程, 时序]
+sessions:
+  - session_id: s1
+    turns:
+      - "下周三我有个项目评审会。"
+  - session_id: s2
+    turns:
+      - "帮我放点音乐。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s2
+    question: "我这周有什么重要安排来着？"
+    expected:
+      must_include: ["下周三", "项目评审会"]

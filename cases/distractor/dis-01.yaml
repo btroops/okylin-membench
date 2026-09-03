@@ -1,0 +1,27 @@
+# 相近区分（distractor_discrimination）：识别相近信息之间的差异
+schema_version: 1
+case_id: dis-01-two-cats
+dimension: distractor_discrimination
+title: 两只猫的名字
+description: 同类信息（两只猫）存入后，抽查时不得张冠李戴。
+difficulty: medium
+tags: [相似干扰]
+sessions:
+  - session_id: s1
+    turns:
+      - "我养了一只大猫叫团子，还有一只小猫叫汤圆。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s1
+    question: "我的大猫叫什么名字？"
+    expected:
+      must_include: ["团子"]
+      must_not_include: ["汤圆"]
+  - probe_id: p2
+    type: slot
+    after_session: s1
+    question: "我的小猫叫什么名字？"
+    expected:
+      must_include: ["汤圆"]
+      must_not_include: ["团子"]

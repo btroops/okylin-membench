@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# 评测运行产物（结果目录随时可由 membench run/demo 重新生成）
+membench_results/
+membench_demo/
+demo_out/
+results/
+
+# 构建产物（packaging/build_deb.sh 可重建）
+dist/
+
+# 编辑器与系统
+.vscode/
+.idea/
+*.swp
+.DS_Store

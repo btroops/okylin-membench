@@ -1,0 +1,39 @@
+# 时序推理：分散在多 session 的事件能否被正确排序
+schema_version: 1
+case_id: tem-01-events
+dimension: temporal_reasoning
+title: 多事件时序回忆
+description: 三个事件分散在 3 个 session，2 周后询问最早/最晚发生的事。
+difficulty: medium
+tags: [时序]
+sessions:
+  - session_id: s1
+    turns:
+      - "2026-03-15，我去参加了产品评审会。"
+  - session_id: s2
+    note: 几天后
+    turns:
+      - "2026-03-18，我去体检了。"
+  - session_id: s3
+    note: 又过了一周
+    turns:
+      - "2026-03-22，我提交了季度报告。"
+  - session_id: s4
+    note: 两天后
+    turns:
+      - "今天天气真好。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s4
+    question: "我最早做的那件事是什么时候？"
+    expected:
+      must_include: ["2026-03-15", "产品评审会"]
+      must_not_include: ["2026-03-22", "季度报告"]
+  - probe_id: p2
+    type: slot
+    after_session: s4
+    question: "我最近做的那件事是什么？"
+    expected:
+      must_include: ["2026-03-22", "季度报告"]
+      must_not_include: ["2026-03-15", "产品评审会"]

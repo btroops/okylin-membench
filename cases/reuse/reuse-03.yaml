@@ -1,0 +1,19 @@
+# 任务复用：模板复用生成新产物
+schema_version: 1
+case_id: reuse-03-weekly-template
+dimension: task_reuse
+title: 周报模板复用
+description: 之前给的模板应在生成新文档时被套用。
+difficulty: medium
+tags: [模板]
+sessions:
+  - session_id: s1
+    turns:
+      - "我的周报模板：本周完成 / 下周计划 / 风险。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s1
+    question: "按我的模板帮我生成这周的周报框架。"
+    expected:
+      must_include: ["本周完成", "下周计划", "风险"]
