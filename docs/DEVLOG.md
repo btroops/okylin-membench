@@ -90,3 +90,19 @@
 - **意义**：评分从"答对没"进化到"从对的 session 取没"——终态指标对、
   但过程取错来源的失败（如 naive 在 upd-01 上答旧地址）首次被单独量化。
 - **测试**：75 通过；样例/文档同步；.deb 重建。
+
+## 2026-09-04 · 轮次 N+5：难度旋钮 + subproc 检索追踪 + 三篇正文核实
+
+- **论文**：MemGPT 正文（working context=仅函数可写的定长块、FIFO 带
+  递归摘要、recall/archival 两库）；Mem0 正文（ADD/UPDATE/DELETE/NOOP
+  逐字核实——与演变轨迹的 added/removed 对应；judge 跑 10 次报均值±std
+  与我们同哲学）；HippoRAG（海马索引理论、单步多跳，摘要级）。
+- **干扰项难度旋钮**（RULER）：dis 三模板各配 hard 变体（最小对兄弟值：
+  同长、一字符差、互不为子串防超串陷阱），种子可复现。实测 hard 变体
+  区分度保持：smart 1.0 / naive 0（confusion）/ nomem 0（miss）。
+- **subproc 协议扩展**：retrieval_trace_request 消息；echo-agent 支持
+  （记录消息来源 session）；不支持的智能体优雅降级 None（每 episode
+  探测一次）。
+- **事故与修复**：dis 模板加 hard 参数时丢了 dimension 字段（校验器当场
+  拦截——静态校验的价值实证）；NAMES_HARD 初版含超串陷阱，自查修正。
+- **测试**：75→77 通过。

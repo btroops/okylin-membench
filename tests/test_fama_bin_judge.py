@@ -162,3 +162,63 @@ class TestMemoryEvolution(unittest.TestCase):
         naive = self._run("naive", case)
         self.assertEqual(smart.score, 1.0)
         self.assertEqual(naive.rows[0]["verdict"], "improper_reuse")
+
+
+class TestRetrievalTraceSubproc(unittest.TestCase):
+    """subproc 协议扩展：外部智能体的检索追踪 + 能力探测降级。"""
+
+    def test_echo_agent_reports_trace(self):
+        from membench.agents import create_agent_from_config
+        echo = os.path.join(PKG, "examples", "echo-agent.py")
+        cfg = {"name": "echo", "kind": "subproc", "cmd": ["python3", echo], "timeout": 20}
+        agent = create_agent_from_config(cfg, source=echo)
+        try:
+            wd = tempfile.mkdtemp()
+            agent.new_episode(wd)
+            agent.session_start("s1")
+            agent.send_user("我喜欢吃苹果。")
+            agent.session_end()
+            agent.session_start("s2")
+            agent.send_user("我喜欢吃什么？")
+            trace = agent.retrieval_trace("我喜欢吃什么？")
+            agent.session_end()
+        finally:
+            agent.close()
+        assert trace is not None
+        self.assertEqual(trace[0]["session_origin"], "s1")
+        self.assertIn("苹果", trace[0]["content"])
+
+    def test_unsupported_agent_degrades_to_none(self):
+        from membench.agents import create_agent_from_config
+        cfg = {"name": "boom", "kind": "subproc",
+               "cmd": ["python3", "-c", "import sys; sys.exit(1)"]}
+        agent = create_agent_from_config(cfg)
+        agent.new_episode(tempfile.mkdtemp())
+        self.assertIsNone(agent.retrieval_trace("q"))  # 探测失败 → None 且不再打扰
+        self.assertIsNone(agent.retrieval_trace("q"))
+        agent.close()
+
+
+class TestDifficultyKnob(unittest.TestCase):
+    """RULER 式难度旋钮：hard 变体兄弟值差异更小、无子串陷阱、区分度保持。"""
+
+    def _sibling(self, case):
+        exp = case["probes"][0]["expected"]
+        return exp["must_include"][0], exp["must_not_include"][0]
+
+    def test_hard_tightens_similarity_safely(self):
+        import json
+        from membench.generator import generate
+
+        def diff(a, b):
+            return sum(1 for x, y in zip(a, b) if x != y) + abs(len(a) - len(b))
+
+        cases = generate(variants=1, seed=7)
+        by_id = {c["case_id"]: c for c in cases}
+        for base in ("gen-dis-cats", "gen-dis-ips", "gen-dis-name"):
+            a, b = self._sibling(by_id[base + "-01"])
+            a2, b2 = self._sibling(by_id[base + "-hard-01"])
+            self.assertNotIn(a, b); self.assertNotIn(b, a)     # normal 无子串陷阱
+            self.assertNotIn(a2, b2); self.assertNotIn(b2, a2)  # hard 亦然
+            self.assertLess(diff(a2, b2), diff(a, b))           # 旋钮收得更紧
+            self.assertGreater(diff(a2, b2), 0)                 # 但仍可区分

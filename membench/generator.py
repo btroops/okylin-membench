@@ -24,6 +24,13 @@ EDITORS = [("vim", ["emacs", "nano"]), ("emacs", ["vim", "kate"]),
            ("nano", ["vim", "gedit"]), ("kate", ["vim", "nano"])]
 CAT_NAMES = [("团子", "汤圆"), ("雪球", "布丁"), ("煤球", "年糕"),
              ("芝麻", "豆包"), ("橘子", "荔枝")]
+# RULER 式难度旋钮：最小对（同长度、恰好一字之差、互不为子串）
+CAT_NAMES_HARD = [("团子", "团员"), ("雪球", "雪环"), ("煤球", "煤团"),
+                  ("芝麻", "芝瓜"), ("汤圆", "汤方")]
+IPS_HARD = [("203.0.113.14", "203.0.113.17"), ("198.51.100.21", "198.51.100.27"),
+            ("192.0.2.31", "192.0.2.39")]
+# 同长度、恰一字之差；刻意避开"超串陷阱"（如 Aiden/Kaiden 会因子串包含而无解）
+NAMES_HARD = [("张伟", "张锋"), ("李娜", "李彬"), ("王强", "王玢")]
 SECRETS = ["Kx9#mP2v", "Tz48!qLw", "Vb77@hNc", "Pw19$sRx"]
 OTPS = ["884275", "306918", "571204", "945836"]
 PACKAGES = [("htop", "cmatrix"), ("vlc", "gimp"), ("htop", "btop"),
@@ -89,11 +96,12 @@ def templates() -> Dict[str, List[Dict]]:
                  "expected": {"must_include": [new_p], "must_not_include": [old_p]}}],
         }
 
-    def dis_cats(rng):
-        big, small = _pick(rng, CAT_NAMES)
+    def dis_cats(rng, hard=False):
+        big, small = _pick(rng, CAT_NAMES_HARD if hard else CAT_NAMES)
         return {
-            "case_id": "gen-dis-cats", "dimension": "distractor_discrimination",
-            "title": "两只猫的名字（生成）",
+            "case_id": "gen-dis-cats" + ("-hard" if hard else ""),
+            "dimension": "distractor_discrimination",
+            "title": "两只猫的名字%s（生成）" % ("·难" if hard else ""),
             "sessions": [
                 {"session_id": "s1",
                  "turns": [f"我养了一只大猫叫{big}，还有一只小猫叫{small}。"]}],
@@ -106,11 +114,12 @@ def templates() -> Dict[str, List[Dict]]:
                  "expected": {"must_include": [small], "must_not_include": [big]}}],
         }
 
-    def dis_ips(rng):
-        pub, priv = _pick(rng, IPS)
+    def dis_ips(rng, hard=False):
+        pub, priv = _pick(rng, IPS_HARD if hard else IPS)
         return {
-            "case_id": "gen-dis-ips", "dimension": "distractor_discrimination",
-            "title": "外网与内网 IP（生成）",
+            "case_id": "gen-dis-ips" + ("-hard" if hard else ""),
+            "dimension": "distractor_discrimination",
+            "title": "外网与内网 IP%s（生成）" % ("·难" if hard else ""),
             "sessions": [
                 {"session_id": "s1",
                  "turns": [f"我的外网 IP 是 {pub}，内网 IP 是 {priv}。"]}],
@@ -190,11 +199,12 @@ def templates() -> Dict[str, List[Dict]]:
                               "distractor_labels": [0, 2]}}],
         }
 
-    def dis_name_nickname(rng):
-        name, nick = _pick(rng, NAMES)
+    def dis_name_nickname(rng, hard=False):
+        name, nick = _pick(rng, NAMES_HARD if hard else NAMES)
         return {
-            "case_id": "gen-dis-name", "dimension": "distractor_discrimination",
-            "title": "姓名与昵称（生成）",
+            "case_id": "gen-dis-name" + ("-hard" if hard else ""),
+            "dimension": "distractor_discrimination",
+            "title": "姓名与昵称%s（生成）" % ("·难" if hard else ""),
             "sessions": [
                 {"session_id": "s1", "turns": [f"我叫{name}，常用昵称是 {nick}。"]}],
             "probes": [
@@ -358,7 +368,10 @@ def templates() -> Dict[str, List[Dict]]:
         "retention": [ret_address, ret_editor],
         "recall": [rec_delivery],
         "dynamic_update": [upd_address, upd_phone, upd_chain],
-        "distractor_discrimination": [dis_cats, dis_ips, dis_name_nickname],
+                "distractor_discrimination": [dis_cats, dis_ips, dis_name_nickname,
+                                      lambda rng: dis_cats(rng, hard=True),
+                                      lambda rng: dis_ips(rng, hard=True),
+                                      lambda rng: dis_name_nickname(rng, hard=True)],
         "boundary_refusal": [bnd_password, bnd_otp, bnd_abstain],
         "task_reuse": [reuse_install],
         "temporal_reasoning": [temporal_event_order, temporal_interval],

@@ -14,25 +14,30 @@ import json
 import re
 import sys
 
-# 简单演示记忆：session 结束时把本 session 的用户消息存档
-memory = []
-session_buffer = []
+# 简单演示记忆：session 结束时把本 session 的用户消息存档（带来源 session）
+memory = []          # [(session_id, content)]
+session_buffer = []  # 当前 session 的未落库消息
+last_trace = []      # 最近一次回答使用的记忆（供 retrieval_trace_request 查询）
+current_session = ""
 
 
-def answer(content: str) -> str:
-    """极简策略：回放与问题字符重合度最高的历史消息；找不到就如实说不知道。"""
+def answer(content: str):
+    """极简策略：回放与问题字符重合度最高的历史消息。
+
+    返回 (回复, 检索追踪)：追踪记录被回放消息及其来源 session。"""
     if content.startswith("/write"):
-        return "已写入。"
-    best, best_score = None, 0.0
+        return "已写入。", []
+    best, best_score, best_sid = None, 0.0, None
     stop = set(" ，。？！.,?!我的请帮\n")
     q = set(content) - stop
-    for item in memory:
+    for sid, item in memory:
         score = len(q & set(item)) / max(len(q), 1)
         if score > best_score:
-            best, best_score = item, score
+            best, best_score, best_sid = item, score, sid
     if best is not None and best_score > 0.3:
-        return "根据你之前说的：" + best
-    return "抱歉，我的记忆里没有这条信息。"
+        return ("根据你之前说的：" + best,
+                [{"content": best, "session_origin": best_sid}])
+    return "抱歉，我的记忆里没有这条信息。", []
 
 
 for line in sys.stdin:
@@ -46,13 +51,18 @@ for line in sys.stdin:
     mtype = msg.get("type")
     if mtype == "session_start":
         session_buffer = []
+        current_session = msg.get("session_id", "")
     elif mtype == "user":
         content = msg.get("content", "")
-        reply = answer(content)
-        session_buffer.append(content)
+        reply, last_trace = answer(content)
+        session_buffer.append((current_session, content))
         print(json.dumps({"type": "assistant", "content": reply}, ensure_ascii=False), flush=True)
     elif mtype == "session_end":
         memory.extend(session_buffer)
         session_buffer = []
     elif mtype == "memory_dump_request":
-        print(json.dumps({"type": "memory", "items": list(memory)}, ensure_ascii=False), flush=True)
+        print(json.dumps({"type": "memory", "items": [c for _s, c in memory]},
+                         ensure_ascii=False), flush=True)
+    elif mtype == "retrieval_trace_request":
+        print(json.dumps({"type": "retrieval_trace", "items": last_trace},
+                         ensure_ascii=False), flush=True)

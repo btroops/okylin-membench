@@ -33,6 +33,7 @@ class SubprocAgent(AgentAdapter):
         self.timeout = timeout
         self._proc: Optional[subprocess.Popen] = None
         self._workdir = "."
+        self._trace_support: Optional[bool] = None  # None=未探测
 
     # ---- 进程管理 --------------------------------------------------------
     def _ensure_started(self) -> None:
@@ -79,6 +80,7 @@ class SubprocAgent(AgentAdapter):
     def new_episode(self, workdir: str) -> None:
         self.close()
         self._workdir = workdir
+        self._trace_support = None  # 新 episode 重新探测能力
 
     def session_start(self, session_id: str) -> None:
         self._send({"type": "session_start", "session_id": session_id})
@@ -103,6 +105,25 @@ class SubprocAgent(AgentAdapter):
             return None
         if msg.get("type") == "memory":
             return [str(x) for x in (msg.get("items") or [])]
+        return None
+
+    def retrieval_trace(self, query: str) -> Optional[List[dict]]:
+        """协议扩展：retrieval_trace_request -> retrieval_trace。
+
+        外部智能体不支持该消息（超时/退出/错误）时返回 None 并记住，
+        后续不再打扰（每个 episode 只探测一次）。"""
+        if self._trace_support is False:
+            return None
+        try:
+            self._send({"type": "retrieval_trace_request", "query": query})
+            msg = self._recv()
+        except AgentError:
+            self._trace_support = False
+            return None
+        if msg.get("type") == "retrieval_trace":
+            self._trace_support = True
+            return [dict(x) for x in (msg.get("items") or [])]
+        self._trace_support = False
         return None
 
     def close(self) -> None:

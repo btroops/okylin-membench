@@ -106,7 +106,7 @@ membench demo
 ## 运行测试
 
 ```bash
-python3 -m unittest discover -s tests   # 75 个单元/端到端测试（29 个用例 / 9 维度，含拒答与记忆演变轨迹）
+python3 -m unittest discover -s tests   # 77 个单元/端到端测试（29 用例 + 24 模板 / 9 维度；干扰项难度可参数化）
 ```
 
 ## 许可证

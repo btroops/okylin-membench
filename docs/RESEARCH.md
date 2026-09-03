@@ -72,6 +72,38 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
 - **membench 待吸收**：criteria 级 FAMA 公式（我们是探针级二元+部分分，
   可在未来 judge 里支持"记忆在场判据 + 遗忘缺失判据"双清单）。
 
+### MemGPT 正文核实（补，arXiv:2310.08560 HTML §正文）
+
+- **主上下文三段**（逐字核实）：系统指令（只读）+ **working context**
+  （"定长读写文本块，仅能通过 MemGPT 函数调用写入"，存关键事实/偏好/人设）
+  + FIFO 消息队列（首槽为被逐出消息的**递归摘要**）。
+- **外部上下文两库**：recall storage（消息数据库，被逐出消息永久留存）+
+  archival storage（任意长度文本对象的读写库，pgvector/HNSW 检索）。
+- **函数名**：正文仅逐字出现 `conversation_search`；其余函数 schema 在
+  站点外部，维持"待核实"。
+- **membench 吸收**：working context 的"写操作留痕"思想 → 我们的记忆
+  演变轨迹即其评测对应物。
+
+### Mem0 正文核实（补，arXiv:2504.19413 HTML §2.1 + 附录）
+
+- **操作分类学逐字核实**：ADD（无语义等价记忆时新建）/ UPDATE（用互补
+  信息增强既有记忆）/ DELETE（被新信息矛盾的记忆移除）/ NOOP——经工具
+  调用机制对 top-s 相似既有记忆做决策。
+- **J 指标**：judge 对"事实正确/相关/完整/语境合适"做 CORRECT/WRONG
+  二元判定，J=判对比例；**每个方法独立跑 10 次报均值±标准差**（与我们
+  的跨 run std + judge votes 同一稳定性哲学）。
+- **membench 印证**：我们的演变轨迹 added/removed 与其 ADD/DELETE 操作
+  一一对应——过程证据度量的正是工业系统真实执行的操作。
+
+### HippoRAG（arXiv:2405.14831，NeurIPS 2024）— 摘要级
+
+- **设计**：海马体索引理论——LLM 当新皮层、KG+个性化 PageRank 当海马
+  索引，实现单步多跳检索；多跳 QA 最高超 SOTA 20%，比迭代检索便宜
+  10-30 倍、快 6-13 倍。
+- **对 membench**：多跳检索是我们的 multi_session_reasoning 所测能力；
+  检索定位率（上轮落地）正是检验"单步多跳"是否取对证据的探针。
+- **局限**：依赖 LLM 抽取质量与 KG 构建成本（摘要未展开，待正文）。
+
 ### AMA-Bench（arXiv:2602.22769，2026.02）— 全文级（HTML 正文 §任务与评分）
 
 - **四类任务**：A Recall（时序/顺序信息）、B Causal（动作前置条件与状态
@@ -197,3 +229,7 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
 3. ⏳ 干扰项难度旋钮（RULER）：相近区分用例的"相似度参数化"——下轮。
 4. ⏳ 逐条记忆 validity interval（Zep 双时间戳）：superseded_values 的
    图结构化——挂账。
+5. ✅ 干扰项难度旋钮（RULER）：dis 系列模板新增 hard 变体（最小对兄弟值，
+   同长一字符差、互不为子串防"超串陷阱"），种子可复现。
+6. ✅ 检索定位率协议扩展：subproc 新增 retrieval_trace_request 消息，
+   不支持的智能体优雅降级为 None（每 episode 只探测一次）。
