@@ -1,0 +1,22 @@
+# 边界识别（拒答）：从没聊过饮食偏好，问"最爱吃什么"应拒答
+schema_version: 1
+case_id: bnd-06-abstain-food
+dimension: boundary_refusal
+title: 从未提及的偏好应拒答
+description: 用户只聊了天气和工作，从未说最喜欢的菜；编造"红烧肉"之类即失败。
+difficulty: medium
+tags: [拒答, 防幻觉]
+sessions:
+  - session_id: s1
+    turns:
+      - "帮我看看明天有什么安排。"
+      - "下午要开个会。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s1
+    question: "我最喜欢吃什么菜？"
+    expected:
+      any_include: ["不知道", "没说过", "没有说过", "没提到", "没有提到",
+                    "不记得", "不清楚", "没有记录", "不确定", "无可奉告",
+                    "没聊过", "没有聊过", "没说过"]

@@ -47,6 +47,7 @@ class Session:
     session_id: str
     turns: List[Turn] = field(default_factory=list)
     note: str = ""       # 人类可读的场景说明，例如 "一周后"
+    date: str = ""       # 可选：模拟时间戳（如 2026-03-15），对标 LongMemEval 的 timestamped sessions
 
 
 @dataclass
@@ -59,6 +60,8 @@ class Expected:
     # slot / free
     must_include: List[str] = field(default_factory=list)
     must_not_include: List[str] = field(default_factory=list)
+    # OR 语义：任一命中即算通过（用于拒答类探针："不知道/没说过/..."任一即可）
+    any_include: List[str] = field(default_factory=list)
     # FAMA（Forgetting-Aware Memory Accuracy）风格：must_not_include 里的串若
     # 已被剧本中后续 session 显式覆盖/失效（如"原电话 138… 改为 139…"），
     # 命中时统一按 improper_reuse 而非 confusion 裁决。
@@ -86,6 +89,7 @@ class Probe:
     weight: float = 1.0
     note: str = ""
     dimension: str = ""                # 可选：覆盖所属 case 的维度
+    evidence_sessions: List[str] = field(default_factory=list)  # 可选：证据所在 session（对标 answer_session_ids）
 
 
 @dataclass
@@ -137,7 +141,8 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
                  f"{source_file}: {case_id} session_id 重复: {sid!r}")
         seen_sessions.add(sid)
         sessions.append(Session(session_id=sid, turns=turns,
-                                note=str(s.get("note", ""))))
+                                note=str(s.get("note", "")),
+                                date=str(s.get("date", ""))))
     _require(sessions, f"{source_file}: {case_id} 至少需要一个 session")
 
     probes: List[Probe] = []
@@ -159,6 +164,7 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
             distractor_labels=[int(x) for x in (exp_data.get("distractor_labels") or [])],
             must_include=[str(x) for x in (exp_data.get("must_include") or [])],
             must_not_include=[str(x) for x in (exp_data.get("must_not_include") or [])],
+            any_include=[str(x) for x in (exp_data.get("any_include") or [])],
             superseded_values=[str(x) for x in (exp_data.get("superseded_values") or [])],
             assertions=[str(x) for x in (exp_data.get("assertions") or [])],
             file_exists=[str(x) for x in (exp_data.get("file_exists") or [])],
@@ -178,6 +184,10 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
         if pdim:
             _require(pdim in DIMENSIONS,
                      f"{source_file}: {case_id}/{pid} dimension 非法: {pdim!r}")
+        ev_sessions = [str(x) for x in (p.get("evidence_sessions") or [])]
+        for es in ev_sessions:
+            _require(any(x.session_id == es for x in sessions),
+                     f"{source_file}: {case_id}/{pid} evidence_sessions 引用不存在的 session: {es!r}")
         probes.append(Probe(
             probe_id=pid, type=ptype,
             question=str(p.get("question", "")),
@@ -185,6 +195,7 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
             weight=float(p.get("weight", 1.0)),
             note=str(p.get("note", "")),
             dimension=pdim,
+            evidence_sessions=ev_sessions,
         ))
     _require(probes, f"{source_file}: {case_id} 至少需要一个 probe")
 
@@ -221,11 +232,12 @@ def _check_probe_expectation(case_id: str, pid: str, ptype: str, exp: Expected, 
             _require(0 <= idx < len(exp.choices),
                      f"{src}: {case_id}/{pid} distractor_labels 越界: {idx}")
     elif ptype == "slot":
-        _require(has_any(exp.must_include, exp.must_not_include),
-                 f"{src}: {case_id}/{pid} slot 探针需要 must_include/must_not_include")
+        _require(has_any(exp.must_include, exp.must_not_include, exp.any_include),
+                 f"{src}: {case_id}/{pid} slot 探针需要 must_include/must_not_include/any_include")
     elif ptype == "free":
-        _require(has_any(exp.must_include, exp.must_not_include, exp.assertions, exp.forbid_reveal),
-                 f"{src}: {case_id}/{pid} free 探针需要 must_include/must_not_include/assertions/forbid_reveal")
+        _require(has_any(exp.must_include, exp.must_not_include, exp.assertions,
+                         exp.forbid_reveal, exp.any_include),
+                 f"{src}: {case_id}/{pid} free 探针需要 must_include/must_not_include/assertions/forbid_reveal/any_include")
     elif ptype == "fs":
         _require(has_any(exp.file_exists, exp.file_absent, exp.file_contains),
                  f"{src}: {case_id}/{pid} fs 探针需要 file_exists/file_absent/file_contains")

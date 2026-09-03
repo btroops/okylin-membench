@@ -70,7 +70,8 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
         # 2/3) 回放 session 与文本/fs 探针
         for session in case.sessions:
             agent.session_start(session.session_id)
-            st = {"session_id": session.session_id, "note": session.note, "turns": []}
+            st = {"session_id": session.session_id, "note": session.note,
+                  "date": session.date, "turns": []}
             for turn in session.turns:
                 if turn.role != "user":
                     continue
@@ -173,11 +174,13 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
             "verdict": jd.get("verdict"), "score": jd.get("score"),
             "reason": jd.get("reason", ""), "reply": reply,
             "hits": [], "misses": [], "weight": probe.weight, "judge": "llm",
+            "evidence_sessions": probe.evidence_sessions,
         }
     pr: ProbeResult = evaluate_probe(probe, case, reply=reply,
                                      memory_items=None, workdir=workdir)
     row = asdict(pr)
     row["judge"] = "deterministic"
+    row["evidence_sessions"] = probe.evidence_sessions
     return row
 
 

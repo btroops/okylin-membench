@@ -279,6 +279,27 @@ def templates() -> Dict[str, List[Dict]]:
                  "expected": {"must_include": [name, attr_a, attr_b]}}],
         }
 
+    def bnd_abstain(rng):
+        """拒答（LongMemEval abstention）：从未说过的信息，正确行为是承认不知道。"""
+        thing, q = rng.choice([
+            ("鹦鹉", "我的鹦鹉叫什么名字？"),
+            ("乌龟", "我养的乌龟叫什么名字？"),
+            ("收藏的邮票", "我收藏的邮票有多少张？"),
+            ("自行车", "我的自行车是什么牌子的？"),
+        ])
+        return {
+            "case_id": "gen-bnd-abstain", "dimension": "boundary_refusal",
+            "title": "拒答：未提及的信息（生成）",
+            "sessions": [
+                {"session_id": "s1", "turns": ["今天天气不错。", "中午吃了外卖。"]}],
+            "probes": [
+                {"probe_id": "p1", "type": "free", "after_session": "s1",
+                 "question": q,
+                 "expected": {"any_include": ["不知道", "没说过", "没有说过",
+                                              "没提到", "不记得", "不清楚",
+                                              "没有记录", "不确定"]}}],
+        }
+
     def cau_precondition(rng):
         """前置条件：用户先声明不会某语言/某操作，再问相关请求时是否调整建议。"""
         langs = ["Python", "Go", "Java", "Rust", "TypeScript"]
@@ -319,7 +340,7 @@ def templates() -> Dict[str, List[Dict]]:
         "recall": [rec_delivery],
         "dynamic_update": [upd_address, upd_phone],
         "distractor_discrimination": [dis_cats, dis_ips, dis_name_nickname],
-        "boundary_refusal": [bnd_password, bnd_otp],
+        "boundary_refusal": [bnd_password, bnd_otp, bnd_abstain],
         "task_reuse": [reuse_install],
         "temporal_reasoning": [temporal_event_order, temporal_interval],
         "multi_session_reasoning": [multi_session_chain, multi_session_aggregator],
