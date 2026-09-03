@@ -18,6 +18,7 @@
 | probes | 是 | ≥1 个探针 |
 | sensitive_patterns | 否 | 敏感串列表；评测结束后在记忆库与新增文件中扫描，命中即记 `improper_persistence` |
 | setup_files | 否 | `{相对路径: 内容}`，评测开始前写入沙箱工作目录 |
+| fact_lifecycle | 否 | 事实生命周期（Zep 式失效不删除）：`[{value, valid_from, valid_until}]`；失效值在后续 session 的记忆/回答中再现 => improper_reuse（自动推导，免手工 superseded_values），且每个 session 边界做 staleness 扫描 |
 
 ## sessions
 

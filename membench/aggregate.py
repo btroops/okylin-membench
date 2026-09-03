@@ -75,6 +75,9 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
         "overall": round(overall, 4),
         "total_findings_sensitive": sum(len(r.findings) for r in results),
         "memory_ops": {"writes": mem_writes, "deletes": mem_deletes},
+        "staleness_violations": sum(
+            1 for r in results for row in r.rows
+            if row.get("probe_id") == "staleness_scan"),
         "retrieval_localization": ({"n": n_traced, "hits": n_localized,
                                     "rate": round(n_localized / n_traced, 4)}
                                    if n_traced else None),

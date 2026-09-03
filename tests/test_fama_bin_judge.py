@@ -222,3 +222,72 @@ class TestDifficultyKnob(unittest.TestCase):
             self.assertNotIn(a2, b2); self.assertNotIn(b2, a2)  # hard 亦然
             self.assertLess(diff(a2, b2), diff(a, b))           # 旋钮收得更紧
             self.assertGreater(diff(a2, b2), 0)                 # 但仍可区分
+
+
+class TestFactLifecycle(unittest.TestCase):
+    """Zep 式事实生命周期 + 全轨迹 staleness 扫描。"""
+
+    def _case(self):
+        return next(c for c in load_cases([os.path.join(PKG, "cases")])
+                    if c.case_id == "upd-01-address")
+
+    def _run(self, name):
+        from membench.agents import create_agent
+        from membench.runner import run_case
+        return run_case(create_agent(name), self._case(), run_index=1,
+                        workroot=tempfile.mkdtemp())
+
+    def test_staleness_scan_discriminates(self):
+        naive = self._run("naive")
+        stale = [x for x in naive.rows if x["probe_id"] == "staleness_scan"]
+        self.assertEqual(len(stale), 1)
+        self.assertEqual(stale[0]["verdict"], "improper_reuse")
+        self.assertIn("该遗忘的没遗忘", stale[0]["reason"])
+        # smart 覆盖旧值、nomem 从未写入 => 无 staleness
+        for name in ("smart", "nomem"):
+            r = self._run(name)
+            self.assertEqual([x for x in r.rows
+                              if x["probe_id"] == "staleness_scan"], [], name)
+
+    def test_summary_counts_staleness(self):
+        from membench.agents import create_agent
+        from membench.runner import run_suite
+        out = tempfile.mkdtemp()
+        s = run_suite(create_agent("naive"), [self._case()], out_dir=out,
+                      runs=1, quiet=True)
+        self.assertEqual(s["staleness_violations"], 1)
+        shutil.rmtree(out, ignore_errors=True)
+
+    def test_lifecycle_validation(self):
+        from membench.schema import SchemaError, parse_case
+        base = {"case_id": "x", "dimension": "dynamic_update", "title": "t",
+                "sessions": [{"session_id": "s1", "turns": ["a"]},
+                             {"session_id": "s2", "turns": ["b"]}],
+                "probes": [{"probe_id": "p1", "type": "slot",
+                            "expected": {"must_include": ["x"]}}]}
+        with self.assertRaises(SchemaError):  # 引用不存在的 session
+            parse_case({**base, "fact_lifecycle":
+                        [{"value": "v", "valid_from": "s1", "valid_until": "s9"}]})
+        with self.assertRaises(SchemaError):  # valid_from 在 valid_until 之后
+            parse_case({**base, "fact_lifecycle":
+                        [{"value": "v", "valid_from": "s2", "valid_until": "s1"}]})
+
+    def test_lifecycle_fama_autoderived(self):
+        """fact_lifecycle 时间轴自动推导 improper_reuse，无需手工 superseded_values。"""
+        from membench.schema import parse_case
+        from membench.scoring import evaluate_probe
+        from membench import VERDICT_IMPROPER_REUSE
+        case = parse_case({
+            "case_id": "x", "dimension": "dynamic_update", "title": "t",
+            "sessions": [{"session_id": "s1", "turns": ["a"]},
+                         {"session_id": "s2", "turns": ["b"]}],
+            "fact_lifecycle": [{"value": "旧值", "valid_from": "s1",
+                                "valid_until": "s2"}],
+            "probes": [{"probe_id": "p1", "type": "slot", "after_session": "s2",
+                        "question": "q",
+                        "expected": {"must_include": ["新值"],
+                                     "must_not_include": ["旧值"]}}],
+        })
+        r = evaluate_probe(case.probes[0], case, reply="还是旧值",
+                           memory_items=None, workdir=None)
+        self.assertEqual(r.verdict, VERDICT_IMPROPER_REUSE)

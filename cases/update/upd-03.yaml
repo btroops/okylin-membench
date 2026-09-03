@@ -13,6 +13,10 @@ sessions:
   - session_id: s2
     turns:
       - "我改用 emacs 了，以后默认编辑器换成 emacs。"
+fact_lifecycle:
+  - value: "vim"
+    valid_from: s1
+    valid_until: s2
 probes:
   - probe_id: p1
     type: slot

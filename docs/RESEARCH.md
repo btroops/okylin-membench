@@ -150,6 +150,18 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
   叙事连接点；②"链接生成"提示了未来的多跳检索定位扩展。
 - **局限**：摘要未给 LOCOMO 具体数字；正文待读。
 
+### Zep / Graphiti 补充核实（arXiv:2501.13956）
+
+- **已核实（文档级）**：Graphiti 的标准 `add_episode` 路径执行**边失效
+  （edge invalidation）**，批量导入路径明确声明"不执行失效操作"——说明
+  失效是图构建的核心步骤而非可选优化。
+- **t_valid/t_invalid 属性名**：未能从一手来源逐字核实（HTML 超时），
+  诚实降级为"二手来源引用"。
+- **落地**：membench 新增 `fact_lifecycle`（value + valid_from/valid_until
+  ——session 级时间轴），评分器自动推导失效值（无需手工 superseded_values），
+  runner 在每个 session 边界对记忆库快照做**过期扫描**：失效事实仍在 =>
+  improper_reuse 发现（"该遗忘的没遗忘"，Memora FAA 对应物）。
+
 ### 系列二小结（对 membench 的三点强化）
 
 1. **操作分类学对齐**：Mem0 的记忆操作（增/改/删）与我们的演变轨迹

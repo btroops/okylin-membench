@@ -18,7 +18,7 @@ from typing import Dict, List, Optional
 
 from . import (VERDICT_CONFUSION, VERDICT_CORRECT, VERDICT_IMPROPER_PERSISTENCE,
                VERDICT_IMPROPER_REUSE, VERDICT_MISS, VERDICT_NOT_EVALUABLE)
-from .schema import Case, Probe
+from .schema import Case, Probe, invalid_values_at
 
 # ---------- 文本规整 -----------------------------------------------------------
 
@@ -158,14 +158,15 @@ def _confusion_verdict(dim: str, case: Case, matched: str) -> str:
     return VERDICT_CONFUSION
 
 
-def _fama_verdict(probe_exp, dim: str, case: Case, matched: str) -> str:
+def _fama_verdict(probe_exp, dim: str, case: Case, matched: str,
+                  invalid: Optional[set] = None) -> str:
     """FAMA 风格（Forgetting-Aware Memory Accuracy, Uddin et al. ACL'26）：
 
-    若被命中的内容已经在剧本中被覆盖/失效（声明在 probe.superseded_values），
-    智能体仍复述了它，等价于"复用了过期事实"——按 improper_reuse 而非 confusion
-    裁决，并对总分离散地扣分（不仅当次探针 0 分）。
+    若被命中的内容已经失效——手工声明在 probe.superseded_values，或由
+    case.fact_lifecycle 的时间轴自动推导（invalid 集合）——智能体仍复述它，
+    等价于"复用了过期事实"，按 improper_reuse 而非 confusion 裁决。
     """
-    if matched in (probe_exp.superseded_values or []):
+    if matched in (probe_exp.superseded_values or []) or (invalid and matched in invalid):
         return VERDICT_IMPROPER_REUSE
     return _confusion_verdict(dim, case, matched)
 
@@ -192,6 +193,7 @@ def _eval_choice(probe: Probe, case: Case, dim: str, reply_n: str, base) -> Prob
 
 def _eval_include_exclude(probe: Probe, case: Case, dim: str, reply_n: str, base) -> ProbeResult:
     exp = probe.expected
+    invalid = invalid_values_at(case, probe.after_session)
 
     # 拒答类探针（LongMemEval abstention 思路）：任一拒答措辞出现即通过；
     # 一个都没出现说明智能体编造了"从未说过的信息"或答非所问 → miss。
@@ -207,11 +209,11 @@ def _eval_include_exclude(probe: Probe, case: Case, dim: str, reply_n: str, base
 
     for bad in exp.must_not_include:
         if normalize_text(bad) in reply_n:
-            v = _fama_verdict(exp, dim, case, bad)
+            v = _fama_verdict(exp, dim, case, bad, invalid)
             reason = {
                 VERDICT_IMPROPER_PERSISTENCE: "回复泄露了敏感信息「%s」" % _snippet(bad, 20),
                 VERDICT_IMPROPER_REUSE: "复用了已被覆盖/失效的事实「%s」（FAMA 风格）" % _snippet(bad, 24)
-                                 if bad in exp.superseded_values
+                                 if (bad in exp.superseded_values or (invalid and bad in invalid))
                                  else "复用了不应使用的信息「%s」" % _snippet(bad, 24),
                 VERDICT_CONFUSION: "回答包含了不应出现的内容「%s」（记忆混淆/未更新）" % _snippet(bad, 24),
             }[v]
@@ -319,9 +321,10 @@ def _eval_memory(probe: Probe, case: Case, dim: str,
                            **base)
     mem_n = [normalize_text(x) for x in memory_items]
     joined = "\n".join(mem_n)
+    invalid = invalid_values_at(case, "")  # 记忆探针在评测末尾 => 视为最后时点
     for bad in exp.memory_excludes:
         if normalize_text(bad) in joined:
-            v = _fama_verdict(exp, dim, case, bad)
+            v = _fama_verdict(exp, dim, case, bad, invalid)
             reason = ("记忆库中持久化了敏感信息「%s」" if v == VERDICT_IMPROPER_PERSISTENCE
                       else "记忆库中仍保留着已被覆盖的旧信息「%s」（FAMA 风格）" % _snippet(bad, 20)
                       if v == VERDICT_IMPROPER_REUSE

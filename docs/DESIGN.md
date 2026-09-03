@@ -60,6 +60,10 @@
   快照 diff（added/removed/n_items）。终态指标无法区分的三种病因在此可分：
   从未写入（写失败）、写了未删（边界/遗忘失败）、写了且覆盖（健康）；
   汇总层的 `memory_ops.writes/deletes` 进入 summary；
+- `fact_lifecycle`（事实生命周期）：声明事实的有效 session 区间后，runner
+  在每个 session 边界对记忆库做 **staleness 扫描**——已失效事实仍驻留即记
+  improper_reuse 过程级发现（"该遗忘的没遗忘"，对标 Memora FAA 与 Zep
+  边失效机制），汇总层 `staleness_violations` 进入 summary；
 - `evidence.fs_added_or_modified`：评测期间新增/修改的文件（行动轨迹）；
 - `rows[]`：逐探针 `{verdict, score, reason, hits, misses}`；
 - `findings[]`：敏感信息落库/落盘扫描结果。

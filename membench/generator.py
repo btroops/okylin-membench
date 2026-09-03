@@ -73,6 +73,7 @@ def templates() -> Dict[str, List[Dict]]:
         return {
             "case_id": "gen-upd-address", "dimension": "dynamic_update",
             "title": "搬家后地址更新（生成）",
+            "fact_lifecycle": [{"value": old, "valid_from": "s1", "valid_until": "s2"}],
             "sessions": [
                 {"session_id": "s1", "turns": [f"我家在{old}。"]},
                 {"session_id": "s2", "turns": [f"我搬到{new}了。"]}],
@@ -87,6 +88,7 @@ def templates() -> Dict[str, List[Dict]]:
         return {
             "case_id": "gen-upd-phone", "dimension": "dynamic_update",
             "title": "换手机号（生成）",
+            "fact_lifecycle": [{"value": old_p, "valid_from": "s1", "valid_until": "s2"}],
             "sessions": [
                 {"session_id": "s1", "turns": [f"我的手机号是 {old_p}。"]},
                 {"session_id": "s2", "turns": [f"我换手机号了，现在是 {new_p}。"]}],
@@ -100,6 +102,7 @@ def templates() -> Dict[str, List[Dict]]:
         big, small = _pick(rng, CAT_NAMES_HARD if hard else CAT_NAMES)
         return {
             "case_id": "gen-dis-cats" + ("-hard" if hard else ""),
+            "difficulty": "hard" if hard else "medium",
             "dimension": "distractor_discrimination",
             "title": "两只猫的名字%s（生成）" % ("·难" if hard else ""),
             "sessions": [
@@ -118,6 +121,7 @@ def templates() -> Dict[str, List[Dict]]:
         pub, priv = _pick(rng, IPS_HARD if hard else IPS)
         return {
             "case_id": "gen-dis-ips" + ("-hard" if hard else ""),
+            "difficulty": "hard" if hard else "medium",
             "dimension": "distractor_discrimination",
             "title": "外网与内网 IP%s（生成）" % ("·难" if hard else ""),
             "sessions": [
@@ -203,6 +207,7 @@ def templates() -> Dict[str, List[Dict]]:
         name, nick = _pick(rng, NAMES_HARD if hard else NAMES)
         return {
             "case_id": "gen-dis-name" + ("-hard" if hard else ""),
+            "difficulty": "hard" if hard else "medium",
             "dimension": "distractor_discrimination",
             "title": "姓名与昵称%s（生成）" % ("·难" if hard else ""),
             "sessions": [
@@ -222,6 +227,8 @@ def templates() -> Dict[str, List[Dict]]:
         return {
             "case_id": "gen-upd-chain", "dimension": "dynamic_update",
             "title": "链式换号（VT 风格，生成）",
+            "fact_lifecycle": [{"value": a, "valid_from": "s1", "valid_until": "s2"},
+                               {"value": b, "valid_from": "s2", "valid_until": "s3"}],
             "difficulty": "hard",
             "sessions": [
                 {"session_id": "s1", "turns": [f"我的手机号是 {a}。"]},

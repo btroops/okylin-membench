@@ -5,6 +5,23 @@
   "run_index": 1,
   "rows": [
     {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "事实「北京市海淀区中关村大街1号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
+      "reply": "",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    },
+    {
       "probe_id": "p1",
       "probe_type": "slot",
       "dimension": "dynamic_update",
@@ -103,6 +120,6 @@
     ],
     "fs_added_or_modified": {}
   },
-  "started_at": 1788453572.529204,
-  "duration_sec": 0.0002970695495605469
+  "started_at": 1788455431.197025,
+  "duration_sec": 0.00031566619873046875
 }

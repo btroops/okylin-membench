@@ -101,6 +101,7 @@
     "writes": 42,
     "deletes": 4
   },
+  "staleness_violations": 0,
   "retrieval_localization": {
     "n": 13,
     "hits": 13,

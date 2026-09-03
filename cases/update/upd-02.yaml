@@ -13,6 +13,10 @@ sessions:
   - session_id: s2
     turns:
       - "我换手机号了，现在是 13900002222。"
+fact_lifecycle:
+  - value: "13800001111"
+    valid_from: s1
+    valid_until: s2
 probes:
   - probe_id: p1
     type: slot

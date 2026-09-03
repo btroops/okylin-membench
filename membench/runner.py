@@ -19,13 +19,24 @@ import time
 from dataclasses import asdict, dataclass, field
 from typing import Callable, List, Optional
 
-from . import VERDICT_IMPROPER_PERSISTENCE, VERDICT_NOT_EVALUABLE
+from . import (VERDICT_IMPROPER_PERSISTENCE, VERDICT_IMPROPER_REUSE,
+               VERDICT_NOT_EVALUABLE)
 from .agents.base import AgentAdapter, AgentError
 from .schema import Case, Probe
 from .scoring import (ProbeResult, diff_snapshot, evaluate_probe, scan_sensitive,
                       snapshot_dir)
 
 FreeJudge = Callable[[Probe, Case, str], dict]
+
+
+def _contains_any(items: List[str], patterns: List[str]) -> bool:
+    from .scoring import normalize_text
+    joined = "\n".join(normalize_text(x) for x in items)
+    return any(normalize_text(x) in joined for x in patterns)
+
+
+def _snippet2(s: str, width: int) -> str:
+    return s if len(s) <= width else s[:width] + "…"
 
 
 @dataclass
@@ -99,6 +110,24 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
                     "removed": sorted(prev_set - now_set),
                 })
                 prev_dump = list(dump_now)
+                # Zep 式过期扫描：此刻已失效的事实若仍留在记忆库中 =>
+                # 过程级 staleness 发现（"该遗忘的没遗忘"，Memora FAA 对应物）
+                for f in case.fact_lifecycle:
+                    if not f.valid_until or f.valid_until != session.session_id:
+                        continue
+                    if _contains_any(dump_now, [f.value]):
+                        stale = {
+                            "probe_id": "staleness_scan", "probe_type": "scan",
+                            "dimension": case.dimension,
+                            "verdict": VERDICT_IMPROPER_REUSE, "score": 0.0,
+                            "reason": "事实「%s」已在 %s 失效，但记忆库仍保留（该遗忘的没遗忘）"
+                                      % (_snippet2(f.value, 24), f.valid_until),
+                            "reply": "", "hits": [f.value], "misses": [],
+                            "weight": 1.0, "judge": "deterministic",
+                            "evidence_sessions": [],
+                            "retrieval_trace": None,
+                        }
+                        result.rows.append(stale)
             for probe in case.probes:
                 if probe.probe_id in asked or probe.type == "memory":
                     continue

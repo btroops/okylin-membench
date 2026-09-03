@@ -106,3 +106,22 @@
 - **事故与修复**：dis 模板加 hard 参数时丢了 dimension 字段（校验器当场
   拦截——静态校验的价值实证）；NAMES_HARD 初版含超串陷阱，自查修正。
 - **测试**：75→77 通过。
+
+## 2026-09-04 · 轮次 N+6：Zep 式事实生命周期 + 全轨迹 staleness 扫描
+
+- **论文**：LoCoMo 全文级精读（adversarial 占 24.9%，长上下文模型仅 2.1%
+  ——拒答设计源头坐实；断言式存储优于 session 摘要；FactScore 式事件
+  摘要指标）；HippoRAG 2（ICML'25，修正结构化 RAG 在事实任务上的退化；
+  factual/sense-making/associative 三类）；Zep（Graphiti 文档证实边失效
+  为标准程序；t_valid/t_invalid 属性名诚实标注为二手来源）。
+- **实现**：
+  - schema：`fact_lifecycle`（value/valid_from/valid_until，session 级
+    时间轴；校验引用存在性与顺序）；
+  - scoring：失效值自动推导（invalid_values_at），与手工 superseded_values
+    并行生效；
+  - runner：每个 session 边界对记忆库快照做 **staleness 扫描**——失效事实
+    仍在 => improper_reuse 过程级发现；summary 新增 staleness_violations；
+  - 生成器：upd 模板带 lifecycle；hard 变体补 difficulty 元数据。
+- **实测**：naive 在 upd-01 上产生 1 条 staleness 发现（"事实…已在 s2 失效，
+  但记忆库仍保留"）；smart/nomem 为 0——三种病因的过程级判别补全。
+- **测试**：77→81 通过；样例/文档同步；.deb 重建。

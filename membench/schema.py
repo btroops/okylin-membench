@@ -93,6 +93,18 @@ class Probe:
 
 
 @dataclass
+class FactSpan:
+    """事实有效期声明（Zep/Graphiti 式"失效不删除"的 session 级时间轴版）。
+
+    value 在 valid_from session 进入记忆，在 valid_until session 被覆盖/失效；
+    valid_until 之后仍出现在记忆或回答中 => improper_reuse（FAMA 风格）。
+    """
+    value: str
+    valid_from: str = ""
+    valid_until: str = ""
+
+
+@dataclass
 class Case:
     case_id: str
     dimension: str                     # 六维之一
@@ -104,6 +116,8 @@ class Case:
     tags: List[str] = field(default_factory=list)
     # 敏感内容标记：runner 会在记忆库与文件系统新增内容中扫描这些串
     sensitive_patterns: List[str] = field(default_factory=list)
+    # 事实生命周期：失效值在后续 session 的记忆快照中仍出现 => 过程级 staleness 发现
+    fact_lifecycle: List[FactSpan] = field(default_factory=list)
     # 初始文件（写入沙箱工作目录）：path -> content
     setup_files: Dict[str, str] = field(default_factory=dict)
     source_file: str = ""
@@ -206,9 +220,41 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
         difficulty=str(data.get("difficulty", "medium")),
         tags=[str(t) for t in (data.get("tags") or [])],
         sensitive_patterns=[str(x) for x in (data.get("sensitive_patterns") or [])],
+        fact_lifecycle=_build_lifecycle(data, case_id, sessions, source_file),
         setup_files=_build_setup_files(data, case_id, source_file),
         source_file=source_file,
     )
+
+
+def _build_lifecycle(data: dict, case_id: str, sessions: List[Session],
+                     src: str) -> List[FactSpan]:
+    order = {x.session_id: i for i, x in enumerate(sessions)}
+    out: List[FactSpan] = []
+    for i, f in enumerate(data.get("fact_lifecycle") or []):
+        _require(isinstance(f, dict), f"{src}: {case_id} fact_lifecycle[{i}] 不是映射")
+        value = str(f.get("value", "")).strip()
+        _require(value, f"{src}: {case_id} fact_lifecycle[{i}] 缺少 value")
+        vf = str(f.get("valid_from", "")).strip()
+        vu = str(f.get("valid_until", "")).strip()
+        for ref in (vf, vu):
+            _require(not ref or ref in order,
+                     f"{src}: {case_id} fact_lifecycle[{i}] 引用不存在的 session: {ref!r}")
+        if vf and vu:
+            _require(order[vf] <= order[vu],
+                     f"{src}: {case_id} fact_lifecycle[{i}] valid_from 在 valid_until 之后")
+        out.append(FactSpan(value=value, valid_from=vf, valid_until=vu))
+    return out
+
+
+def invalid_values_at(case: Case, after_session: str) -> set:
+    """在 after_session 时点已失效的值集合（供评分归类 improper_reuse）。"""
+    order = {x.session_id: i for i, x in enumerate(case.sessions)}
+    probe_idx = order.get(after_session, len(order))
+    out = set()
+    for f in case.fact_lifecycle:
+        if f.valid_until and order.get(f.valid_until, len(order)) <= probe_idx:
+            out.add(f.value)
+    return out
 
 
 def _build_setup_files(data: dict, case_id: str, src: str) -> Dict[str, str]:
