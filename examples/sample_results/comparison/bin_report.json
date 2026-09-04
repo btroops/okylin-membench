@@ -9,13 +9,13 @@
     "nomem": {
       "1-1 sessions": 42.3,
       "2-2 sessions": 21.9,
-      "3-4 sessions": 0.0,
+      "3-4 sessions": 33.3,
       "5+ sessions": null
     },
     "naive": {
       "1-1 sessions": 19.2,
       "2-2 sessions": 42.2,
-      "3-4 sessions": 16.7,
+      "3-4 sessions": 11.1,
       "5+ sessions": null
     },
     "smart": {

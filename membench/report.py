@@ -112,12 +112,18 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
     html = ["<!DOCTYPE html><html><head><meta charset='utf-8'>",
             "<title>openKylin 智能体长期记忆评测报告</title>",
             "<style>%s</style></head><body>" % CSS,
+            '<nav style="background:#1a3a6b;color:#fff;padding:8px 16px;font-size:13px">'
+            '<a href="#rank" style="color:#fff;margin-right:14px">排名</a>'
+            '<a href="#heat" style="color:#fff;margin-right:14px">难度×维度</a>'
+            '<a href="#top-disc" style="color:#fff;margin-right:14px">高判别用例</a>'
+            '<a href="evidence.html" style="color:#fff;margin-right:14px">证据查看器</a>'
+            '</nav>',
             "<h1>openKylin 智能体长期记忆自动化评测报告</h1>",
             "<div class='note'>由 membench 自动生成 · 五分类裁决：correct/miss/confusion/"
             "improper_persistence/improper_reuse · "
             "<a href='evidence.html'>逐用例证据查看器（为什么扣分）</a></div>",
             radar,
-            "<h2>总分排名</h2><table><tr><th>排名</th><th>智能体</th><th>总分</th>"
+            "<h2 id='rank'>总分排名</h2><table><tr><th>排名</th><th>智能体</th><th>总分</th>"
             "<th>FAMA</th></tr>"]
     for i, r in enumerate(cmp_data["ranking"], 1):
         fa = next((x.get("fama_mean") for x in summaries if x["agent"] == r["agent"]), None)
@@ -138,7 +144,7 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
     diff_keys = ["easy", "medium", "hard"]
     mat = {s["agent"]: s.get("difficulty_dimension", {}) for s in summaries}
     if any(mat.values()):
-        html.append("<h2>难度 × 维度热力表</h2><table><tr><th>智能体</th><th>难度</th>")
+        html.append("<h2 id='heat'>难度 × 维度热力表</h2><table><tr><th>智能体</th><th>难度</th>")
         html.extend("<th>%s</th>" % DIMENSION_LABELS[d_] for d_ in DIMENSIONS)
         html.append("</tr>")
         for a, m in mat.items():
@@ -157,7 +163,7 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
     if any(s.get("case_discrimination_top") for s in summaries):
         top = summaries[0].get("case_discrimination_top") or []
         if top:
-            html.append("<h2>高判别力用例（跨智能体极差最大）</h2>"
+            html.append("<h2 id='top-disc'>高判别力用例（跨智能体极差最大）</h2>"
                         "<table><tr><th>用例</th><th>难度</th><th>判别度</th></tr>")
             for t in top:
                 html.append("<tr><td>%s</td><td>%s</td><td>%.0f</td></tr>"
@@ -165,7 +171,7 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
             html.append("</table>")
     if cases is not None:
         bins = bin_report_by_load(cases, summaries)
-        html.append("<h2>记忆负担分档对比</h2><p class='note'>沿用 BEAM 思路：按用例 session 数分档，观察随记忆负担增长的退化曲线。</p>")
+        html.append("<h2 id='bins'>记忆负担分档对比</h2><p class='note'>沿用 BEAM 思路：按用例 session 数分档，观察随记忆负担增长的退化曲线。</p>")
         html.append("<table><tr><th>智能体</th>")
         html.extend("<th>%s</th>" % b for b in bins["bins"])
         html.append("</tr>")

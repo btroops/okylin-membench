@@ -120,6 +120,8 @@ class Case:
     sensitive_patterns: List[str] = field(default_factory=list)
     # 事实生命周期：失效值在后续 session 的记忆快照中仍出现 => 过程级 staleness 发现
     fact_lifecycle: List[FactSpan] = field(default_factory=list)
+    # 记忆写入纪律：跨 session 应避免累积噪声（与对话无关的碎词/超短串/敏感词残留）
+    noise_max_count: Dict[str, int] = field(default_factory=dict)
     # 初始文件（写入沙箱工作目录）：path -> content
     setup_files: Dict[str, str] = field(default_factory=dict)
     source_file: str = ""
@@ -224,6 +226,7 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
         tags=[str(t) for t in (data.get("tags") or [])],
         sensitive_patterns=[str(x) for x in (data.get("sensitive_patterns") or [])],
         fact_lifecycle=_build_lifecycle(data, case_id, sessions, source_file),
+        noise_max_count={str(k): int(v) for k, v in (data.get("noise_max_count") or {}).items()},
         setup_files=_build_setup_files(data, case_id, source_file),
         source_file=source_file,
     )

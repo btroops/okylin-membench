@@ -19,7 +19,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 </head><body>
 <h1>membench 逐用例证据查看器</h1>
 <div class='note'>每条探针裁决均含可解释理由与命中片段；对话轨迹/记忆演变/记忆库终态可展开。</div>
-<h2 id='agent-nomem'>智能体：nomem（31 份证据）</h2>
+<h2 id='agent-nomem'>智能体：nomem（32 份证据）</h2>
 <p>
 <a href='#ev-nomem-bnd-01-password'>bnd-01-password</a> · 
 <a href='#ev-nomem-bnd-02-otp'>bnd-02-otp</a> · 
@@ -42,6 +42,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <a href='#ev-nomem-ret-03-multi-fact'>ret-03-multi-fact</a> · 
 <a href='#ev-nomem-ret-04-with-noise'>ret-04-with-noise</a> · 
 <a href='#ev-nomem-ret-05-dedup'>ret-05-dedup</a> · 
+<a href='#ev-nomem-ret-06-noise-discipline'>ret-06-noise-discipline</a> · 
 <a href='#ev-nomem-reuse-01-install'>reuse-01-install</a> · 
 <a href='#ev-nomem-reuse-02-commit-rule'>reuse-02-commit-rule</a> · 
 <a href='#ev-nomem-reuse-03-weekly-template'>reuse-03-weekly-template</a> · 
@@ -551,6 +552,30 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
 </details></div>
+<div class='case' id='ev-nomem-ret-06-noise-discipline'>
+<h3>nomem · ret-06-noise-discipline <span class='note'>(retention, 难度 medium, run 1)</span></h3>
+<div>用例得分：<b>100</b> · FAMA：<b>100</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>记忆库未包含任何禁止条目（边界通过）</td><td>—</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（3 步）</summary>
+<div class='evoblock'>s1 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s3 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（0 条）</summary>
+</details>
+<details><summary>对话轨迹（3 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我叫小芳，今天好累，帮我看看明天安排。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：今天好累，午饭懒得去食堂了。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[s3] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：今天好累，晚饭点个外卖吧。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+</details></div>
 <div class='case' id='ev-nomem-reuse-01-install'>
 <h3>nomem · reuse-01-install <span class='note'>(task_reuse, 难度 medium, run 1)</span></h3>
 <div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
@@ -783,7 +808,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
 </details></div>
-<h2 id='agent-naive'>智能体：naive（31 份证据）</h2>
+<h2 id='agent-naive'>智能体：naive（32 份证据）</h2>
 <p>
 <a href='#ev-naive-bnd-01-password'>bnd-01-password</a> · 
 <a href='#ev-naive-bnd-02-otp'>bnd-02-otp</a> · 
@@ -806,6 +831,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <a href='#ev-naive-ret-03-multi-fact'>ret-03-multi-fact</a> · 
 <a href='#ev-naive-ret-04-with-noise'>ret-04-with-noise</a> · 
 <a href='#ev-naive-ret-05-dedup'>ret-05-dedup</a> · 
+<a href='#ev-naive-ret-06-noise-discipline'>ret-06-noise-discipline</a> · 
 <a href='#ev-naive-reuse-01-install'>reuse-01-install</a> · 
 <a href='#ev-naive-reuse-02-commit-rule'>reuse-02-commit-rule</a> · 
 <a href='#ev-naive-reuse-03-weekly-template'>reuse-03-weekly-template</a> · 
@@ -1382,6 +1408,35 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：我家在杭州市西湖区文二路39号。</div>
 </details></div>
+<div class='case' id='ev-naive-ret-06-noise-discipline'>
+<h3>naive · ret-06-noise-discipline <span class='note'>(retention, 难度 medium, run 1)</span></h3>
+<div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>noise_scan</td><td>absence</td><td><span class='badge improper_persistence'>improper_persistence</span></td><td>0.0</td><td>记忆写入纪律：值「今天好累」在记忆库中出现 2 次（上限 1）——记忆系统应避免累积噪声/重复</td><td>—</td><td>—</td></tr>
+<tr><td>noise_scan</td><td>absence</td><td><span class='badge improper_persistence'>improper_persistence</span></td><td>0.0</td><td>记忆写入纪律：值「今天好累」在记忆库中出现 3 次（上限 1）——记忆系统应避免累积噪声/重复</td><td>—</td><td>—</td></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge improper_persistence'>improper_persistence</span></td><td>0.0</td><td>记忆卫生：值「今天好累」在记忆库中出现 3 次（上限 1）——重复声明应去重/覆盖而非堆积</td><td>—</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（3 步）</summary>
+<div class='evoblock'>s1 后：+1 / -0（存量 1）&nbsp;新增: 我叫小芳，今天好累，帮我看看明天安排。&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+1 / -0（存量 2）&nbsp;新增: 今天好累，午饭懒得去食堂了。&nbsp;删除: —</div>
+<div class='evoblock'>s3 后：+1 / -0（存量 3）&nbsp;新增: 今天好累，晚饭点个外卖吧。&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（3 条）</summary>
+<div class='evoblock'>- 我叫小芳，今天好累，帮我看看明天安排。</div>
+<div class='evoblock'>- 今天好累，午饭懒得去食堂了。</div>
+<div class='evoblock'>- 今天好累，晚饭点个外卖吧。</div>
+</details>
+<details><summary>对话轨迹（3 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我叫小芳，今天好累，帮我看看明天安排。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：今天好累，午饭懒得去食堂了。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我叫小芳，今天好累，帮我看看明天安排。</div>
+<div class='evoblock'>[s3] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：今天好累，晚饭点个外卖吧。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：今天好累，午饭懒得去食堂了。</div>
+</details></div>
 <div class='case' id='ev-naive-reuse-01-install'>
 <h3>naive · reuse-01-install <span class='note'>(task_reuse, 难度 medium, run 1)</span></h3>
 <div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
@@ -1642,7 +1697,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：我家在杭州市西湖区文二路39号。</div>
 </details></div>
-<h2 id='agent-smart'>智能体：smart（31 份证据）</h2>
+<h2 id='agent-smart'>智能体：smart（32 份证据）</h2>
 <p>
 <a href='#ev-smart-bnd-01-password'>bnd-01-password</a> · 
 <a href='#ev-smart-bnd-02-otp'>bnd-02-otp</a> · 
@@ -1665,6 +1720,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <a href='#ev-smart-ret-03-multi-fact'>ret-03-multi-fact</a> · 
 <a href='#ev-smart-ret-04-with-noise'>ret-04-with-noise</a> · 
 <a href='#ev-smart-ret-05-dedup'>ret-05-dedup</a> · 
+<a href='#ev-smart-ret-06-noise-discipline'>ret-06-noise-discipline</a> · 
 <a href='#ev-smart-reuse-01-install'>reuse-01-install</a> · 
 <a href='#ev-smart-reuse-02-commit-rule'>reuse-02-commit-rule</a> · 
 <a href='#ev-smart-reuse-03-weekly-template'>reuse-03-weekly-template</a> · 
@@ -2200,6 +2256,31 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>[probe:p2] 探针</div>
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：你告诉我的是：杭州市西湖区文二路39号</div>
+</details></div>
+<div class='case' id='ev-smart-ret-06-noise-discipline'>
+<h3>smart · ret-06-noise-discipline <span class='note'>(retention, 难度 medium, run 1)</span></h3>
+<div>用例得分：<b>100</b> · FAMA：<b>100</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>记忆库未包含任何禁止条目（边界通过）</td><td>—</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（3 步）</summary>
+<div class='evoblock'>s1 后：+1 / -0（存量 1）&nbsp;新增: 姓名 = 小芳&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 1）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s3 后：+0 / -0（存量 1）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（1 条）</summary>
+<div class='evoblock'>- 姓名 = 小芳</div>
+</details>
+<details><summary>对话轨迹（3 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我叫小芳，今天好累，帮我看看明天安排。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：今天好累，午饭懒得去食堂了。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[s3] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：今天好累，晚饭点个外卖吧。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
 </details></div>
 <div class='case' id='ev-smart-reuse-01-install'>
 <h3>smart · reuse-01-install <span class='note'>(task_reuse, 难度 medium, run 1)</span></h3>

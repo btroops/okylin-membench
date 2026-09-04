@@ -23,8 +23,8 @@ from . import (VERDICT_CORRECT, VERDICT_IMPROPER_PERSISTENCE,
                VERDICT_IMPROPER_REUSE, VERDICT_NOT_EVALUABLE)
 from .agents.base import AgentAdapter, AgentError
 from .schema import Case, Probe, probe_role
-from .scoring import (ProbeResult, diff_snapshot, evaluate_probe, scan_sensitive,
-                      snapshot_dir)
+from .scoring import (ProbeResult, diff_snapshot, evaluate_probe, normalize_text,
+                      scan_sensitive, snapshot_dir)
 
 FreeJudge = Callable[[Probe, Case, str], dict]
 
@@ -112,6 +112,22 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
                     "removed": sorted(prev_set - now_set),
                 })
                 prev_dump = list(dump_now)
+                # 记忆写入纪律：新增条目是否触发噪声上限（防止"什么都存"的记忆系统）
+                for value, maxn in case.noise_max_count.items():
+                    now_count = sum(1 for item in dump_now if normalize_text(value) in
+                                   normalize_text(item))
+                    if now_count > maxn:
+                        result.rows.append({
+                            "probe_id": "noise_scan", "probe_type": "scan",
+                            "dimension": case.dimension, "role": "absence",
+                            "verdict": "improper_persistence", "score": 0.0,
+                            "reason": "记忆写入纪律：值「%s」在记忆库中出现 %d 次（上限 %d）——"
+                                      "记忆系统应避免累积噪声/重复" % (
+                                          _snippet2(value, 20), now_count, maxn),
+                            "reply": "", "hits": [value], "misses": [],
+                            "weight": 1.0, "judge": "deterministic",
+                            "evidence_sessions": [], "retrieval_trace": None,
+                        })
                 # Zep 式过期扫描：此刻已失效的事实若仍留在记忆库中 =>
                 # 过程级 staleness 发现（"该遗忘的没遗忘"，Memora FAA 对应物）
                 for f in case.fact_lifecycle:

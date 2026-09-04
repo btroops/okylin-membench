@@ -363,3 +363,44 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
   mem0.ai/research 仅给出 1,540 题 5 类分数（已上轮核实）。结论：mem0
   博客层 LOCOMO 分类别详细数字与 token/时延对比——无法从一手源核实，
   后续访问需直接索取代码复现。
+
+## 系列五：记忆系统产品化与软件工程现场（2025-2026）
+
+### OpenAI Memory（ChatGPT Memory 产品）— 一手源 403/404
+
+- 多次尝试 openai.com、help.openai.com、platform.openai.com 文档站、
+  cookbook 均 403 Forbidden 或 404 Not Found；无法从一手源核实“何时记
+  忆、何时遗忘、用户控制”的实现细节。**业内常被引用的描述**（ChatGPT
+  记忆分为 ephemeral chat history 与 long-term user facts、用户可查看/
+  编辑/删除）来自二手评测和媒体报道，本轮不收录。
+- **诚实降级**：OpenAI Memory 的工程化实现细节待一手源公开后补读。
+
+### SIABench（arXiv:2603.06422，2026）— 全文级
+
+- **数据集**：Part I SIA 25 场景 229 题（4 类：Memory Forensics/Malware/
+  Network/Misc，三档难度）；Part II 告警分诊 135（55 TP / 80 FP，Snort
+  + Suricata，从 TII-SRC-23 + CIC-IDS2017 生成）。
+- **公平性预处**理（值得借鉴）：Gemini-1.5 Flash 改写 + 标识符中性化 +
+  文件标准化 + 4 类去偏（开放改写/假设剔除/数字中性/外网知识搜索剔除）。
+- **多状态 ReAct 工作流**：Init→Plan/Execute/Summarize→Solved；消融
+  证明多状态显著优于单状态、摘要器降低上下文限制错误（Claude-3.5
+  -12~32%）、ReAct vs Act-Only（老模型更明显）。
+- **结果**：11 LLM；Claude-4.5-Sonnet 81.7% / GPT-5 80.7% 领先；
+  Defense Evasion < 55% / Execution < 65% 普遍；Llama 8B 无限循环
+  62.9% / o3-mini 错答率 58.1%；temperature=0 下输出仍不稳定。
+- **membench 借鉴**：抽象化预处（标识符/文件名中性化）可作为数据
+  生成管线的增强项（避免“中文用例被 LLM 偏见影响”类评审质疑）。
+
+### Git-Context-Controller（arXiv:2508.00031，2026 v3）— 摘要级
+
+- **设计**：把智能体上下文管理为版本化文件系统——`COMMIT`（任务
+  边界里程碑）/ `BRANCH`（隔离探索）/ `MERGE`（路径回并）/ `CONTEXT`
+  （分级检索），把“聊天日志”变成“仓库历史”。
+- **结果**：SWE-Bench Verified 80%+，超 13% 相对长上下文基线，**击败
+  26 个开源/商业系统**；BrowseComp SOTA（数字未给）。
+- **membench 借鉴**：思路与 Letta MemFS、MemCube versioning 同源；
+  我们的 fact_lifecycle + staleness 扫描评测的正是“commit 时点后过
+  期事实处理是否正确”——而 GCC 的 BRANCH 行为与我们的“该删未删”
+  病理正相反（可作未来扩展）。
+
+## 系列六：MEASURING HALLUCINATION IN AI CODES 之类的相关...（不展开）

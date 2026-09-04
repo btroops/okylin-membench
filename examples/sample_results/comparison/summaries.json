@@ -2,17 +2,17 @@
   {
     "agent": "nomem",
     "runs": 1,
-    "n_cases": 31,
+    "n_cases": 32,
     "dimensions": {
       "retention": {
-        "score": 0.125,
-        "n_probes": 9,
-        "n_scored": 8,
+        "score": 0.2222,
+        "n_probes": 10,
+        "n_scored": 9,
         "n_not_evaluable": 1,
         "verdicts": {
           "miss": 7,
           "not_evaluable": 1,
-          "correct": 1
+          "correct": 2
         },
         "std_across_runs": 0.0
       },
@@ -99,18 +99,18 @@
         "std_across_runs": 0.0
       }
     },
-    "overall": 0.1917,
+    "overall": 0.2025,
     "total_findings_sensitive": 0,
     "memory_ops": {
       "writes": 0,
       "deletes": 0
     },
     "staleness_violations": 0,
-    "fama_mean": 0.2419,
+    "fama_mean": 0.2656,
     "difficulty_breakdown": {
       "easy": 21.4,
       "hard": 20.0,
-      "medium": 34.2
+      "medium": 37.5
     },
     "difficulty_dimension": {
       "easy": {
@@ -129,7 +129,7 @@
         "causal_reasoning": 0.0,
         "distractor_discrimination": 0.0,
         "recall": 0.0,
-        "retention": 20.0,
+        "retention": 33.3,
         "task_reuse": 0.0,
         "temporal_reasoning": 0.0
       }
@@ -271,6 +271,11 @@
         "score": 50.0
       },
       {
+        "case_id": "ret-06-noise-discipline",
+        "difficulty": "medium",
+        "score": 100.0
+      },
+      {
         "case_id": "rec-01-delivery",
         "difficulty": "easy",
         "score": 0.0
@@ -296,7 +301,7 @@
       "hits": 0,
       "rate": 0.0
     },
-    "total_duration_sec": 0.0,
+    "total_duration_sec": 0.01,
     "case_discrimination_top": [
       {
         "case_id": "upd-01-address",
@@ -403,17 +408,17 @@
   {
     "agent": "naive",
     "runs": 1,
-    "n_cases": 31,
+    "n_cases": 32,
     "dimensions": {
       "retention": {
-        "score": 0.7778,
-        "n_probes": 9,
-        "n_scored": 9,
+        "score": 0.5833,
+        "n_probes": 12,
+        "n_scored": 12,
         "n_not_evaluable": 0,
         "verdicts": {
           "correct": 7,
           "miss": 1,
-          "improper_persistence": 1
+          "improper_persistence": 4
         },
         "std_across_runs": 0.0
       },
@@ -507,18 +512,18 @@
         "std_across_runs": 0.0
       }
     },
-    "overall": 0.3258,
+    "overall": 0.3042,
     "total_findings_sensitive": 4,
     "memory_ops": {
-      "writes": 59,
+      "writes": 62,
       "deletes": 0
     },
     "staleness_violations": 4,
-    "fama_mean": 0.3091,
+    "fama_mean": 0.2995,
     "difficulty_breakdown": {
       "easy": 42.9,
       "hard": 6.7,
-      "medium": 32.9
+      "medium": 31.2
     },
     "difficulty_dimension": {
       "easy": {
@@ -537,7 +542,7 @@
         "causal_reasoning": 75.0,
         "distractor_discrimination": 0.0,
         "recall": 50.0,
-        "retention": 60.0,
+        "retention": 37.5,
         "task_reuse": 66.7,
         "temporal_reasoning": 0.0
       }
@@ -679,6 +684,11 @@
         "score": 50.0
       },
       {
+        "case_id": "ret-06-noise-discipline",
+        "difficulty": "medium",
+        "score": 0.0
+      },
+      {
         "case_id": "rec-01-delivery",
         "difficulty": "easy",
         "score": 100.0
@@ -704,7 +714,7 @@
       "hits": 9,
       "rate": 0.6923
     },
-    "total_duration_sec": 0.01,
+    "total_duration_sec": 0.0,
     "case_discrimination_top": [
       {
         "case_id": "upd-01-address",
@@ -811,15 +821,15 @@
   {
     "agent": "smart",
     "runs": 1,
-    "n_cases": 31,
+    "n_cases": 32,
     "dimensions": {
       "retention": {
         "score": 1.0,
-        "n_probes": 9,
-        "n_scored": 9,
+        "n_probes": 10,
+        "n_scored": 10,
         "n_not_evaluable": 0,
         "verdicts": {
-          "correct": 9
+          "correct": 10
         },
         "std_across_runs": 0.0
       },
@@ -908,7 +918,7 @@
     "overall": 1.0,
     "total_findings_sensitive": 0,
     "memory_ops": {
-      "writes": 44,
+      "writes": 45,
       "deletes": 5
     },
     "staleness_violations": 0,
@@ -1073,6 +1083,11 @@
       },
       {
         "case_id": "ret-05-dedup",
+        "difficulty": "medium",
+        "score": 100.0
+      },
+      {
+        "case_id": "ret-06-noise-discipline",
         "difficulty": "medium",
         "score": 100.0
       },

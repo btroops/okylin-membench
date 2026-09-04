@@ -229,3 +229,21 @@
   （build 在 disc 计算前）；`difficult` 与 `difficulty` 拼写不一致。
   全部发现并修。
 - **测试**：91 通过（含新判别力用例测试 + 拼写锁）。
+
+## 2026-09-04 · 轮次 N+14：记忆写入纪律探针 + 报告导航条
+
+- **论文**：OpenAI Memory（ChatGPT Memory）一手源 403/404 无法核实——诚实
+  降级；SIABench 全文级（25 场景 229 题、4 类去偏、11 LLM 排名、多状态
+  工作流消融）；Git-Context-Controller（用 git 语义管理长程上下文，
+  SWE-Bench Verified 80%+ 击败 26 系统——印证文件化记忆 + commit/branch
+  是 2026 收敛形态）。
+- **实现**：
+  - `case.noise_max_count`：跨 session 噪声累积上限——智能体记忆系统
+    不应把闲聊噪声逐条入长期层；runner 每 session 边界扫描；
+  - 用例 ret-06-noise-discipline（3 个 session 反复"今天好累"）：
+    smart 0 违规 / naive 2 违规（直接确认了工业界 A-MEM 演化质量
+    与 SIABench 公平性预处理的同向关注）；
+  - 报告 HTML 导航条（排名/热力/高判别/证据查看器快速跳转 + 锚点）。
+- **事故**：dataclass 字段替换只发生一次没补上、normalize_text 未导入、
+  tests 中 31→32/0.7→0.55 阈值滞后——逐个被冒烟/测试抓到并修。
+- **测试**：92 通过。

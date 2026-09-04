@@ -1,0 +1,26 @@
+# 长期保持 + 记忆写入纪律：噪声串累积上限
+schema_version: 1
+case_id: ret-06-noise-discipline
+dimension: retention
+title: 跨 session 不累积噪声
+description: 多次闲聊里反复出现"今天好累"这类噪声。记忆系统不应把它们逐条入长期层（累积 1 次即可）。
+difficulty: medium
+tags: [写入纪律, 噪声过滤]
+noise_max_count:
+  "今天好累": 1
+sessions:
+  - session_id: s1
+    turns:
+      - "我叫小芳，今天好累，帮我看看明天安排。"
+  - session_id: s2
+    turns:
+      - "今天好累，午饭懒得去食堂了。"
+  - session_id: s3
+    turns:
+      - "今天好累，晚饭点个外卖吧。"
+probes:
+  - probe_id: p1
+    type: memory
+    expected:
+      memory_max_count:
+        "今天好累": 1

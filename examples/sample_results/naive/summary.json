@@ -1,17 +1,17 @@
 {
   "agent": "naive",
   "runs": 1,
-  "n_cases": 31,
+  "n_cases": 32,
   "dimensions": {
     "retention": {
-      "score": 0.7778,
-      "n_probes": 9,
-      "n_scored": 9,
+      "score": 0.5833,
+      "n_probes": 12,
+      "n_scored": 12,
       "n_not_evaluable": 0,
       "verdicts": {
         "correct": 7,
         "miss": 1,
-        "improper_persistence": 1
+        "improper_persistence": 4
       },
       "std_across_runs": 0.0
     },
@@ -105,18 +105,18 @@
       "std_across_runs": 0.0
     }
   },
-  "overall": 0.3258,
+  "overall": 0.3042,
   "total_findings_sensitive": 4,
   "memory_ops": {
-    "writes": 59,
+    "writes": 62,
     "deletes": 0
   },
   "staleness_violations": 4,
-  "fama_mean": 0.3091,
+  "fama_mean": 0.2995,
   "difficulty_breakdown": {
     "easy": 42.9,
     "hard": 6.7,
-    "medium": 32.9
+    "medium": 31.2
   },
   "difficulty_dimension": {
     "easy": {
@@ -135,7 +135,7 @@
       "causal_reasoning": 75.0,
       "distractor_discrimination": 0.0,
       "recall": 50.0,
-      "retention": 60.0,
+      "retention": 37.5,
       "task_reuse": 66.7,
       "temporal_reasoning": 0.0
     }
@@ -277,6 +277,11 @@
       "score": 50.0
     },
     {
+      "case_id": "ret-06-noise-discipline",
+      "difficulty": "medium",
+      "score": 0.0
+    },
+    {
       "case_id": "rec-01-delivery",
       "difficulty": "easy",
       "score": 100.0
@@ -302,5 +307,5 @@
     "hits": 9,
     "rate": 0.6923
   },
-  "total_duration_sec": 0.01
+  "total_duration_sec": 0.0
 }

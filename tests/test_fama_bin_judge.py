@@ -409,3 +409,32 @@ class TestEvidenceViewer(unittest.TestCase):
         self.assertIn("id='ev-smart-", doc)          # 用例锚点存在
         self.assertIn("<span class='badge", doc)      # 裁决徽章存在
         self.assertIn("记忆演变轨迹", doc)
+
+
+class TestMemoryDiscipline(unittest.TestCase):
+    """noise_max_count：跨 session 噪声累积检测（Letta Dreaming/A-MEM 演化质量）。"""
+
+    def _case(self):
+        return next(c for c in load_cases([os.path.join(PKG, "cases")])
+                    if c.case_id == "ret-06-noise-discipline")
+
+    def _run(self, name):
+        from membench.agents import create_agent
+        from membench.runner import run_case
+        return run_case(create_agent(name), self._case(), run_index=1,
+                        workroot=tempfile.mkdtemp())
+
+    def test_naive_accumulates(self):
+        r = self._run("naive")
+        v = [x for x in r.rows if x["probe_id"] == "noise_scan"]
+        self.assertGreaterEqual(len(v), 2)
+        self.assertTrue(all(x["verdict"] == "improper_persistence" for x in v))
+
+    def test_smart_disciplined(self):
+        r = self._run("smart")
+        v = [x for x in r.rows if x["probe_id"] == "noise_scan"]
+        self.assertEqual(v, [])
+
+    def test_nomem_trivially_passes(self):
+        r = self._run("nomem")
+        self.assertEqual(r.score, 1.0)
