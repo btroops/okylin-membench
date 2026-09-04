@@ -51,7 +51,8 @@ membench report results/nomem results/naive results/smart
 results/
 ├── <agent>/summary.json            # 六维得分 + 五分类分布 + 稳定性(std)
 ├── <agent>/runs/runNN/<case>.json  # 每用例证据：完整对话、记忆库dump、文件diff
-└── comparison/report.html          # 自包含对比报告（内嵌雷达图）
+├── comparison/report.html          # 自包含对比报告（雷达图/热力表/FAMA/bin）
+├── comparison/evidence.html        # 逐用例证据查看器（裁决理由/对话/记忆演变）
 ```
 
 ## 接入你的智能体
@@ -107,7 +108,7 @@ membench demo
 ## 运行测试
 
 ```bash
-python3 -m unittest discover -s tests   # 89 个单元/端到端测试（31 用例 + 24 模板 / 9 维度；含难度×维度热力表、doctor 自检、FAMA 双清单与记忆维护探针）
+python3 -m unittest discover -s tests   # 90 个单元/端到端测试（31 用例 + 24 模板 / 9 维度；含证据查看器、难度×维度热力表、doctor 自检）
 ```
 
 ## 许可证

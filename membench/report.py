@@ -7,7 +7,8 @@ import os
 from typing import Dict, List
 
 from . import DIMENSIONS, DIMENSION_LABELS
-from .aggregate import bin_report_by_load, compare_summaries
+from .aggregate import bin_report_by_load, compare_summaries, fama_for_rows
+from .scoring import _snippet
 from .radar import bars_svg, radar_svg
 
 CSS = """
@@ -105,7 +106,8 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
             "<style>%s</style></head><body>" % CSS,
             "<h1>openKylin 智能体长期记忆自动化评测报告</h1>",
             "<div class='note'>由 membench 自动生成 · 五分类裁决：correct/miss/confusion/"
-            "improper_persistence/improper_reuse</div>",
+            "improper_persistence/improper_reuse · "
+            "<a href='evidence.html'>逐用例证据查看器（为什么扣分）</a></div>",
             radar,
             "<h2>总分排名</h2><table><tr><th>排名</th><th>智能体</th><th>总分</th>"
             "<th>FAMA</th></tr>"]
@@ -200,7 +202,8 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
     return doc
 
 
-def write_reports(summaries: List[dict], out_dir: str, cases=None) -> Dict[str, str]:
+def write_reports(summaries: List[dict], out_dir: str, cases=None,
+                  agent_dirs: Optional[List[str]] = None) -> Dict[str, str]:
     """写出 comparison/{report.html, comparison.md, summary.json}，返回文件路径表。"""
     cmp_dir = os.path.join(out_dir, "comparison")
     os.makedirs(cmp_dir, exist_ok=True)
@@ -216,6 +219,10 @@ def write_reports(summaries: List[dict], out_dir: str, cases=None) -> Dict[str, 
     with open(js_path, "w", encoding="utf-8") as f:
         json.dump(summaries, f, ensure_ascii=False, indent=2)
     paths["json"] = js_path
+    if agent_dirs:
+        ev_path = os.path.join(cmp_dir, "evidence.html")
+        build_evidence_viewer(agent_dirs, ev_path)
+        paths["evidence"] = ev_path
     if cases is not None:
         bin_path = os.path.join(cmp_dir, "bin_report.json")
         with open(bin_path, "w", encoding="utf-8") as f:
@@ -223,3 +230,107 @@ def write_reports(summaries: List[dict], out_dir: str, cases=None) -> Dict[str, 
                       ensure_ascii=False, indent=2)
         paths["bin_report"] = bin_path
     return paths
+
+
+def build_evidence_viewer(agent_dirs: List[str], out_path: str) -> str:
+    """单用例证据查看器：评审可逐条点开"为什么扣分"。
+
+    数据源：各智能体结果目录下的 runs/run*/<case_id>.json。
+    输出：自包含 HTML（含裁决徽章、对话轨迹、记忆演变、扫描发现）。
+    """
+    import glob as _glob
+
+    parts = ["<!DOCTYPE html><html><head><meta charset='utf-8'>",
+             "<title>membench 逐用例证据查看器</title>",
+             "<style>%s</style>" % CSS + """
+.badge{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;color:#fff}
+.correct{background:#0ca678}.miss{background:#f59f00}.confusion{background:#e8590c}
+.improper_persistence{background:#c92a2a}.improper_reuse{background:#9c36b5}
+.not_evaluable{background:#adb5bd}
+details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
+.case{border:1px solid #e0e0e0;border-radius:8px;padding:10px;margin:14px 0}
+.evoblock{font-size:12px;color:#555;margin:4px 0}
+""", "</head><body>",
+             "<h1>membench 逐用例证据查看器</h1>",
+             "<div class='note'>每条探针裁决均含可解释理由与命中片段；"
+             "对话轨迹/记忆演变/记忆库终态可展开。</div>"]
+    agent_names = []
+    for adir in agent_dirs:
+        name = os.path.basename(os.path.normpath(adir))
+        files = sorted(_glob.glob(os.path.join(adir, "runs", "run*", "*.json")))
+        if not files:
+            continue
+        agent_names.append(name)
+        parts.append("<h2 id='agent-%s'>智能体：%s（%d 份证据）</h2>"
+                     % (name, name, len(files)))
+        parts.append("<p>")
+        for fp in files:
+            cid = os.path.splitext(os.path.basename(fp))[0]
+            parts.append("<a href='#ev-%s-%s'>%s</a> · " % (name, cid, cid))
+        parts.append("</p>")
+        for fp in files:
+            try:
+                with open(fp, encoding="utf-8") as f:
+                    d = json.load(f)
+            except (OSError, json.JSONDecodeError):
+                continue
+            cid = d.get("case_id", os.path.basename(fp))
+            anchor = "ev-%s-%s" % (name, cid)
+            parts.append("<div class='case' id='%s'>" % anchor)
+            parts.append("<h3>%s · %s <span class='note'>(%s, 难度 %s, run %d)</span></h3>"
+                         % (name, cid, d.get("dimension", "?"),
+                            d.get("difficulty", "?"), d.get("run_index", 1)))
+            score = d.get("score")
+            fama = fama_for_rows(d.get("rows", []))
+            parts.append("<div>用例得分：<b>%s</b> · FAMA：<b>%.0f</b></div>"
+                         % ("%.0f" % (100 * score) if score is not None else "不可评",
+                            100 * fama))
+            parts.append("<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th>"
+                         "<th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>")
+            for row in d.get("rows", []):
+                origins = sorted({t.get("session_origin") for t in (row.get("retrieval_trace") or [])
+                                  if t.get("session_origin")})
+                parts.append("<tr><td>%s</td><td>%s</td>"
+                             "<td><span class='badge %s'>%s</span></td><td>%s</td>"
+                             "<td>%s</td><td>%s</td><td>%s</td></tr>"
+                             % (row.get("probe_id"), row.get("role", "-"),
+                                row.get("verdict"), row.get("verdict"),
+                                "—" if row.get("score") is None else "%.1f" % row["score"],
+                                row.get("reason", ""), _snippet(row.get("reply", ""), 60) or "—",
+                                ",".join(origins) or "—"))
+            parts.append("</table>")
+            evo = (d.get("evidence") or {}).get("memory_evolution")
+            if evo:
+                parts.append("<details><summary>记忆演变轨迹（%d 步）</summary>" % len(evo))
+                for st in evo:
+                    parts.append("<div class='evoblock'>%s 后：+%d / -%d（存量 %d）"
+                                 "&nbsp;新增: %s&nbsp;删除: %s</div>"
+                                 % (st.get("after_session"), len(st.get("added", [])),
+                                    len(st.get("removed", [])), st.get("n_items", 0),
+                                    (", ".join(st.get("added", []))[:120] or "—"),
+                                    (", ".join(st.get("removed", []))[:120] or "—")))
+                parts.append("</details>")
+            mdump = (d.get("evidence") or {}).get("memory_dump")
+            if mdump is not None:
+                parts.append("<details><summary>记忆库终态（%d 条）</summary>" % len(mdump))
+                for item in mdump:
+                    parts.append("<div class='evoblock'>- %s</div>" % item)
+                parts.append("</details>")
+            transcript = (d.get("evidence") or {}).get("transcript") or []
+            parts.append("<details><summary>对话轨迹（%d 段）</summary>" % len(transcript))
+            for st in transcript:
+                date = "（%s）" % st["date"] if st.get("date") else ""
+                parts.append("<div class='evoblock'>[%s]%s %s</div>"
+                             % (st.get("session_id"), date, st.get("note") or ""))
+                for t in st.get("turns", []):
+                    who = "用户" if t.get("role") == "user" else "智能体"
+                    parts.append("<div class='evoblock'>&nbsp;&nbsp;%s：%s</div>"
+                                 % (who, t.get("content", "")))
+                if not st.get("turns"):
+                    parts.append("<div class='evoblock'>&nbsp;&nbsp;（无消息）</div>")
+            parts.append("</details></div>")
+    parts.append("</body></html>")
+    doc = "\n".join(parts)
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(doc)
+    return doc

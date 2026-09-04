@@ -139,7 +139,7 @@
       "hits": 0,
       "rate": 0.0
     },
-    "total_duration_sec": 0.0,
+    "total_duration_sec": 0.01,
     "per_case": [
       {
         "case_id": "upd-01-address",
@@ -445,7 +445,7 @@
       "hits": 9,
       "rate": 0.6923
     },
-    "total_duration_sec": 0.0,
+    "total_duration_sec": 0.01,
     "per_case": [
       {
         "case_id": "upd-01-address",

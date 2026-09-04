@@ -390,3 +390,22 @@ class TestDoctor(unittest.TestCase):
                                  "tmp-writable", "utf8-stdout", "cjk-fonts"})
         fails = [c for c in checks if c["status"] == "FAIL"]
         self.assertEqual(fails, [], checks)
+
+
+class TestEvidenceViewer(unittest.TestCase):
+    def test_viewer_builds_and_links(self):
+        from membench.agents import create_agent
+        from membench.runner import run_suite
+        from membench.report import build_evidence_viewer
+        out = tempfile.mkdtemp()
+        cases = load_cases([os.path.join(PKG, "cases")])[:3]
+        run_suite(create_agent("smart"), cases, out_dir=out, runs=2, quiet=True)
+        adir = os.path.join(out, "smart")
+        ev = os.path.join(out, "evidence.html")
+        build_evidence_viewer([adir], ev)
+        doc = open(ev, encoding="utf-8").read()
+        self.assertIn("逐用例证据查看器", doc)
+        self.assertIn("badge", doc)
+        self.assertIn("id='ev-smart-", doc)          # 用例锚点存在
+        self.assertIn("<span class='badge", doc)      # 裁决徽章存在
+        self.assertIn("记忆演变轨迹", doc)

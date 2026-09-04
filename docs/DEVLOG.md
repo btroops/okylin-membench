@@ -187,3 +187,19 @@
 - **实现**：难度×维度热力表（aggregate 矩阵 + HTML/Markdown 带色表）——
   一眼定位"难度在哪里咬人"（naive 的 hard 档区分/更新/复用全 0）。
 - **测试**：89 通过；样例/文档同步。
+
+## 2026-09-04 · 轮次 N+11：逐用例证据查看器 + 演示彩排脚本
+
+- **论文**：Mem0 图记忆已转 Platform 闭源（OSS 移除 Neo4j 等驱动约 4000 行，
+  `relations` 字段消失——图记忆产品化信号，OSS 侧实体匹配仅作第三检索信号）；
+  HippoRAG 管线形状经官方 README 确认（OpenIE KG + PPR + 单次调用多跳），
+  数字待正文；Generative Agents 公式级细节本轮抓取失败，诚实标注未核实。
+- **实现**：
+  - 逐用例证据查看器 `comparison/evidence.html`：按智能体×用例组织，
+    每条探针显示角色/裁决徽章/分数/理由（含证据片段）/回复/检索来源，
+    可展开对话轨迹、记忆演变、记忆库终态；主报告加跳转链接；
+  - `scripts/rehearse.sh`：按 DEMO_SCRIPT 分镜顺序的彩排脚本
+    （doctor→validate→生成器一致性→评测→报告→产物清单）。
+- **事故**：cmd_demo 改造漏了 agent_dirs 初始化（NameError，demo 当场炸）
+  ——冒烟即修；viewer 测试的 case id 断言写死导致误报，放宽为结构断言。
+- **测试**：89→90。

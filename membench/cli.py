@@ -72,7 +72,7 @@ def cmd_validate(args) -> int:
 
 def cmd_run(args) -> int:
     from .agents import create_agent, create_agent_from_config
-    from .runner import run_suite
+    from .runner import _safe_name, run_suite
     cases = load_cases([args.cases])
     if args.filter:
         keys = [k.strip().lower() for k in args.filter.split(",")]
@@ -85,6 +85,7 @@ def cmd_run(args) -> int:
     os.makedirs(args.out, exist_ok=True)
     judge = _judge_from_args(args)
     summaries = []
+    agent_dirs = []
     for spec in _expand_agent_specs(args.agent):
         agent = create_agent(spec)
         print("== 运行智能体: %s（%d 用例 × %d 次）" % (agent.name, len(cases), args.runs))
@@ -93,11 +94,12 @@ def cmd_run(args) -> int:
                       keep_workdir=args.keep_workdir,
                       quiet=args.quiet)
         summaries.append(s)
+        agent_dirs.append(os.path.join(args.out, _safe_name(agent.name)))
         print("   总分 %.1f | 六维: %s" % (
             100 * s["overall"],
             " ".join("%s=%.0f" % (d, 100 * s["dimensions"][d]["score"])
                      for d in s["dimensions"])))
-    paths = write_reports(summaries, args.out, cases=cases)
+    paths = write_reports(summaries, args.out, cases=cases, agent_dirs=agent_dirs)
     print("报告: %s" % paths["html"])
     return 0
 
@@ -191,17 +193,19 @@ def cmd_doctor(args) -> int:
 def cmd_demo(args) -> int:
     """全流程演示：三个内置智能体 × 内置用例集 → 对比报告。"""
     from .agents import create_agent
-    from .runner import run_suite
+    from .runner import _safe_name, run_suite
     cases = load_cases([args.cases or DEFAULT_CASES])
     os.makedirs(args.out, exist_ok=True)
     summaries = []
+    agent_dirs = []
     for spec in ("nomem", "naive", "smart"):
         agent = create_agent(spec)
         print("== demo 智能体: %s（%d 用例 × %d 次）" % (agent.name, len(cases), args.runs))
         s = run_suite(agent, cases, out_dir=args.out, runs=args.runs, quiet=args.quiet)
         summaries.append(s)
+        agent_dirs.append(os.path.join(args.out, _safe_name(agent.name)))
         print("   总分 %.1f" % (100 * s["overall"]))
-    paths = write_reports(summaries, args.out, cases=cases)
+    paths = write_reports(summaries, args.out, cases=cases, agent_dirs=agent_dirs)
     print("\n演示完成。对比报告: %s" % paths["html"])
     return 0
 
