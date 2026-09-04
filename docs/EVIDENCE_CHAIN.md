@@ -97,7 +97,7 @@ BEAM 用双人工标注 2000 题；我们用"模板+期望同源计算"达到零
 （见 RELATED_WORK.md 差距清单），人工标注应优先投向盲评载荷
 （tests/labels/blind_payload.json，185 条现成待标）。
 
-## 六、与六项开源工作的逐项 gap analysis（论文级）
+## 六、与六项开源工作的逐项 gap analysis（论文级，原创定位已校准）
 
 > 完整引用关系见 RESEARCH.md；本表只回答三件事：**它们覆盖什么、
 > 我们新增什么、我们不能声称原创什么。**
@@ -117,10 +117,15 @@ BEAM 用双人工标注 2000 题；我们用"模板+期望同源计算"达到零
 | 确定性优先评分 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ MemRM | ✅ 4/5 探针零 LLM | ✅ **立场原创**（IFEval 已引用归属） |
 | OS 集成（.deb/doctor） | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ 工程原创（AIOS/OpenClaw 引用归属） |
 
-**可以声称原创的六项**：①记忆状态演变轨迹作为评测对象；②文件/行动
-产物证据通道；③五分类失败模式裁决（含理由引用）；④记忆卫生探针；
-⑤"该忘未忘"的过程级 staleness 扫描；⑥确定性优先的评分立场在记忆
-评测上的系统化落地。
+**可以自信声称原创的定位**（经本轮 claim 边界校准——
+failure taxonomy 与 artifact 证据本身都有前人工作，原创点在**框架层组合与自动归属**）：
+
+1. **Evidence chain paradigm**——从终态 QA 评测转向"记忆状态→检索→决策→行动"过程评测；
+2. **OS-level artifact evidence channel for memory evaluation**——filesystem 证据作为评测通道（非单纯建模输出），对标 Letta MemFS 与 OpenClaw 文件化记忆；
+3. **Evidence-backed failure attribution framework**——把 FAMA 风格的 forgetting 惩罚与 BEAM 的 contradiction detection 等前人工作组合为统一五分类 + 证据指纹 + 自动归属（创新在组合+自动化，不是分类名本身）；
+4. **agent-protocol-aware retrieval localization**——继承 LongMemEval 的 `answer_session_ids` 思想，扩展到 subproc 智能体协议层；
+5. **deterministic-first evaluation stance on structured memory evidence**——与 IFEval 可验证指令哲学同源，明确"能用确定性就不用、开放生成可保留 LLM fallback"的立场；
+6. **openKylin-grounded packaging & self-check**——以 AIOS 内核服务模型为对照，落到 .deb + doctor 8 项自检。
 
 **不能声称原创的**：跨 session QA、拒答、时序/多跳/因果、FAMA 公式、
 session 级检索定位思想、VT 链式更新——全部已在 RESEARCH.md 标注出处。

@@ -59,13 +59,13 @@
 | 拒答 | ✅ | ✅ | ✅ | △ | ❌ | ❌ | ✅ | 继承+工程化 |
 | 选择性遗忘 | ❌ | △ | ✅ | ✅FAMA | ✅ | ❌ | ✅ | 语义继承，**扫描机制原创** |
 | 时序/多跳/因果 | △ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 继承 |
-| 记忆状态过程评测 | ❌ | ❌ | ❌ | ❌ | ❌ | △记录非评测 | ✅ | **原创** |
-| 检索证据定位 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | 继承思想，扩展到智能体协议 |
-| 文件/行动产物证据 | ❌ | ❌ | ❌ | ❌ | ❌ | △ | ✅ | **原创** |
-| 五分类失败裁决 | ❌ | ❌ | ❌ | △ | ❌ | ❌ | ✅ | **原创** |
-| 记忆卫生（去重/噪声） | ❌ | ❌ | ❌ | ❌ | △ | ❌ | ✅ | **原创** |
-| 确定性优先评分 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | **立场原创**（IFEval 归属） |
-| OS 集成 .deb/doctor | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | **工程原创**（AIOS/OpenClaw 归属） |
+| 记忆状态过程评测 | ❌ | ❌ | ❌ | ❌ | ❌ | △记录非评测 | ✅ | **Evidence chain paradigm**（评测范式：从终态 QA → 记忆状态→检索→行动） |
+| 检索证据定位 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | △ **agent-protocol-aware retrieval localization**（继承 `answer_session_ids`，扩展到 subproc 智能体协议） |
+| 文件/行动产物证据 | ❌ | ❌ | ❌ | ❌ | ❌ | △ | ✅ | **OS-level artifact evidence channel for memory evaluation**（filesystem 通道，匹配 Letta MemFS/OpenClaw 文件化记忆） |
+| 五分类失败裁决 | ❌ | ❌ | ❌ | △ | ❌ | ❌ | ✅ | **Evidence-backed failure attribution framework**（组合 Memora/FAMA + BEAM 而成，分类名沿用前人） |
+| 记忆卫生（去重/噪声） | ❌ | ❌ | ❌ | ❌ | △ | ❌ | ✅ | △ 工程性创新（与 SIABench 抽象化预处理同向） |
+| 确定性优先评分 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | **deterministic-first stance on structured evidence**（与 IFEval 可验证指令哲学同源；开放生成保留 LLM fallback） |
+| OS 集成 .deb/doctor | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | **openKylin-grounded packaging & self-check**（以 AIOS 内核服务为对照，落到 .deb + doctor） |
 
 ## 四层引用骨架（PPT 引用页）
 
