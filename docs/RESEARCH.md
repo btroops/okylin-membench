@@ -343,3 +343,23 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
   各自关键。
 - **地位**：后续一切智能体记忆架构（MemGPT/A-Mem/Mem0）的引用源头；
   我们的九维中的 multi_session_reasoning 对应其"反思"能力面。
+
+### HippoRAG 2 数字核实（补，arXiv:2502.14802v1 §6/Table 2-7）
+
+- **基线澄清**：无 IRCoT 直接对比（结构化 RAG 基线 = RAPTOR/GraphRAG/
+  LightRAG/HippoRAG），§6.3 实为"稠密检索器可换性实验"，非持续学习。
+- **Table 2（F1, Llama-3.3-70B-Instruct reader）**：NQ 63.3 vs 61.9 / PopQA
+  56.2 vs 55.7 / NarrativeQA 25.9 vs 25.7 / MuSiQue 48.6 vs 45.7 / 2Wiki
+  71.0 vs 61.5 / HotpotQA 75.5 vs 75.3 / LV-Eval 12.9 vs 9.8——全面领先
+  NV-Embed-v2。
+- **Table 3/9（检索 recall@5/2）**：MuSiQue +5.0、2Wiki +13.9。
+- **§6.1 消融**：linking / graph 构建 / triple 过滤三组件各自关键。
+- **MEMORA LOCOMO 评测页 / blog 链接**：未能从一手来源核实（404 / 索引无），
+  诚实降级为待核实。
+
+### Mem0 LOCOMO 评测页（blog）— 一手 404
+
+- mem0.ai/blog、/locomo-evaluation、/llms-as-operating-systems 等均 404；
+  mem0.ai/research 仅给出 1,540 题 5 类分数（已上轮核实）。结论：mem0
+  博客层 LOCOMO 分类别详细数字与 token/时延对比——无法从一手源核实，
+  后续访问需直接索取代码复现。

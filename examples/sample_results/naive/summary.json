@@ -140,12 +140,6 @@
       "temporal_reasoning": 0.0
     }
   },
-  "retrieval_localization": {
-    "n": 13,
-    "hits": 9,
-    "rate": 0.6923
-  },
-  "total_duration_sec": 0.01,
   "per_case": [
     {
       "case_id": "upd-01-address",
@@ -302,5 +296,11 @@
       "difficulty": "medium",
       "score": 100.0
     }
-  ]
+  ],
+  "retrieval_localization": {
+    "n": 13,
+    "hits": 9,
+    "rate": 0.6923
+  },
+  "total_duration_sec": 0.01
 }

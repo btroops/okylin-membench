@@ -52,6 +52,21 @@
 | smart | medium | 100 | 100 | - | 100 | 100 | 100 | 100 | - | 100 |
 | smart | hard | - | - | 100 | 100 | - | 100 | - | 100 | - |
 
+## 高判别力用例（BEAM 风格：跨智能体极差最大）
+
+| 用例 | 难度 | 判别度 |
+|---|---|---|
+| upd-01-address | easy | 100 |
+| upd-02-phone | easy | 100 |
+| upd-03-editor | easy | 100 |
+| upd-04-memory-store | hard | 100 |
+| upd-05-retract | hard | 100 |
+| reuse-01-install | medium | 100 |
+| reuse-02-commit-rule | hard | 100 |
+| reuse-03-weekly-template | medium | 100 |
+| reuse-04-cache-clean | medium | 100 |
+| tem-01-events | medium | 100 |
+
 ## 五分类裁决分布
 
 ### nomem

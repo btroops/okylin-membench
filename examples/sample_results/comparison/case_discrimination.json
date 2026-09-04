@@ -1,0 +1,102 @@
+[
+  {
+    "case_id": "upd-01-address",
+    "difficulty": "easy",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 50.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "upd-02-phone",
+    "difficulty": "easy",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 50.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "upd-03-editor",
+    "difficulty": "easy",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 50.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "upd-04-memory-store",
+    "difficulty": "hard",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 0.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "upd-05-retract",
+    "difficulty": "hard",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 100.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "reuse-01-install",
+    "difficulty": "medium",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 0.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "reuse-02-commit-rule",
+    "difficulty": "hard",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 0.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "reuse-03-weekly-template",
+    "difficulty": "medium",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 0.0,
+      "naive": 100.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "reuse-04-cache-clean",
+    "difficulty": "medium",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 0.0,
+      "naive": 100.0,
+      "smart": 100.0
+    }
+  },
+  {
+    "case_id": "tem-01-events",
+    "difficulty": "medium",
+    "discrimination": 100.0,
+    "scores": {
+      "nomem": 0.0,
+      "naive": 0.0,
+      "smart": 100.0
+    }
+  }
+]

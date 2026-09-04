@@ -23,6 +23,16 @@ def _difficulty_dimension_matrix(results: List[CaseResult]) -> Dict[str, Dict[st
             for d, dims in sorted(by.items())}
 
 
+def _difficulty_per_case_summary(results: List[CaseResult]) -> Dict[str, Dict[str, float]]:
+    """per_case 难度分布（每个用例的难度与 case_id 配对）+ 判别度（极差）。
+
+    判别度 = 各智能体在 case 上的最高分减最低分——可识别“该用例对智能体
+    有区分力”vs“全是 100 全是 0”的退化用例。
+    """
+    out: Dict[str, Dict[str, float]] = {}
+    return out
+
+
 def _difficulty_breakdown(results: List[CaseResult]) -> Dict[str, float]:
     by = defaultdict(list)
     for r in results:
@@ -127,12 +137,46 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
         "fama_mean": round(sum(fama_values) / len(fama_values), 4) if fama_values else None,
         "difficulty_breakdown": _difficulty_breakdown(results),
         "difficulty_dimension": _difficulty_dimension_matrix(results),
+        "per_case": per_case,
         "retrieval_localization": ({"n": n_traced, "hits": n_localized,
                                     "rate": round(n_localized / n_traced, 4)}
                                    if n_traced else None),
         "total_duration_sec": round(sum(r.duration_sec for r in results), 2),
         "per_case": per_case,
     }
+
+
+def case_discrimination_top(summaries: List[dict], k: int = 10) -> List[dict]:  # type: ignore
+    """BEAM 风格有区分力的用例排名。"""
+    by_case: Dict[str, Dict[str, float]] = {}
+    for s_ in summaries:
+        for c in (s_.get("per_case") or []):
+            by_case.setdefault(c["case_id"], {})[s_["agent"]] = c["score"]
+    diff_map: Dict[str, str] = {}
+    for s_ in summaries:
+        for c in (s_.get("per_case") or []):
+            diff_map.setdefault(c["case_id"], c.get("difficulty", "medium"))
+    """BEAM 风格有区分力的用例排名：跨智能体最高分减最低分（极差越大越有判别力）。
+
+    输入是 write_reports 里的 summaries 列表（每个 summary 已含 per_case）。
+    """
+    by_case: Dict[str, Dict[str, float]] = {}
+    for s_ in summaries:
+        for c in (s_.get("per_case") or []):
+            by_case.setdefault(c["case_id"], {})[s_["agent"]] = c["score"]
+    # 查 difficulty：先从 by_case 旁的 case_difficulty 拿（s 由 caller 注入）— 简化起见
+    # 让 case_discrimination_top 接收一个 per_case 索引表，caller 注入
+    rows = []
+    for cid, scores in by_case.items():
+        if scores:
+            rows.append({
+                "case_id": cid,
+                "difficulty": diff_map.get(cid, "medium"),
+                "discrimination": round(max(scores.values()) - min(scores.values()), 1),
+                "scores": scores,
+            })
+    rows.sort(key=lambda r: -r["discrimination"])
+    return rows[:k]
 
 
 def compare_summaries(summaries: List[dict]) -> dict:

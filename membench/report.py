@@ -73,6 +73,14 @@ def build_markdown(summaries: List[dict], cases=None) -> str:
                     continue
                 cells = [("%.0f" % m[dk][dim]) if m[dk].get(dim) is not None else "-" for dim in dim_cols]
                 lines.append("| %s | %s | %s |" % (a, dk, " | ".join(cells)))
+    if any(s.get("case_discrimination_top") for s in summaries):
+        top = summaries[0].get("case_discrimination_top") or []
+        if top:
+            lines += ["", "## 高判别力用例（BEAM 风格：跨智能体极差最大）", "",
+                      "| 用例 | 难度 | 判别度 |", "|---|---|---|"]
+            for t in top:
+                lines.append("| %s | %s | %.0f |" % (t["case_id"], t.get("difficulty", "?"),
+                                                 t["discrimination"]))
     lines += ["", "## 五分类裁决分布", ""]
     for s in summaries:
         lines.append("### %s" % s["agent"])
@@ -146,6 +154,15 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
                         _cls((v or 0) / 100), ("%.0f" % v) if v is not None else "-"))
                 html.append("</tr>")
         html.append("</table>")
+    if any(s.get("case_discrimination_top") for s in summaries):
+        top = summaries[0].get("case_discrimination_top") or []
+        if top:
+            html.append("<h2>高判别力用例（跨智能体极差最大）</h2>"
+                        "<table><tr><th>用例</th><th>难度</th><th>判别度</th></tr>")
+            for t in top:
+                html.append("<tr><td>%s</td><td>%s</td><td>%.0f</td></tr>"
+                            % (t["case_id"], t.get("difficulty", "?"), t["discrimination"]))
+            html.append("</table>")
     if cases is not None:
         bins = bin_report_by_load(cases, summaries)
         html.append("<h2>记忆负担分档对比</h2><p class='note'>沿用 BEAM 思路：按用例 session 数分档，观察随记忆负担增长的退化曲线。</p>")
@@ -204,6 +221,11 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
 
 def write_reports(summaries: List[dict], out_dir: str, cases=None,
                   agent_dirs: Optional[List[str]] = None) -> Dict[str, str]:
+    # 先算 case_discrimination_top，确保 build_markdown/build_html 拿到
+    from .aggregate import case_discrimination_top
+    disc = case_discrimination_top(summaries)
+    for s_ in summaries:
+        s_["case_discrimination_top"] = disc
     """写出 comparison/{report.html, comparison.md, summary.json}，返回文件路径表。"""
     cmp_dir = os.path.join(out_dir, "comparison")
     os.makedirs(cmp_dir, exist_ok=True)
@@ -219,6 +241,11 @@ def write_reports(summaries: List[dict], out_dir: str, cases=None,
     with open(js_path, "w", encoding="utf-8") as f:
         json.dump(summaries, f, ensure_ascii=False, indent=2)
     paths["json"] = js_path
+    # 单独落盘（disc 已在函数顶部计算）
+    with open(os.path.join(cmp_dir, "case_discrimination.json"), "w",
+              encoding="utf-8") as f:
+        json.dump(disc, f, ensure_ascii=False, indent=2)
+    paths["discrimination"] = os.path.join(cmp_dir, "case_discrimination.json")
     if agent_dirs:
         ev_path = os.path.join(cmp_dir, "evidence.html")
         build_evidence_viewer(agent_dirs, ev_path)
