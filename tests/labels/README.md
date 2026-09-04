@@ -23,3 +23,22 @@ python3 scripts/labels/blind_relabel.py
 python3 scripts/labels/compute_agreement.py
 # 期望输出: n=185, agreement=0.8378, kappa=0.7485
 ```
+
+## 真人标注者工作流（可信度实验的下一环）
+
+当前第二标注者是规则盲评器（honest caveat 已记录）。接入真人标注：
+
+1. 打开 `blind_payload.json`（185 条，每条只有 id / dimension / reply，
+   **没有引擎裁决**——天然盲评）；
+2. 按五分类规则逐条给出你的裁决，存为 `human_labels_v2.json`
+   （格式同 `human_labels.json`）；
+3. 用算分脚本对照任意两份标注或标注 vs 引擎：
+
+```bash
+python3 scripts/labels/compute_agreement.py \
+  --eng tests/labels/human_labels_A.json \
+  --hum tests/labels/human_labels_B.json
+```
+
+标注者间 κ（inter-annotator agreement）即为论文要求的
+human-human 一致率；引擎 vs 真人 κ 即为引擎可信度。

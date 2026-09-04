@@ -84,13 +84,18 @@ scoring.py）→ 分歧仲裁 → 指标。数据与脚本在 `tests/labels/`。
 membench gen --variants 15 --seed 2026
 → 315 用例（9 维度全覆盖），validate 全过，生成 <1s
 → 三智能体区分度保持：smart 91.5 / naive 32.3 / nomem 17.5
-→ 评测 945 次（315×3）总耗时 0.4s，<0.5ms/次
+
+membench gen --variants 95 --seed 2026   # BEAM 同级规模实测
+→ 1995 用例（≈BEAM 2000 题），生成+校验 3.2s
+→ 三智能体 5985 次评测 2.3s，区分度保持：91.2 / 32.5 / 17.5
 ```
 
 扩展公式：`21 模板 × variants × 种子`，难度由干扰项最小对/链长/session
 距离三个旋钮参数化（RULER 式），同种子输出逐字节一致（测试锁定）。
 BEAM 用双人工标注 2000 题；我们用"模板+期望同源计算"达到零标注成本
-的可复现扩展。
+的按需扩展——**题量不再是瓶颈，诚实地说瓶颈在人工校验深度**
+（见 RELATED_WORK.md 差距清单），人工标注应优先投向盲评载荷
+（tests/labels/blind_payload.json，185 条现成待标）。
 
 ## 六、与六项开源工作的逐项 gap analysis（论文级）
 
