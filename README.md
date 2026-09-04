@@ -107,7 +107,7 @@ membench demo
 ## 运行测试
 
 ```bash
-python3 -m unittest discover -s tests   # 89 个单元/端到端测试（31 用例 + 24 模板 / 9 维度；含 doctor 自检、FAMA 双清单与记忆维护探针）
+python3 -m unittest discover -s tests   # 89 个单元/端到端测试（31 用例 + 24 模板 / 9 维度；含难度×维度热力表、doctor 自检、FAMA 双清单与记忆维护探针）
 ```
 
 ## 许可证

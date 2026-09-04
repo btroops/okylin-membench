@@ -118,12 +118,34 @@
     "hard": 6.7,
     "medium": 32.9
   },
+  "difficulty_dimension": {
+    "easy": {
+      "dynamic_update": 0.0,
+      "recall": 50.0,
+      "retention": 100.0
+    },
+    "hard": {
+      "distractor_discrimination": 0.0,
+      "dynamic_update": 0.0,
+      "multi_session_reasoning": 33.3,
+      "task_reuse": 0.0
+    },
+    "medium": {
+      "boundary_refusal": 7.1,
+      "causal_reasoning": 75.0,
+      "distractor_discrimination": 0.0,
+      "recall": 50.0,
+      "retention": 60.0,
+      "task_reuse": 66.7,
+      "temporal_reasoning": 0.0
+    }
+  },
   "retrieval_localization": {
     "n": 13,
     "hits": 9,
     "rate": 0.6923
   },
-  "total_duration_sec": 0.01,
+  "total_duration_sec": 0.0,
   "per_case": [
     {
       "case_id": "upd-01-address",

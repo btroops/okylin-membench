@@ -57,6 +57,21 @@ def build_markdown(summaries: List[dict], cases=None) -> str:
         for a, per in diff_rows.items():
             lines.append("| %s | %s |" % (a, " | ".join(
                 ("%.0f" % per[k]) if k in per else "-" for k in diff_keys)))
+    diff_keys = ["easy", "medium", "hard"]
+    dim_cols = DIMENSIONS
+    mat = {s["agent"]: s.get("difficulty_dimension", {}) for s in summaries}
+    if any(mat.values()):
+        lines += ["", "## 难度 × 维度热力表", "",
+                  "| 智能体 | 难度 | " + " | ".join(DIMENSION_LABELS[d_] for d_ in dim_cols) + " |",
+                  "|---|---|" + "---|" * len(dim_cols)]
+        for a, m in mat.items():
+            if not m:
+                continue
+            for dk in diff_keys:
+                if dk not in m:
+                    continue
+                cells = [("%.0f" % m[dk][dim]) if m[dk].get(dim) is not None else "-" for dim in dim_cols]
+                lines.append("| %s | %s | %s |" % (a, dk, " | ".join(cells)))
     lines += ["", "## 五分类裁决分布", ""]
     for s in summaries:
         lines.append("### %s" % s["agent"])
@@ -109,6 +124,25 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
             for k in ("easy", "medium", "hard"):
                 html.append("<td>%s</td>" % (("%.0f" % per[k]) if k in per else "-"))
             html.append("</tr>")
+        html.append("</table>")
+    diff_keys = ["easy", "medium", "hard"]
+    mat = {s["agent"]: s.get("difficulty_dimension", {}) for s in summaries}
+    if any(mat.values()):
+        html.append("<h2>难度 × 维度热力表</h2><table><tr><th>智能体</th><th>难度</th>")
+        html.extend("<th>%s</th>" % DIMENSION_LABELS[d_] for d_ in DIMENSIONS)
+        html.append("</tr>")
+        for a, m in mat.items():
+            if not m:
+                continue
+            for dk in diff_keys:
+                if dk not in m:
+                    continue
+                html.append("<tr><td>%s</td><td>%s</td>" % (a, dk))
+                for dim in DIMENSIONS:
+                    v = m[dk].get(dim)
+                    html.append("<td class='%s'>%s</td>" % (
+                        _cls((v or 0) / 100), ("%.0f" % v) if v is not None else "-"))
+                html.append("</tr>")
         html.append("</table>")
     if cases is not None:
         bins = bin_report_by_load(cases, summaries)

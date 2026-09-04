@@ -10,6 +10,19 @@ from . import DIMENSIONS
 from .runner import CaseResult
 
 
+def _difficulty_dimension_matrix(results: List[CaseResult]) -> Dict[str, Dict[str, float]]:
+    """难度 × 维度矩阵（0-100）：定位"难度在哪里咬人"。"""
+    by = defaultdict(lambda: defaultdict(list))
+    for r in results:
+        for row in r.rows:
+            if row.get("score") is not None:
+                dim = row.get("dimension") or r.dimension
+                by[r.difficulty][dim].append(float(row["score"]) * 100)
+    return {d: {dim: round(sum(v) / len(v), 1) if v else None
+                for dim, v in sorted(dims.items())}
+            for d, dims in sorted(by.items())}
+
+
 def _difficulty_breakdown(results: List[CaseResult]) -> Dict[str, float]:
     by = defaultdict(list)
     for r in results:
@@ -113,6 +126,7 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
             if row.get("probe_id") == "staleness_scan" and row.get("score") == 0.0),
         "fama_mean": round(sum(fama_values) / len(fama_values), 4) if fama_values else None,
         "difficulty_breakdown": _difficulty_breakdown(results),
+        "difficulty_dimension": _difficulty_dimension_matrix(results),
         "retrieval_localization": ({"n": n_traced, "hits": n_localized,
                                     "rate": round(n_localized / n_traced, 4)}
                                    if n_traced else None),

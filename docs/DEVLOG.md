@@ -177,3 +177,13 @@
 - **答辩材料**：docs/RELATED_WORK.md——相关工作两表 + 六项差异化
   （每项标注出处）+ 主动承认的差距 + 一句话定位。
 - **测试**：88→89。
+
+## 2026-09-04 · 轮次 N+10：难度×维度热力表 + 三篇补读
+
+- **论文**：Mem0 研究页（LOCOMO 分类别数字 + ADD-only 抽取 vs 我们的
+  覆盖式更新对照 + 三信号检索融合）；MemOS（MemCube 版本化元数据 =
+  fact_lifecycle 的通用化方向）；Generative Agents（谱系根补登记，
+  反思能力对应 multi_session_reasoning）。
+- **实现**：难度×维度热力表（aggregate 矩阵 + HTML/Markdown 带色表）——
+  一眼定位"难度在哪里咬人"（naive 的 hard 档区分/更新/复用全 0）。
+- **测试**：89 通过；样例/文档同步。
