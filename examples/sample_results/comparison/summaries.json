@@ -2,15 +2,15 @@
   {
     "agent": "nomem",
     "runs": 1,
-    "n_cases": 32,
+    "n_cases": 35,
     "dimensions": {
       "retention": {
-        "score": 0.2222,
-        "n_probes": 10,
-        "n_scored": 9,
+        "score": 0.1667,
+        "n_probes": 13,
+        "n_scored": 12,
         "n_not_evaluable": 1,
         "verdicts": {
-          "miss": 7,
+          "miss": 10,
           "not_evaluable": 1,
           "correct": 2
         },
@@ -27,13 +27,13 @@
         "std_across_runs": 0.0
       },
       "dynamic_update": {
-        "score": 0.6,
-        "n_probes": 10,
-        "n_scored": 10,
+        "score": 0.5385,
+        "n_probes": 13,
+        "n_scored": 13,
         "n_not_evaluable": 0,
         "verdicts": {
-          "miss": 4,
-          "correct": 6
+          "miss": 6,
+          "correct": 7
         },
         "std_across_runs": 0.0
       },
@@ -99,19 +99,20 @@
         "std_across_runs": 0.0
       }
     },
-    "overall": 0.2025,
+    "overall": 0.1895,
     "total_findings_sensitive": 0,
     "memory_ops": {
       "writes": 0,
       "deletes": 0
     },
     "staleness_violations": 0,
-    "fama_mean": 0.2656,
+    "fama_mean": 0.2429,
     "difficulty_breakdown": {
       "easy": 21.4,
-      "hard": 20.0,
-      "medium": 37.5
+      "hard": 19.0,
+      "medium": 35.7
     },
+    "relation_breakdown": {},
     "difficulty_dimension": {
       "easy": {
         "dynamic_update": 50.0,
@@ -120,8 +121,9 @@
       },
       "hard": {
         "distractor_discrimination": 0.0,
-        "dynamic_update": 75.0,
+        "dynamic_update": 57.1,
         "multi_session_reasoning": 0.0,
+        "retention": 0.0,
         "task_reuse": 0.0
       },
       "medium": {
@@ -129,7 +131,7 @@
         "causal_reasoning": 0.0,
         "distractor_discrimination": 0.0,
         "recall": 0.0,
-        "retention": 33.3,
+        "retention": 28.6,
         "task_reuse": 0.0,
         "temporal_reasoning": 0.0
       }
@@ -208,6 +210,21 @@
       {
         "case_id": "dis-04-two-ips",
         "difficulty": "hard",
+        "score": 0.0
+      },
+      {
+        "case_id": "rel-01-contradictory",
+        "difficulty": "hard",
+        "score": 33.33
+      },
+      {
+        "case_id": "rel-02-nuanced",
+        "difficulty": "hard",
+        "score": 0.0
+      },
+      {
+        "case_id": "rel-03-complementary",
+        "difficulty": "medium",
         "score": 0.0
       },
       {
@@ -408,16 +425,16 @@
   {
     "agent": "naive",
     "runs": 1,
-    "n_cases": 32,
+    "n_cases": 35,
     "dimensions": {
       "retention": {
-        "score": 0.5833,
-        "n_probes": 12,
-        "n_scored": 12,
+        "score": 0.6222,
+        "n_probes": 15,
+        "n_scored": 15,
         "n_not_evaluable": 0,
         "verdicts": {
-          "correct": 7,
-          "miss": 1,
+          "correct": 9,
+          "miss": 2,
           "improper_persistence": 4
         },
         "std_across_runs": 0.0
@@ -435,11 +452,11 @@
       },
       "dynamic_update": {
         "score": 0.0,
-        "n_probes": 10,
-        "n_scored": 10,
+        "n_probes": 13,
+        "n_scored": 13,
         "n_not_evaluable": 0,
         "verdicts": {
-          "improper_reuse": 8,
+          "improper_reuse": 11,
           "confusion": 1,
           "miss": 1
         },
@@ -512,19 +529,20 @@
         "std_across_runs": 0.0
       }
     },
-    "overall": 0.3042,
+    "overall": 0.3085,
     "total_findings_sensitive": 4,
     "memory_ops": {
-      "writes": 62,
+      "writes": 68,
       "deletes": 0
     },
-    "staleness_violations": 4,
-    "fama_mean": 0.2995,
+    "staleness_violations": 5,
+    "fama_mean": 0.3119,
     "difficulty_breakdown": {
       "easy": 42.9,
-      "hard": 6.7,
-      "medium": 31.2
+      "hard": 19.0,
+      "medium": 31.3
     },
+    "relation_breakdown": {},
     "difficulty_dimension": {
       "easy": {
         "dynamic_update": 0.0,
@@ -535,6 +553,7 @@
         "distractor_discrimination": 0.0,
         "dynamic_update": 0.0,
         "multi_session_reasoning": 33.3,
+        "retention": 100.0,
         "task_reuse": 0.0
       },
       "medium": {
@@ -542,7 +561,7 @@
         "causal_reasoning": 75.0,
         "distractor_discrimination": 0.0,
         "recall": 50.0,
-        "retention": 37.5,
+        "retention": 37.0,
         "task_reuse": 66.7,
         "temporal_reasoning": 0.0
       }
@@ -622,6 +641,21 @@
         "case_id": "dis-04-two-ips",
         "difficulty": "hard",
         "score": 0.0
+      },
+      {
+        "case_id": "rel-01-contradictory",
+        "difficulty": "hard",
+        "score": 0.0
+      },
+      {
+        "case_id": "rel-02-nuanced",
+        "difficulty": "hard",
+        "score": 100.0
+      },
+      {
+        "case_id": "rel-03-complementary",
+        "difficulty": "medium",
+        "score": 33.33
       },
       {
         "case_id": "ms-01-chain",
@@ -714,7 +748,7 @@
       "hits": 9,
       "rate": 0.6923
     },
-    "total_duration_sec": 0.0,
+    "total_duration_sec": 0.01,
     "case_discrimination_top": [
       {
         "case_id": "upd-01-address",
@@ -821,14 +855,15 @@
   {
     "agent": "smart",
     "runs": 1,
-    "n_cases": 32,
+    "n_cases": 35,
     "dimensions": {
       "retention": {
-        "score": 1.0,
-        "n_probes": 10,
-        "n_scored": 10,
+        "score": 0.7692,
+        "n_probes": 13,
+        "n_scored": 13,
         "n_not_evaluable": 0,
         "verdicts": {
+          "miss": 3,
           "correct": 10
         },
         "std_across_runs": 0.0
@@ -844,12 +879,13 @@
         "std_across_runs": 0.0
       },
       "dynamic_update": {
-        "score": 1.0,
-        "n_probes": 10,
-        "n_scored": 10,
+        "score": 0.9231,
+        "n_probes": 13,
+        "n_scored": 13,
         "n_not_evaluable": 0,
         "verdicts": {
-          "correct": 10
+          "correct": 12,
+          "confusion": 1
         },
         "std_across_runs": 0.0
       },
@@ -915,19 +951,20 @@
         "std_across_runs": 0.0
       }
     },
-    "overall": 1.0,
+    "overall": 0.9658,
     "total_findings_sensitive": 0,
     "memory_ops": {
-      "writes": 45,
-      "deletes": 5
+      "writes": 47,
+      "deletes": 6
     },
     "staleness_violations": 0,
-    "fama_mean": 1.0,
+    "fama_mean": 0.9286,
     "difficulty_breakdown": {
       "easy": 100.0,
-      "hard": 100.0,
-      "medium": 100.0
+      "hard": 81.0,
+      "medium": 95.2
     },
+    "relation_breakdown": {},
     "difficulty_dimension": {
       "easy": {
         "dynamic_update": 100.0,
@@ -936,8 +973,9 @@
       },
       "hard": {
         "distractor_discrimination": 100.0,
-        "dynamic_update": 100.0,
+        "dynamic_update": 85.7,
         "multi_session_reasoning": 100.0,
+        "retention": 0.0,
         "task_reuse": 100.0
       },
       "medium": {
@@ -945,7 +983,7 @@
         "causal_reasoning": 100.0,
         "distractor_discrimination": 100.0,
         "recall": 100.0,
-        "retention": 100.0,
+        "retention": 85.7,
         "task_reuse": 100.0,
         "temporal_reasoning": 100.0
       }
@@ -1025,6 +1063,21 @@
         "case_id": "dis-04-two-ips",
         "difficulty": "hard",
         "score": 100.0
+      },
+      {
+        "case_id": "rel-01-contradictory",
+        "difficulty": "hard",
+        "score": 66.67
+      },
+      {
+        "case_id": "rel-02-nuanced",
+        "difficulty": "hard",
+        "score": 0.0
+      },
+      {
+        "case_id": "rel-03-complementary",
+        "difficulty": "medium",
+        "score": 0.0
       },
       {
         "case_id": "ms-01-chain",

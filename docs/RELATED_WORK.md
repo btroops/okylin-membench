@@ -1,69 +1,90 @@
-# 相关工作与差异化（答辩一页）
+# 相关工作与差异化（答辩版 · Evidence-Driven 叙事）
 
-> 依据：RESEARCH.md 中 19 项精读记录（截至轮次 N+9）。每条结论均可在
-> 该文件找到原文级依据；标注"摘要级"的为 abstract/文档级核实。
+> 完整精读依据：RESEARCH.md（31 项，4 系列）。
+> 叙事主文档：EVIDENCE_CHAIN.md（范式主张 + 三层架构 + 实验数据）。
+> 本页是"评委三问"的直接答案。
 
-## 一、评测基准谱系（谁在测、怎么测）
+## 评委问题 1：你和 LoCoMo / LongMemEval / MemoryAgentBench 有什么区别？
 
-| 工作 | 能力分类 | 评分方式 | 关键局限 |
-|---|---|---|---|
-| LoCoMo (2024.02) | 5 类 QA（含 **adversarial** 24.9%）+ 事件摘要 | F1 + FactScore 式原子事实 | 只评 LLM；无过程证据 |
-| LongMemEval (ICLR'25) | 5 能力；`answer_session_ids` 证据定位 | LLM judge + 检索定位率 | judge 随机性靠 10 次均值兜底 |
-| BEAM (2025.10) | **10 能力**；nugget 0/0.5/1；长度分 bin | nugget 均值；Event Ordering 用 Kendall τ-b | 生成依赖 GPT-4.1，人工双标注成本高 |
-| Memora (ACL'26) | 记住/推理/推荐；**FAMA = max(0, MPA − λ(1−FAA))** | 3 judge 投票，人机一致 88.3% | 合成对话；仅偏好/活动/目标记忆 |
-| AMA-Bench (2026.02) | Recall/Causal/StateUpdate/Abstraction | judge 人机一致 92.7%；QA-轨迹相关 0.96 | 合成轨迹为主 |
-| MemoryAgentBench (2507) | 检索/测试时学习/长程理解/**选择性遗忘** | 多轮增量格式 | — |
-| MemGym (2605) | 执行中动态记忆形成 | **memory gain（配对运行差值）** | — |
+**一句话**：它们评"最终回答"，我们评"证据链"。
 
-**共同缺口**（上表逐列核对）：全部只评"答案对不对"；全部依赖 LLM judge；
-全部不评"智能体"只评"LLM"；无文件系统/行动产物证据。
+|  | 终态 QA 范式（现有工作） | 证据链范式（本方案） |
+|---|---|---|
+| 评测对象 | 最终回答 vs 标准答案 | 对话轨迹 + 记忆状态演变 + 检索来源 + 文件产物 |
+| 失败归因 | 对/错（最多 FAMA 式惩罚） | 五分类：没记住 / 记住没用 / 记错 / 该忘未忘 / 不该记却记 |
+| 不可见失败 | 该忘未忘、不该记却记（答题可满分） | 过程级捕获（staleness / sensitive 扫描） |
+| 评分 | LLM judge（一致率 88-93%） | 确定性优先（4/5 探针零 LLM，跨 run 方差 0） |
+| 被评对象 | LLM | 智能体（内置 / stdio 协议 / OpenAI 兼容 / 文件化记忆生态） |
 
-## 二、记忆系统谱系（被评的对象长什么样）
+**杀手级例子**：一个把用户密码写进长期记忆的智能体，在终态 QA 范式下
+可以满分；在本方案的 sensitive_scan + memory 探针下当场违规。
+（实测：naive 智能体 8 次敏感持久化事件，证据包可逐条查看。）
 
-- **MemGPT**：OS 式分级（working context 仅可函数写入 + recall/archival）；
-  产品化 Letta 已演进为 **git 支撑的 MemFS + Dreaming 后台整理 + /doctor 审计**。
-- **Mem0**：增量比对操作分类学 **ADD/UPDATE/DELETE/NOOP**（逐字核实）；
-  LOCOMO 上比全文基线时延 -91%。
-- **A-MEM**：Zettelkasten 笔记演化（strengthen/update_neighbor）——
-  多跳 QA 比 LoCoMo 基线高 ≥2 倍。
-- **Zep/Graphiti**：时序知识图谱，事实**失效不删除**、保留演化史。
-- **OpenClaw**（赛题点名生态智能体，官方文档核实）：记忆 = 工作区
-  **纯 Markdown 文件**（MEMORY.md / memory/日期.md / DREAMS.md）+
-  混合检索 + **Dreaming 后台整理**。
-- **行业收敛**：文件化存储 + 后台整理 + 混合检索——三条主线全部落在
-  membench 的证据通道上（文件快照、记忆演变轨迹、检索定位率）。
+## 评委问题 2：你的自动评分为什么可信？
 
-## 三、membench 的六项差异化（每项都有出处）
+**用数据回答，不用形容词**（实验数据见 `tests/labels/`）：
 
-1. **过程级证据**（唯一）：记忆演变轨迹区分"写失败/该删未删/健康覆盖"，
-   终态 QA 指标对此不可分（MemGym 的 condensation 记录最接近，但不做评测）；
-2. **五分类裁决 + criteria 级 FAMA**（唯一）：correct/miss/confusion/
-   improper_persistence/improper_reuse；FAMA = max(0, MPA − λ(1−FAA))
-   按判据角色分解——所有基准的 judge 只判对错；
-3. **全轨迹 staleness 扫描**（唯一）：事实生命周期（Zep 式失效不删除的
-   session 级版）+ 每 session 边界扫描，"该遗忘的没遗忘"被过程级捕获
-   （呼应 MemoryAgentBench 的 selective forgetting 与综述的 learned
-   forgetting 开放挑战）；
-4. **确定性优先**：4/5 探针类型零 LLM，跨 run std=0（对照 IFEval 的
-   可验证指令思想）；LLM judge 可选且有自检接口；
-5. **智能体可插拔**：builtin / stdio-JSONL / OpenAI 兼容三种接入——
-   对 OpenClaw 这类文件化记忆智能体，fs 证据通道**天然可直读其记忆**
-   （无需侵入），对接成本约 50 行协议 shim；
-6. **openKylin 落地面**：.deb 分发、`membench doctor` 环境自检 8 项
-   （python/yaml/用例/智能体/协议/沙箱/UTF-8/CJK 字体）、零第三方依赖
-   （python3 + python3-yaml 均为系统预装）。
+1. **盲评一致性实验**：185 条探针裁决，独立盲评器（另行实现、不经
+   scoring.py）raw agreement **83.8%**（κ=0.75，六分类）；30 条分歧
+   逐条仲裁：21 条为盲评器无记忆库/文件访问权（权限制约），9 条为
+   类间语义近似，**1 条真实改进点当场转化为引擎修复**（any_include
+   回退定类，回归测试锁定）；
+2. **零方差**：同一输入跨 run 逐字节一致（test_stability_deterministic）；
+   对照：AMA-Bench 的 LLM judge 人机一致率 92.7%、Memora 三 judge
+   投票 88.3%——我们的确定性路径免 judge、免投票、免温度；
+3. **每条裁决可人工复核**：verdict + reason 引用命中的证据片段，
+   `evidence.html` 逐条点开即可验证（对/错一目了然，不依赖黑盒）；
+4. **诚实口径**：LLM judge 在 free 探针上仍可选（带自检接口与失败回退），
+   我们主张的不是"不用 LLM"而是"能用确定性就不用"。
 
-## 四、主动承认的差距（答辩防身）
+## 评委问题 3：为什么这不是把几个 benchmark 拼起来？
 
-- 数据规模：27 手写 + 模板生成 << BEAM 2000 题（人工校验深度不及）；
-- 无 leaderboard（赛题未要求）；
-- 时序推理深度不及 LongMemEval（无"事件+持续时长"组合题）；
-- 检索定位率目前覆盖内置/实现该协议的智能体，外部智能体需实现协议 shim；
-- 我们的 judge 在 free 探针上仍可用 LLM（启发式为默认），与全 LLM judge
-  的基准相比，语义覆盖面窄但可复现性换来了稳定性——这是明确的设计取舍。
+**因为核心对象不同，不是题型相加。**
 
-## 五、一句话定位
+- 拼题型 = 继续在 Question→Answer→Judge 路径上加任务类型（这正是
+  LoCoMo→LongMemEval→BEAM 的演进方式，我们没有重复它）；
+- 我们新增的评测对象是**记忆系统的内部行为**：逐 session 的记忆库
+  快照 diff（写没写、删没删）、检索来源（从哪个 session 取）、文件
+  产物（写了什么）——这些在任何上述 benchmark 里都不存在；
+- 组合的证据见六项可声称原创（演变轨迹/文件证据/五分类裁决/记忆
+  卫生/staleness 扫描/确定性立场），以及三项明确标注"继承并工程化"
+  的能力（跨 session QA/拒答/时序多跳）——我们公开说清楚了哪些是
+  站在 LongMemEval 等工作的肩膀上。
 
-> 开源基准在"给 LLM 出长上下文考卷"，membench 在"给 openKylin 上的
-> 智能体做记忆体检"——不只看答对没，还看记忆写没写、删没删、从哪取的、
-> 该忘的忘没忘。
+## 与六项工作的逐项对比表
+
+| 能力 | LoCoMo | LongMemEval | BEAM | Memora | AMA-Bench | MemGym | **membench** | 原创性 |
+|---|---|---|---|---|---|---|---|---|
+| 跨 session QA | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 继承 |
+| 拒答 | ✅ | ✅ | ✅ | △ | ❌ | ❌ | ✅ | 继承+工程化 |
+| 选择性遗忘 | ❌ | △ | ✅ | ✅FAMA | ✅ | ❌ | ✅ | 语义继承，**扫描机制原创** |
+| 时序/多跳/因果 | △ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | 继承 |
+| 记忆状态过程评测 | ❌ | ❌ | ❌ | ❌ | ❌ | △记录非评测 | ✅ | **原创** |
+| 检索证据定位 | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ✅ | 继承思想，扩展到智能体协议 |
+| 文件/行动产物证据 | ❌ | ❌ | ❌ | ❌ | ❌ | △ | ✅ | **原创** |
+| 五分类失败裁决 | ❌ | ❌ | ❌ | △ | ❌ | ❌ | ✅ | **原创** |
+| 记忆卫生（去重/噪声） | ❌ | ❌ | ❌ | ❌ | △ | ❌ | ✅ | **原创** |
+| 确定性优先评分 | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | **立场原创**（IFEval 归属） |
+| OS 集成 .deb/doctor | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | **工程原创**（AIOS/OpenClaw 归属） |
+
+## 四层引用骨架（PPT 引用页）
+
+1. **Benchmark foundation**：LoCoMo (2024.02) → LongMemEval (ICLR'25) →
+   MemoryAgentBench (2025.07)——"长期记忆评测必须跨 session、含拒答
+   与选择性遗忘"；
+2. **Memory mechanism**：MemGPT (2023.10) → Mem0 (2025.04) → A-MEM
+   (NeurIPS'25) → Zep/Graphiti (2025.01)——"真实记忆系统是
+   add/update/delete/evolve，不是 KV cache"（演变轨迹 added/removed
+   正对应 Mem0 的 ADD/DELETE，逐字核实）；
+3. **Agentic benchmark**：BEAM (2025.10) → AMA-Bench (2026.02) →
+   MemGym (2026.05)——"评测正从 QA 走向轨迹/状态更新/因果行动/
+   记忆隔离打分"（MemGym 的 memory-isolated scores 与我们同向）；
+4. **OS / system integration**：AIOS (COLM'25) + Letta MemFS +
+   OpenClaw 官方文档——"为什么适配 openKylin：生态智能体的记忆就是
+   磁盘文件，fs 证据通道无需侵入"。
+
+## 一句话定位（收尾用）
+
+> 开源基准在给 LLM 出长上下文考卷；我们在给 openKylin 上的智能体做
+> **记忆体检**——不只看答对没，还看写没写、删没删、从哪取的、
+> 该忘的忘没忘、不该记的记没记。

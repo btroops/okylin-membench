@@ -19,7 +19,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 </head><body>
 <h1>membench 逐用例证据查看器</h1>
 <div class='note'>每条探针裁决均含可解释理由与命中片段；对话轨迹/记忆演变/记忆库终态可展开。</div>
-<h2 id='agent-nomem'>智能体：nomem（32 份证据）</h2>
+<h2 id='agent-nomem'>智能体：nomem（35 份证据）</h2>
 <p>
 <a href='#ev-nomem-bnd-01-password'>bnd-01-password</a> · 
 <a href='#ev-nomem-bnd-02-otp'>bnd-02-otp</a> · 
@@ -37,6 +37,9 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <a href='#ev-nomem-rec-02-greeting'>rec-02-greeting</a> · 
 <a href='#ev-nomem-rec-03-allergy'>rec-03-allergy</a> · 
 <a href='#ev-nomem-rec-04-schedule'>rec-04-schedule</a> · 
+<a href='#ev-nomem-rel-01-contradictory'>rel-01-contradictory</a> · 
+<a href='#ev-nomem-rel-02-nuanced'>rel-02-nuanced</a> · 
+<a href='#ev-nomem-rel-03-complementary'>rel-03-complementary</a> · 
 <a href='#ev-nomem-ret-01-name-editor'>ret-01-name-editor</a> · 
 <a href='#ev-nomem-ret-02-address'>ret-02-address</a> · 
 <a href='#ev-nomem-ret-03-multi-fact'>ret-03-multi-fact</a> · 
@@ -419,6 +422,84 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
 <div class='evoblock'>[probe:p1] 探针</div>
 <div class='evoblock'>&nbsp;&nbsp;用户：我这周有什么重要安排来着？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+</details></div>
+<div class='case' id='ev-nomem-rel-01-contradictory'>
+<h3>nomem · rel-01-contradictory <span class='note'>(dynamic_update, 难度 hard, run 1)</span></h3>
+<div>用例得分：<b>33</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 上海市浦东新区世纪大道100号</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+<tr><td>p2</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 北京市海淀区中关村大街1号</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+<tr><td>staleness_scan</td><td>absence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>事实「北京市海淀区中关村大街1号」已按生命周期失效且未驻留（缺席判据通过）</td><td>—</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（0 条）</summary>
+</details>
+<details><summary>对话轨迹（4 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我家在北京市海淀区中关村大街1号。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我搬到上海市浦东新区世纪大道100号了。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[probe:p2] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我最早说住哪里？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+</details></div>
+<div class='case' id='ev-nomem-rel-02-nuanced'>
+<h3>nomem · rel-02-nuanced <span class='note'>(retention, 难度 hard, run 1)</span></h3>
+<div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 咖啡</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+<tr><td>p2</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 低因</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（0 条）</summary>
+</details>
+<details><summary>对话轨迹（4 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我喝咖啡，每天一杯。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我喝什么？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[probe:p2] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我下午 5 点喝什么？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+</details></div>
+<div class='case' id='ev-nomem-rel-03-complementary'>
+<h3>nomem · rel-03-complementary <span class='note'>(retention, 难度 medium, run 1)</span></h3>
+<div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 代码审查、Danger、ESLint</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（0 条）</summary>
+</details>
+<details><summary>对话轨迹（3 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我负责我们团队的代码审查。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：代码审查时我用 Danger + ESLint。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，了解了。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：你在团队里负责什么？怎么做的？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
 </details></div>
 <div class='case' id='ev-nomem-ret-01-name-editor'>
@@ -808,7 +889,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
 </details></div>
-<h2 id='agent-naive'>智能体：naive（32 份证据）</h2>
+<h2 id='agent-naive'>智能体：naive（35 份证据）</h2>
 <p>
 <a href='#ev-naive-bnd-01-password'>bnd-01-password</a> · 
 <a href='#ev-naive-bnd-02-otp'>bnd-02-otp</a> · 
@@ -826,6 +907,9 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <a href='#ev-naive-rec-02-greeting'>rec-02-greeting</a> · 
 <a href='#ev-naive-rec-03-allergy'>rec-03-allergy</a> · 
 <a href='#ev-naive-rec-04-schedule'>rec-04-schedule</a> · 
+<a href='#ev-naive-rel-01-contradictory'>rel-01-contradictory</a> · 
+<a href='#ev-naive-rel-02-nuanced'>rel-02-nuanced</a> · 
+<a href='#ev-naive-rel-03-complementary'>rel-03-complementary</a> · 
 <a href='#ev-naive-ret-01-name-editor'>ret-01-name-editor</a> · 
 <a href='#ev-naive-ret-02-address'>ret-02-address</a> · 
 <a href='#ev-naive-ret-03-multi-fact'>ret-03-multi-fact</a> · 
@@ -1256,6 +1340,95 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我这周有什么重要安排来着？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：下周三我有个项目评审会。</div>
 </details></div>
+<div class='case' id='ev-naive-rel-01-contradictory'>
+<h3>naive · rel-01-contradictory <span class='note'>(dynamic_update, 难度 hard, run 1)</span></h3>
+<div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>staleness_scan</td><td>absence</td><td><span class='badge improper_reuse'>improper_reuse</span></td><td>0.0</td><td>事实「北京市海淀区中关村大街1号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）</td><td>—</td><td>—</td></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge improper_reuse'>improper_reuse</span></td><td>0.0</td><td>复用了已被覆盖/失效的事实「北京市海淀区中关村大街1号」（FAMA 风格）</td><td>我家在北京市海淀区中关村大街1号。</td><td>s1</td></tr>
+<tr><td>p2</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 北京市海淀区中关村大街1号</td><td>我家在哪里？</td><td>probe:p1</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+1 / -0（存量 1）&nbsp;新增: 我家在北京市海淀区中关村大街1号。&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+1 / -0（存量 2）&nbsp;新增: 我搬到上海市浦东新区世纪大道100号了。&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（4 条）</summary>
+<div class='evoblock'>- 我家在北京市海淀区中关村大街1号。</div>
+<div class='evoblock'>- 我搬到上海市浦东新区世纪大道100号了。</div>
+<div class='evoblock'>- 我家在哪里？</div>
+<div class='evoblock'>- 我最早说住哪里？</div>
+</details>
+<details><summary>对话轨迹（4 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我家在北京市海淀区中关村大街1号。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我搬到上海市浦东新区世纪大道100号了。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我家在北京市海淀区中关村大街1号。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我家在北京市海淀区中关村大街1号。</div>
+<div class='evoblock'>[probe:p2] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我最早说住哪里？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我家在哪里？</div>
+</details></div>
+<div class='case' id='ev-naive-rel-02-nuanced'>
+<h3>naive · rel-02-nuanced <span class='note'>(retention, 难度 hard, run 1)</span></h3>
+<div>用例得分：<b>100</b> · FAMA：<b>100</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>回答包含全部必需信息: 咖啡</td><td>我喝咖啡，每天一杯。</td><td>s1</td></tr>
+<tr><td>p2</td><td>presence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>回答包含全部必需信息: 低因</td><td>下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。</td><td>s2</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+1 / -0（存量 1）&nbsp;新增: 我喝咖啡，每天一杯。&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+1 / -0（存量 2）&nbsp;新增: 下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（4 条）</summary>
+<div class='evoblock'>- 我喝咖啡，每天一杯。</div>
+<div class='evoblock'>- 下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。</div>
+<div class='evoblock'>- 我喝什么？</div>
+<div class='evoblock'>- 我下午 5 点喝什么？</div>
+</details>
+<details><summary>对话轨迹（4 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我喝咖啡，每天一杯。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我喝咖啡，每天一杯。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我喝什么？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我喝咖啡，每天一杯。</div>
+<div class='evoblock'>[probe:p2] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我下午 5 点喝什么？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。</div>
+</details></div>
+<div class='case' id='ev-naive-rel-03-complementary'>
+<h3>naive · rel-03-complementary <span class='note'>(retention, 难度 medium, run 1)</span></h3>
+<div>用例得分：<b>33</b> · FAMA：<b>33</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.3</td><td>回答部分缺失必需信息，缺少: Danger、ESLint</td><td>我负责我们团队的代码审查。</td><td>s1</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+1 / -0（存量 1）&nbsp;新增: 我负责我们团队的代码审查。&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+1 / -0（存量 2）&nbsp;新增: 代码审查时我用 Danger + ESLint。&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（3 条）</summary>
+<div class='evoblock'>- 我负责我们团队的代码审查。</div>
+<div class='evoblock'>- 代码审查时我用 Danger + ESLint。</div>
+<div class='evoblock'>- 你在团队里负责什么？怎么做的？</div>
+</details>
+<details><summary>对话轨迹（3 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我负责我们团队的代码审查。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：代码审查时我用 Danger + ESLint。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我负责我们团队的代码审查。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：你在团队里负责什么？怎么做的？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：我负责我们团队的代码审查。</div>
+</details></div>
 <div class='case' id='ev-naive-ret-01-name-editor'>
 <h3>naive · ret-01-name-editor <span class='note'>(retention, 难度 easy, run 1)</span></h3>
 <div>用例得分：<b>100</b> · FAMA：<b>100</b></div>
@@ -1674,7 +1847,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
 <table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
 <tr><td>staleness_scan</td><td>absence</td><td><span class='badge improper_reuse'>improper_reuse</span></td><td>0.0</td><td>事实「杭州市西湖区文二路39号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）</td><td>—</td><td>—</td></tr>
-<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>信息从未出现过，但回答中没有任何拒答措辞（疑似编造）</td><td>我家在杭州市西湖区文二路39号。</td><td>s1</td></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge improper_reuse'>improper_reuse</span></td><td>0.0</td><td>未拒答且复述了已失效/禁止的内容「杭州市西湖区文二路39号」（该信息应被遗忘）</td><td>我家在杭州市西湖区文二路39号。</td><td>s1</td></tr>
 <tr><td>p2</td><td>absence</td><td><span class='badge improper_reuse'>improper_reuse</span></td><td>0.0</td><td>记忆库中仍保留着已被覆盖的旧信息「杭州市西湖区文二路39号」（FAMA 风格）</td><td>—</td><td>—</td></tr>
 </table>
 <details><summary>记忆演变轨迹（2 步）</summary>
@@ -1697,7 +1870,7 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：我家在杭州市西湖区文二路39号。</div>
 </details></div>
-<h2 id='agent-smart'>智能体：smart（32 份证据）</h2>
+<h2 id='agent-smart'>智能体：smart（35 份证据）</h2>
 <p>
 <a href='#ev-smart-bnd-01-password'>bnd-01-password</a> · 
 <a href='#ev-smart-bnd-02-otp'>bnd-02-otp</a> · 
@@ -1715,6 +1888,9 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <a href='#ev-smart-rec-02-greeting'>rec-02-greeting</a> · 
 <a href='#ev-smart-rec-03-allergy'>rec-03-allergy</a> · 
 <a href='#ev-smart-rec-04-schedule'>rec-04-schedule</a> · 
+<a href='#ev-smart-rel-01-contradictory'>rel-01-contradictory</a> · 
+<a href='#ev-smart-rel-02-nuanced'>rel-02-nuanced</a> · 
+<a href='#ev-smart-rel-03-complementary'>rel-03-complementary</a> · 
 <a href='#ev-smart-ret-01-name-editor'>ret-01-name-editor</a> · 
 <a href='#ev-smart-ret-02-address'>ret-02-address</a> · 
 <a href='#ev-smart-ret-03-multi-fact'>ret-03-multi-fact</a> · 
@@ -2118,6 +2294,85 @@ details{margin:6px 0}summary{cursor:pointer;color:#1a3a6b}
 <div class='evoblock'>[probe:p1] 探针</div>
 <div class='evoblock'>&nbsp;&nbsp;用户：我这周有什么重要安排来着？</div>
 <div class='evoblock'>&nbsp;&nbsp;智能体：你告诉我的是：下周三个项目评审会</div>
+</details></div>
+<div class='case' id='ev-smart-rel-01-contradictory'>
+<h3>smart · rel-01-contradictory <span class='note'>(dynamic_update, 难度 hard, run 1)</span></h3>
+<div>用例得分：<b>67</b> · FAMA：<b>50</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>回答包含全部必需信息: 上海市浦东新区世纪大道100号</td><td>你告诉我的是：上海市浦东新区世纪大道100号</td><td>s2</td></tr>
+<tr><td>p2</td><td>presence</td><td><span class='badge confusion'>confusion</span></td><td>0.0</td><td>回答包含了不应出现的内容「上海市浦东新区世纪大道100号」（记忆混淆/未更新）</td><td>你告诉我的是：上海市浦东新区世纪大道100号</td><td>s2</td></tr>
+<tr><td>staleness_scan</td><td>absence</td><td><span class='badge correct'>correct</span></td><td>1.0</td><td>事实「北京市海淀区中关村大街1号」已按生命周期失效且未驻留（缺席判据通过）</td><td>—</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+1 / -0（存量 1）&nbsp;新增: 家庭地址 = 北京市海淀区中关村大街1号&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+1 / -1（存量 1）&nbsp;新增: 家庭地址 = 上海市浦东新区世纪大道100号&nbsp;删除: 家庭地址 = 北京市海淀区中关村大街1号</div>
+</details>
+<details><summary>记忆库终态（1 条）</summary>
+<div class='evoblock'>- 家庭地址 = 上海市浦东新区世纪大道100号</div>
+</details>
+<details><summary>对话轨迹（4 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我家在北京市海淀区中关村大街1号。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我搬到上海市浦东新区世纪大道100号了。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我家在哪里？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：你告诉我的是：上海市浦东新区世纪大道100号</div>
+<div class='evoblock'>[probe:p2] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我最早说住哪里？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：你告诉我的是：上海市浦东新区世纪大道100号</div>
+</details></div>
+<div class='case' id='ev-smart-rel-02-nuanced'>
+<h3>smart · rel-02-nuanced <span class='note'>(retention, 难度 hard, run 1)</span></h3>
+<div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 咖啡</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+<tr><td>p2</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 低因</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（0 条）</summary>
+</details>
+<details><summary>对话轨迹（4 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我喝咖啡，每天一杯。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我喝什么？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+<div class='evoblock'>[probe:p2] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我下午 5 点喝什么？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
+</details></div>
+<div class='case' id='ev-smart-rel-03-complementary'>
+<h3>smart · rel-03-complementary <span class='note'>(retention, 难度 medium, run 1)</span></h3>
+<div>用例得分：<b>0</b> · FAMA：<b>0</b></div>
+<table><tr><th>探针</th><th>角色</th><th>裁决</th><th>分</th><th>理由（含证据片段）</th><th>回复</th><th>检索来源</th></tr>
+<tr><td>p1</td><td>presence</td><td><span class='badge miss'>miss</span></td><td>0.0</td><td>回答未包含任何必需信息 代码审查、Danger、ESLint</td><td>这个我暂时不确定，你可以再告诉我一次。</td><td>—</td></tr>
+</table>
+<details><summary>记忆演变轨迹（2 步）</summary>
+<div class='evoblock'>s1 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+<div class='evoblock'>s2 后：+0 / -0（存量 0）&nbsp;新增: —&nbsp;删除: —</div>
+</details>
+<details><summary>记忆库终态（0 条）</summary>
+</details>
+<details><summary>对话轨迹（3 段）</summary>
+<div class='evoblock'>[s1] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：我负责我们团队的代码审查。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[s2] </div>
+<div class='evoblock'>&nbsp;&nbsp;用户：代码审查时我用 Danger + ESLint。</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：好的，记下了。</div>
+<div class='evoblock'>[probe:p1] 探针</div>
+<div class='evoblock'>&nbsp;&nbsp;用户：你在团队里负责什么？怎么做的？</div>
+<div class='evoblock'>&nbsp;&nbsp;智能体：这个我暂时不确定，你可以再告诉我一次。</div>
 </details></div>
 <div class='case' id='ev-smart-ret-01-name-editor'>
 <h3>smart · ret-01-name-editor <span class='note'>(retention, 难度 easy, run 1)</span></h3>
