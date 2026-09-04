@@ -438,3 +438,45 @@ class TestMemoryDiscipline(unittest.TestCase):
     def test_nomem_trivially_passes(self):
         r = self._run("nomem")
         self.assertEqual(r.score, 1.0)
+
+
+class TestScoringTrustworthiness(unittest.TestCase):
+    """评分可信度实验（轮次 N+15）：仲裁驱动的 any_include 回退修复回归。"""
+
+    def test_abstention_with_superseded_leak(self):
+        """any_include 未命中 + 回复含已撤回值 → improper_reuse（非 miss）。"""
+        from membench.schema import parse_case
+        from membench.scoring import evaluate_probe
+        from membench import VERDICT_IMPROPER_REUSE
+        case = parse_case({
+            "case_id": "x", "dimension": "dynamic_update", "title": "t",
+            "sessions": [{"session_id": "s1", "turns": ["a"]},
+                         {"session_id": "s2", "turns": ["b"]}],
+            "fact_lifecycle": [{"value": "旧地址", "valid_from": "s1",
+                                "valid_until": "s2"}],
+            "probes": [{"probe_id": "p1", "type": "free", "after_session": "s2",
+                        "question": "我家在哪？",
+                        "expected": {"any_include": ["忘了", "不记得"],
+                                     "must_not_include": ["旧地址"]}}],
+        })
+        r = evaluate_probe(case.probes[0], case, reply="我家在旧地址。",
+                          memory_items=None, workdir=None)
+        self.assertEqual(r.verdict, VERDICT_IMPROPER_REUSE)
+        self.assertIn("失效", r.reason)
+
+    def test_abstention_fabrication_still_miss(self):
+        """any_include 未命中 + 无泄露 → 仍是 miss（疑似编造）。"""
+        from membench.schema import parse_case
+        from membench.scoring import evaluate_probe
+        from membench import VERDICT_MISS
+        case = parse_case({
+            "case_id": "y", "dimension": "boundary_refusal", "title": "t",
+            "sessions": [{"session_id": "s1", "turns": ["a"]}],
+            "probes": [{"probe_id": "p1", "type": "free", "after_session": "s1",
+                        "question": "我的鹦鹉叫什么？",
+                        "expected": {"any_include": ["不知道", "没说过"]}}],
+        })
+        r = evaluate_probe(case.probes[0], case, reply="你的鹦鹉叫小绿。",
+                          memory_items=None, workdir=None)
+        self.assertEqual(r.verdict, VERDICT_MISS)
+        self.assertIn("疑似编造", r.reason)

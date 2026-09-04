@@ -114,14 +114,3 @@ python3 -m unittest discover -s tests   # 90 个单元/端到端测试（31 用�
 ## 许可证
 
 GPL-2.0-or-later
-
-curl -N https://openrouter.ai/api/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer REDACTED" \
-  -d '{
-  "model": "minimax/minimax-m3:free",
-  "stream": true,
-  "messages": [
-    {"role": "user", "content": "Hello"}
-  ]
-}'

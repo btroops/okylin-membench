@@ -46,6 +46,7 @@ class ProbeResult:
     hits: List[str] = field(default_factory=list)
     misses: List[str] = field(default_factory=list)
     weight: float = 1.0
+    relation: str = ""                # SubtleMemory 风格关系类型透传
 
 
 # ---------- 文件系统 / 记忆库检查 ------------------------------------------------
@@ -196,13 +197,21 @@ def _eval_include_exclude(probe: Probe, case: Case, dim: str, reply_n: str, base
     invalid = invalid_values_at(case, probe.after_session)
 
     # 拒答类探针（LongMemEval abstention 思路）：任一拒答措辞出现即通过；
-    # 一个都没出现说明智能体编造了"从未说过的信息"或答非所问 → miss。
+    # 未出现时不直接 miss——回退查 must_not_include / lifecycle 失效值，
+    # 把"复述已失效/禁止内容"归到 improper_reuse / confusion（可信度实验仲裁产出）。
     if exp.any_include:
         hits = [x for x in exp.any_include if normalize_text(x) in reply_n]
         if hits:
             return ProbeResult(verdict=VERDICT_CORRECT, score=1.0,
                                reason="正确拒答（命中措辞「%s」）：该信息从未在对话中出现过"
                                       % _snippet(hits[0], 16), hits=hits, **base)
+        leaked = [x for x in exp.must_not_include if normalize_text(x) in reply_n]
+        leaked += [x for x in invalid if normalize_text(x) in reply_n]
+        if leaked:
+            v = VERDICT_IMPROPER_REUSE
+            return ProbeResult(verdict=v, score=0.0,
+                               reason="未拒答且复述了已失效/禁止的内容「%s」（该信息应被遗忘）"
+                                      % _snippet(leaked[0], 20), hits=leaked, **base)
         return ProbeResult(verdict=VERDICT_MISS, score=0.0,
                            reason="信息从未出现过，但回答中没有任何拒答措辞（疑似编造）",
                            misses=exp.any_include, **base)

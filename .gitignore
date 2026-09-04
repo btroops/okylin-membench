@@ -19,3 +19,6 @@ dist/
 .idea/
 *.swp
 .DS_Store
+
+# 独立评测脚本产物（另一个 agent 写）
+tests/labels/

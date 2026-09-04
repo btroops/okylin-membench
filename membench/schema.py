@@ -92,6 +92,7 @@ class Probe:
     note: str = ""
     dimension: str = ""                # 可选：覆盖所属 case 的维度
     evidence_sessions: List[str] = field(default_factory=list)  # 可选：证据所在 session（对标 answer_session_ids）
+    relation: str = ""                 # SubtleMemory 风格关系类型：complementary/nuanced/contradictory/abstain/standalone
 
 
 @dataclass
@@ -203,6 +204,10 @@ def parse_case(data: Dict[str, Any], source_file: str = "") -> Case:
         if pdim:
             _require(pdim in DIMENSIONS,
                      f"{source_file}: {case_id}/{pid} dimension 非法: {pdim!r}")
+        rel = str(p.get("relation", "")).strip()
+        if rel:
+            _require(rel in ("complementary", "nuanced", "contradictory", "abstain", "standalone"),
+                     f"{source_file}: {case_id}/{pid} relation 非法: {rel!r}")
         ev_sessions = [str(x) for x in (p.get("evidence_sessions") or [])]
         for es in ev_sessions:
             _require(any(x.session_id == es for x in sessions),

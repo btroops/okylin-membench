@@ -1,0 +1,38 @@
+# SubtleMemory 风格：矛盾型（直接 conflict）
+# 智能体先后记住"我住北京"和"我住上海"，必须给出更新值且不混用旧值
+schema_version: 1
+case_id: rel-01-contradictory
+dimension: dynamic_update
+title: 矛盾型关系（直接 conflict）
+description: 同一槽位的两个 session 信息直接矛盾。智能体应取后者；旧值只在演替时间线上允许。
+difficulty: hard
+tags: [subtleMemory, contradictory, 关系]
+relation: contradictory
+fact_lifecycle:
+  - value: "北京市海淀区中关村大街1号"
+    valid_from: s1
+    valid_until: s2
+sessions:
+  - session_id: s1
+    turns:
+      - "我家在北京市海淀区中关村大街1号。"
+  - session_id: s2
+    turns:
+      - "我搬到上海市浦东新区世纪大道100号了。"
+probes:
+  - probe_id: p1
+    type: slot
+    after_session: s2
+    question: "我家在哪里？"
+    expected:
+      must_include: ["上海市浦东新区世纪大道100号"]
+      must_not_include: ["北京市海淀区中关村大街1号"]
+      superseded_values: ["北京市海淀区中关村大街1号"]
+  - probe_id: p2
+    type: slot
+    after_session: s2
+    question: "我最早说住哪里？"
+    expected:
+      must_include: ["北京市海淀区中关村大街1号"]
+      must_not_include: ["上海市浦东新区世纪大道100号"]
+    note: 评审追问时智能体应回忆"曾经说过"且不与当前值混
