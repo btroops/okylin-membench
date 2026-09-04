@@ -33,6 +33,21 @@ def _difficulty_per_case_summary(results: List[CaseResult]) -> Dict[str, Dict[st
     return out
 
 
+def _relation_breakdown(results: List[CaseResult]) -> Dict[str, Dict[str, float]]:
+    """按 probe.relation 分组的得分（SubtleMemory 风格关系型用例专项报告）。"""
+    by = defaultdict(lambda: defaultdict(list))
+    for r in results:
+        for row in r.rows:
+            rel = row.get("relation") or "standalone"
+            if rel == "standalone":
+                continue
+            if row.get("score") is not None:
+                by[r.difficulty][rel].append(float(row["score"]) * 100)
+    return {d: {rel: round(sum(v) / len(v), 1) if v else None
+                for rel, v in sorted(rels.items())}
+            for d, rels in sorted(by.items())}
+
+
 def _difficulty_breakdown(results: List[CaseResult]) -> Dict[str, float]:
     by = defaultdict(list)
     for r in results:
@@ -136,6 +151,7 @@ def summarize_agent(agent_name: str, results: List[CaseResult], runs: int = 1) -
             if row.get("probe_id") == "staleness_scan" and row.get("score") == 0.0),
         "fama_mean": round(sum(fama_values) / len(fama_values), 4) if fama_values else None,
         "difficulty_breakdown": _difficulty_breakdown(results),
+        "relation_breakdown": _relation_breakdown(results),
         "difficulty_dimension": _difficulty_dimension_matrix(results),
         "per_case": per_case,
         "retrieval_localization": ({"n": n_traced, "hits": n_localized,

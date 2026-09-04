@@ -404,3 +404,41 @@ Memora (2026.04, ACL'26 Findings)     个性化代理 + 失效记忆惩罚（FAM
   病理正相反（可作未来扩展）。
 
 ## 系列六：MEASURING HALLUCINATION IN AI CODES 之类的相关...（不展开）
+
+## 系列七：2026 年新一批 long-term memory benchmark（用户给的清单）
+
+### ATM-Bench (arXiv:2603.01990, 2026.03) — 全文级
+
+- **任务**：multimodal 多源个人 referential memory QA（4 年隐私保护数据：6,741 邮件 + 3,759 图片 + 533 视频，12k 记忆项，1,038 QA）。
+- **5 能力**：PR（个性化指代）/ LA（位置感知）/ MUT（时序更新）/ ME（多证据组合）/ ABS（拒答）。
+- **SGM**（schema-guided memory）：键值结构化 vs DM，6 baseline + RAG 上全胜。
+- **关键发现**：**Hard 集所有系统 < 20%**；Piled Memory 等同 Linked Memory（编码 1/10 时间）。
+- **membench 借鉴**：5 能力与 9 维大体正交；**缺 LA 与多模态**——后者是 openKylin 桌面评测的自然外延。
+- **诚实承认**：纯文本，未覆盖多模态。
+
+### SubtleMemory (arXiv:2606.05761, 2026.06)
+
+- **任务**：fine-grained relational memory discrimination（complementary / nuanced / contradictory 三类关系记忆辨别）。
+- **规模**：1,522 instances / 10 long histories / 1,090 relation-controlled memory-variant sets。
+- **被测系统**：6 standalone + 2 Claw-style 原生 + 3 Claw-style 插件。
+- **关键发现**：**standalone 系统对 nuanced/complementary 弱**。
+- **membench 借鉴（本轮实现）**：
+  - `probe.relation` 字段（5 取 1）+ schema 校验 + Probe 构造透传
+  - 3 个手写用例（rel-01 contradictory / rel-02 nuanced / rel-03 complementary）
+  - runner 三处 row 构造点注入 relation
+  - aggregate.relation_breakdown 维度 × 难度 矩阵
+  - 报告（HTML+MD）加"关系型专项（SubtleMemory 风格）"表
+  - **实测复现论文发现**：smart 50/0/0、naive 0/100/33、nomem 0/0/0
+  - 论文的"standalone 系统弱"被规则记忆智能体（smart）实证
+
+### PAST-Bench（Princeton）— 摘要级
+
+- **任务**：4 能力自进化（memory / procedural / information-gathering / update）。
+- **方法**：**对照实验**——同一 agent 在"开/关保留"两个条件下做相同任务，diff = 真实收益。
+- **结果**：7 base models × 4 frameworks；**update 类任务提升最显著**。
+- **membench 借鉴**：① "开/关保留"对照可作下轮智能体配对评估范式；② update 是我们强项。
+
+### 共同启示
+
+- 多模态 + 关系辨别 + 自进化是 2026 趋势；我们的"系统级证据 + 确定性优先 + FAMA"仍具差异点。
+- 2026 行业数据基线 1k–1.5k 实例——我们 35 手写 + 24 模板仍偏小，但**证据包丰富度（多源 + 过程级）是行业均无的**。

@@ -1,0 +1,34 @@
+schema_version: 1
+case_id: rel-02-nuanced
+dimension: retention
+title: 细化型关系（nuanced）
+description: 后续信息细化但不取代——智能体应能'主-客'分别回答。
+difficulty: hard
+tags:
+- subtleMemory
+- nuanced
+- 关系
+sessions:
+- session_id: s1
+  turns:
+  - 我喝咖啡，每天一杯。
+- session_id: s2
+  turns:
+  - 下午 3 点之后我改喝低因咖啡，因为怕影响晚上睡眠。
+probes:
+- probe_id: p1
+  type: slot
+  after_session: s2
+  question: 我喝什么？
+  relation: nuanced
+  expected:
+    must_include:
+    - 咖啡
+- probe_id: p2
+  type: slot
+  after_session: s2
+  question: 我下午 5 点喝什么？
+  relation: nuanced
+  expected:
+    must_include:
+    - 低因

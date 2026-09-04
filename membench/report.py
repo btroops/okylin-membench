@@ -61,6 +61,18 @@ def build_markdown(summaries: List[dict], cases=None) -> str:
     diff_keys = ["easy", "medium", "hard"]
     dim_cols = DIMENSIONS
     mat = {s["agent"]: s.get("difficulty_dimension", {}) for s in summaries}
+    rel_by = {s["agent"]: s.get("relation_breakdown", {}) for s in summaries}
+    if any(rel_by.values()):
+        lines += ["", "## 关系型专项（SubtleMemory 风格）", "",
+                  "| 智能体 | 难度 | complementary | nuanced | contradictory | abstain |",
+                  "|---|---|---|---|---|---|"]
+        for a, m in rel_by.items():
+            if not m: continue
+            for dk in ("easy", "medium", "hard"):
+                if dk not in m: continue
+                cells = [("%.0f" % m[dk][col]) if m[dk].get(col) is not None else "-"
+                         for col in ("complementary", "nuanced", "contradictory", "abstain")]
+                lines.append("| %s | %s | %s |" % (a, dk, " | ".join(cells)))
     if any(mat.values()):
         lines += ["", "## 难度 × 维度热力表", "",
                   "| 智能体 | 难度 | " + " | ".join(DIMENSION_LABELS[d_] for d_ in dim_cols) + " |",

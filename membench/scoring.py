@@ -46,6 +46,7 @@ class ProbeResult:
     hits: List[str] = field(default_factory=list)
     misses: List[str] = field(default_factory=list)
     weight: float = 1.0
+    relation: str = ""                # SubtleMemory 风格关系类型透传
 
 
 # ---------- 文件系统 / 记忆库检查 ------------------------------------------------

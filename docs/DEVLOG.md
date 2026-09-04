@@ -247,3 +247,17 @@
 - **事故**：dataclass 字段替换只发生一次没补上、normalize_text 未导入、
   tests 中 31→32/0.7→0.55 阈值滞后——逐个被冒烟/测试抓到并修。
 - **测试**：92 通过。
+
+## 2026-09-05 · 轮次 N+15：SubtleMemory 关系型 + 论文系列七 + 分支整改
+
+- **环境整改**（用户两轮纠正后）：
+  - worktree 拆旧建新，目录从 `~/` 移到仓内 `.worktrees/membench-evaluator`
+  - 删错基线分支（`694b5b8` 是 evidence-driven 独有的）→ 重置到 master@d5fc143 → 重新应用 N+15 代码
+- **论文**（RESEARCH 系列七）：ATM-Bench / SubtleMemory / PAST-Bench（完整内容见 RESEARCH.md）。
+- **实现**：probe.relation 字段（5 取 1 校验）+ 3 个 SubtleMemory 风格手写用例（rel-01 contradictory / rel-02 nuanced / rel-03 complementary）+ runner 三处 row 注入 + aggregate.relation_breakdown + 报告"关系型专项"表（HTML+MD）。
+- **实测三档区分**（复现论文发现）：
+  - smart 50/0/0（规则记忆对 nuanced/complementary 弱，论文预言）
+  - naive 0/100/33（全量照记偶然中历史回放但无法跨 slot 组合）
+  - nomem 0/0/0（边界自然通过）
+- **踩坑记录**（诚实）：worktree 目录位置选错、基线 commit 错认、强删分支丢 commit、重复造轮（对方 N+15a 已做关系感知 docs）——详见 `docs/ARCHIVE_N+15.md`。
+- **测试**：92 通过；样例/文档/deb 同步。

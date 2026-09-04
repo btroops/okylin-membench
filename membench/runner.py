@@ -182,6 +182,7 @@ def run_case(agent: AgentAdapter, case: Case, run_index: int,
             row = asdict(pr)
             row["judge"] = "deterministic"
             row["role"] = probe_role(probe)
+            row["relation"] = probe.relation
             result.rows.append(row)
             asked.add(probe.probe_id)
 
@@ -279,6 +280,7 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
             "verdict": jd.get("verdict"), "score": jd.get("score"),
             "reason": jd.get("reason", ""), "reply": reply,
             "hits": [], "misses": [], "weight": probe.weight, "judge": "llm",
+            "relation": probe.relation,
             "evidence_sessions": probe.evidence_sessions,
             "retrieval_trace": trace, "role": probe_role(probe),
         }
@@ -289,6 +291,7 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
     row["evidence_sessions"] = probe.evidence_sessions
     row["retrieval_trace"] = trace
     row["role"] = probe_role(probe)
+    row["relation"] = probe.relation
     return row
 
 
