@@ -24,16 +24,26 @@ DEFAULT_CASES = os.path.join(PKG_ROOT, "cases")
 DEFAULT_AGENTS_DIR = os.path.join(PKG_ROOT, "agents")
 
 
+# LLM judge 两种 wire format 的默认端点与 key 环境变量（--judge-base-url /
+# --judge-key-env 未显式给出时按格式取默认；N+26 起支持 anthropic）。
+JUDGE_LLM_DEFAULTS = {
+    "openai": {"base_url": "https://api.openai.com/v1", "key_env": "OPENAI_API_KEY"},
+    "anthropic": {"base_url": "https://api.anthropic.com", "key_env": "ANTHROPIC_API_KEY"},
+}
+
+
 def _judge_from_args(args):
     judge_mode = getattr(args, "judge", "heuristic")
     if judge_mode == "heuristic":
         return None
-    if judge_mode == "openai":
+    if judge_mode in JUDGE_LLM_DEFAULTS:
         from .judge import LLMJudge
-        api_key = os.environ.get(getattr(args, "judge_key_env", "") or "OPENAI_API_KEY", "")
-        return LLMJudge(base_url=args.judge_base_url, model=args.judge_model,
-                        api_key=api_key, votes=args.judge_votes)
-    raise SystemExit("未知 judge: %s（可选 heuristic/openai）" % judge_mode)
+        d = JUDGE_LLM_DEFAULTS[judge_mode]
+        api_key = os.environ.get(getattr(args, "judge_key_env", "") or d["key_env"], "")
+        return LLMJudge(base_url=getattr(args, "judge_base_url", "") or d["base_url"],
+                        model=args.judge_model, api_key=api_key,
+                        votes=args.judge_votes, api=judge_mode)
+    raise SystemExit("未知 judge: %s（可选 heuristic/openai/anthropic）" % judge_mode)
 
 
 def cmd_list(args) -> int:
@@ -231,10 +241,14 @@ def main(argv: List[str] = None) -> int:
     p.add_argument("--cases", default=DEFAULT_CASES)
     p.add_argument("--runs", type=int, default=1, help="每用例重复次数（测稳定性）")
     p.add_argument("--filter", default="", help="逗号分隔的关键字过滤 case_id/维度/标签")
-    p.add_argument("--judge", choices=["heuristic", "openai"], default="heuristic")
-    p.add_argument("--judge-base-url", default="https://api.openai.com/v1")
+    p.add_argument("--judge", choices=["heuristic", "openai", "anthropic"],
+                   default="heuristic",
+                   help="free 探针判定：heuristic 离线；openai/anthropic 为 LLM judge 的两种 wire format")
+    p.add_argument("--judge-base-url", default="",
+                   help="LLM 端点；缺省随 --judge：openai=https://api.openai.com/v1（含版本段），anthropic=https://api.anthropic.com（不含）")
     p.add_argument("--judge-model", default="gpt-4o-mini")
-    p.add_argument("--judge-key-env", default="OPENAI_API_KEY")
+    p.add_argument("--judge-key-env", default="",
+                   help="API key 的环境变量名；缺省随 --judge：OPENAI_API_KEY / ANTHROPIC_API_KEY")
     p.add_argument("--judge-votes", type=int, default=1)
     p.add_argument("--keep-workdir", action="store_true", help="保留沙箱工作目录用于排查")
     p.add_argument("--quiet", action="store_true", help="不打印逐用例进度")

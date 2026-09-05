@@ -1,0 +1,18 @@
+{
+  "name": "deepseek-anthropic",
+  "kind": "openai_compat",
+  "api": "anthropic",
+  "base_url": "https://api.deepseek.com/anthropic",
+  "model": "deepseek-v4-flash",
+  "api_key_env": "ANTHROPIC_API_KEY",
+  "max_tokens": 1024,
+  "temperature": 0.2,
+  "timeout": 120,
+  "_comment": "api=anthropic 时 base_url 不含版本段（适配器自动补 /v1/messages）；api_key_env 缺省即 ANTHROPIC_API_KEY，显式写出仅为示例",
+  "memory": {
+    "strategy": "store",
+    "top_k": 5,
+    "_comment": "策略可选 none / full_log / store / store_filter；store_filter 会把密码、验证码等敏感信息挡在记忆库外"
+  },
+  "system_prompt": "你是 openKylin 桌面智能助手，请用中文简洁回答。"
+}

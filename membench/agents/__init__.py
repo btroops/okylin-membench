@@ -65,11 +65,18 @@ def create_agent_from_config(cfg: dict, source: str = "") -> AgentAdapter:
         from .subproc import SubprocAgent
         return SubprocAgent(name=name, cmd=cmd, timeout=float(cfg.get("timeout", 60)))
     if kind == "openai_compat":
+        # api 选择 wire format（N+26）：openai=Chat Completions（base_url 含版本段），
+        # anthropic=Messages（base_url 不含版本段）；缺省 openai，旧配置零改动。
+        api = str(cfg.get("api", "") or "openai").strip()
+        if api not in ("openai", "anthropic"):
+            raise AgentError("%s: 未知 api 格式 %r（可选 openai/anthropic）" % (source, api))
+        default_key_env = "ANTHROPIC_API_KEY" if api == "anthropic" else "OPENAI_API_KEY"
         api_key = ""
-        key_env = str(cfg.get("api_key_env", "") or "OPENAI_API_KEY")
+        key_env = str(cfg.get("api_key_env", "") or default_key_env)
         if key_env:
             api_key = os.environ.get(key_env, "")
         from .openai_compat import OpenAICompatAgent
+        max_tokens = cfg.get("max_tokens")
         return OpenAICompatAgent(
             name=name,
             base_url=str(cfg.get("base_url", "http://127.0.0.1:11434/v1")),
@@ -79,5 +86,7 @@ def create_agent_from_config(cfg: dict, source: str = "") -> AgentAdapter:
             system_prompt=str(cfg.get("system_prompt", "你是 openKylin 桌面智能助手。")),
             temperature=float(cfg.get("temperature", 0.2)),
             timeout=float(cfg.get("timeout", 120)),
+            api=api,
+            max_tokens=(int(max_tokens) if max_tokens else None),
         )
     raise AgentError("%s: 未知智能体类型 %r（可选 builtin/subproc/openai_compat）" % (source, kind))
