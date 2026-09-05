@@ -561,3 +561,40 @@ n/a 因网络抖动）。
   **107/107 OK / 4.8s**；no_proxy 环境亦 104/104 OK / 3.2s。N+21 的容器内
   复跑方案依然有效；宿主回环 TCP 本身正常，`wsl --shutdown` 无需。
 - **测试基线**：104 → 107（+3）。
+
+## 2026-09-05 · 收尾清点（N+22 后）：未完成事项留档
+
+本轮工作（N+18~N+22：真实实例接入 → 测量有效性 → 稳定性 → 参考物固化
+→ 测试网络根治）告一段落。**未完成事项全部集中于此**，按责任方标注：
+
+**参赛者待办（需真机/人工，环境外）**
+1. openKylin 真机 `.deb` 复跑 + `membench doctor`/`demo` 留档输出
+   （交付物 c，见 DELIVERABLES「参赛者剩余待办」#1）；
+2. 第二款真实智能体接入（本地 LLM 走 `agents/openai-compat.example.json`，
+   与 openclaw-real 四智能体对比出终版雷达；DELIVERABLES 待办 #2 剩余部分）;
+3. 演示视频录制（`docs/DEMO_SCRIPT.md` 五分镜 + `scripts/rehearse.sh` 彩排，
+   DELIVERABLES 待办 #3）。
+
+**用户环境待办（本机 shell 配置，产品代码已解耦不受影响）**
+4. 宿主代理变量修复：`HTTP_PROXY/HTTPS_PROXY/ALL_PROXY=172.29.48.1:7890`
+   自 18:40 前后不可达且无 `no_proxy`——N+22 已让 membench 的回环调用
+   绕过代理（产品不受影响），但 **git fetch/push、docker pull、curl 等
+   其它工具仍会受害**：要么恢复该代理服务，要么补
+   `export no_proxy=127.0.0.1,localhost` 并修正代理地址；
+5. `wsl --shutdown` 重启不再必要（N+22 已证实回环 TCP 本身正常）。
+
+**可选工程项（无阻塞）**
+6. 数据集扩容压低 σ：temporal σ=40.8 仅 6 探针、multi_session σ=0.0 仅
+   3 探针——方差估计受样本量限制；N+16 的 1995 例生成能力现成
+   （详见 DEVLOG N+20 诚实结论 #3）；
+7. 容器内测试复跑命令固化（N+21 记录的 docker run 一行命令）可选项：
+   接入 `membench doctor` 子命令或 CI 步骤，作为宿主网络异常时的兜底
+   测试通道；
+8. 大规模跑批前执行 `scripts/openclaw_cleanup_sessions.py` 清理 mb-*
+   孤儿会话（幂等，复现步骤见 `examples/sample_results/openclaw-stability/
+   README.md`）。
+
+**口径纪律（长期有效）**
+- openclaw-real 数字一律引用三次均值 ± σ（`examples/sample_results/
+  openclaw-stability/README.md`），单次跑分不得用于答辩对比；
+- 内置参考智能体为确定性实现，单次即可（跨 run σ=0 测试锁定）。
