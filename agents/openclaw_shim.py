@@ -27,6 +27,7 @@ shim 直接读取并作为 memory_dump 交给 membench 评分——这就是「�
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -54,23 +55,31 @@ PRISTINE_DIR = os.environ.get(
 )
 # 是否在每个 episode 开始时重置记忆状态（默认开；设为 0 可关闭以做对照实验）
 RESET_MEMORY = os.environ.get("OPENCLAW_RESET_MEMORY", "1") != "0"
-# 每个 episode 使用独立会话键：`openclaw agent` 默认把全部调用累积进同一滚动
+# 每个 episode 使用独立会话键前缀：`openclaw agent` 默认把全部调用累积进同一滚动
 # 会话（agent:<id>:main），历史轮次会跨 episode 泄漏（实测 ret-01 第二轮跑分时
-# 模型答"这条信息我早就记住了"）。新会话从零开始，从根源切断该泄漏；
+# 模型答"这条信息我早就记住了"）。episode 内每个 harness session 再各自派生
+# 独立会话键——否则剧本 s1 的原文仍在探针会话的上下文里，探针答对无法区分
+# 「读到了记忆文件」与「上下文里还留着」（实测同一会话键下模型答"刚才你
+# 告诉我的"）。新会话只注入 workspace 记忆文件（USER.md 等），答案只能来自
+# 长期记忆——这正是 retention/recall 想测的东西。
 # 可用 OPENCLAW_SESSION_KEY 固定会话键以便调试/对照。
-SESSION_KEY = os.environ.get("OPENCLAW_SESSION_KEY") or (
+SESSION_PREFIX = os.environ.get("OPENCLAW_SESSION_KEY") or (
     "agent:%s:mb-%s" % (AGENT_NAME, uuid.uuid4().hex[:12]))
+# 当前会话键：session_start 时轮换（episode 首个 session 也用派生键，不复用 main）
+_session_key = None
 
 # 已实测可用的调用形式：进入运行中的 gateway 容器执行 `openclaw agent`。
 # 消息作为独立 argv 元素追加，不经 shell，无注入风险。
-DEFAULT_CMD_PREFIX = [
-    "docker", "compose", "-f", COMPOSE_FILE,
-    "exec", "-T", "openclaw-gateway",
-    "openclaw", "agent",
-    "--agent", AGENT_NAME,
-    "--session-key", SESSION_KEY,
-    "--message",
-]
+# 会话键随 harness 的 session 边界轮换（见 SESSION_PREFIX 注释）。
+def _cmd_prefix() -> list:
+    return [
+        "docker", "compose", "-f", COMPOSE_FILE,
+        "exec", "-T", "openclaw-gateway",
+        "openclaw", "agent",
+        "--agent", AGENT_NAME,
+        "--session-key", _session_key or SESSION_PREFIX,
+        "--message",
+    ]
 
 
 def _reset_memory_state() -> None:
@@ -116,7 +125,7 @@ def _reset_memory_state() -> None:
 
 def _run_openclaw(message: str) -> str:
     """把一条 user 消息发给 OpenClaw，返回助手回复文本。"""
-    cmd = list(DEFAULT_CMD_PREFIX) + [message]
+    cmd = _cmd_prefix() + [message]
     proc = subprocess.run(
         cmd,
         stdin=subprocess.DEVNULL,   # 关键：不得继承协议管道，防止子进程吞掉/阻塞 JSONL
@@ -173,10 +182,47 @@ def _read_memory_dump():
 
 
 def _retrieval_trace(query: str):
-    """尽力而为地返回检索轨迹；失败则空列表（membench 优雅降级）。"""
-    # TODO: 若需真实 retrieval_trace，可用 `openclaw memory search "<query>"`
-    #       解析其输出为 {"content":..., "score":...} 列表。当前先返空。
-    return []
+    """检索轨迹：调真实的 `openclaw memory search`，解析 JSON 输出。
+
+    已实测：memory search 依赖向量索引，而索引同步需要 OpenAI embedding
+    key（本环境只有 Anthropic 兼容端点，日志持续 sync failed: No API key
+    found for provider "openai"），语义检索退化为关键词匹配、结果常为空。
+    因此这里是「尽力而为」：成功且非空则返回 [{"content":..., "score":...}]，
+    任何失败/空结果都返回空列表——membench 会优雅降级，不影响评分。
+    """
+    try:
+        proc = subprocess.run(
+            ["docker", "compose", "-f", COMPOSE_FILE,
+             "exec", "-T", "openclaw-gateway",
+             "openclaw", "memory", "search",
+             "--agent", AGENT_NAME,
+             "--json", "--max-results", "5", "--query", query],
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            encoding="utf-8",
+            timeout=120,
+        )
+    except subprocess.TimeoutExpired:
+        return []
+    if proc.returncode != 0:
+        return []
+    # stdout 可能混有日志行（如 sync failed），只解析第一段合法 JSON
+    out = (proc.stdout or "").strip()
+    m = re.search(r"\{.*\}", out, re.S)
+    if not m:
+        return []
+    try:
+        data = json.loads(m.group(0))
+    except json.JSONDecodeError:
+        return []
+    items = []
+    for r in (data.get("results") or [])[:5]:
+        if isinstance(r, dict) and r.get("content"):
+            items.append({"content": str(r.get("content"))[:500],
+                          "score": r.get("score")})
+    return items
 
 
 def _emit(obj: dict) -> None:
@@ -184,7 +230,10 @@ def _emit(obj: dict) -> None:
     sys.stdout.flush()
 
 
+# 每个 episode 进程内当前会话键（session_start 轮换；模块级 _session_key 的
+# 局部别名，main() 里用 nonlocal 赋值）
 def main() -> None:
+    global _session_key
     # 新进程 = 新 episode：先还原干净记忆状态，杜绝跨用例污染
     _reset_memory_state()
     for line in sys.stdin:
@@ -198,7 +247,12 @@ def main() -> None:
         mtype = msg.get("type")
         try:
             if mtype == "session_start":
-                # OpenClaw 跨调用持久化记忆，session 边界无需额外处理
+                # 每个 harness session（含探针 session probe:pN）各用独立
+                # OpenClaw 会话键：切断剧本原文对探针的上下文泄漏，探针答案
+                # 只能来自跨会话持久的记忆文件——这使 retention/recall 分数
+                # 真正测量长期记忆而非上下文残留。
+                sid = str(msg.get("session_id") or "main")
+                _session_key = "%s:%s" % (SESSION_PREFIX, sid)
                 continue
             elif mtype == "user":
                 content = msg.get("content", "")

@@ -68,6 +68,55 @@ class TestSlot(unittest.TestCase):
         self.assertAlmostEqual(r.score, 0.5)
 
 
+class TestAnswerAnchoring(unittest.TestCase):
+    """答案锚定（N+19）：主答案正确时，干扰项若只出现在解释性部分不判混淆。
+
+    背景：真实智能体（OpenClaw 实测）回答 dis-01 时给出正确主答案后，
+    常另起一段引用记忆原文（含另一只猫的名字）——确定性评分若只做
+    全文 must_not_include 扫描，会把「话痨但正确」系统性判为 confusion。
+    """
+
+    P = {"probe_id": "p1", "type": "slot", "question": "大猫叫什么？",
+         "expected": {"must_include": ["团子"], "must_not_include": ["汤圆"]}}
+
+    def test_anchor_passes_explanatory_mention(self):
+        # 主答案段（首个空行前）包含全部必需信息，干扰项只在解释段
+        reply = "你的大猫叫团子\n\n（记录里写着：大猫团子、小猫汤圆。来源：USER.md）"
+        r = eval_probe(self.P, reply)
+        self.assertEqual(r.verdict, VERDICT_CORRECT)
+        self.assertEqual(r.score, 1.0)
+        self.assertIn("答案锚定", r.reason)
+
+    def test_anchor_requires_full_must_include_in_zone(self):
+        # 主答案段没给全必需信息（只有解释段里有）→ 不豁免，仍判混淆
+        reply = "我查一下记录\n\n记录里写着：大猫团子、小猫汤圆。"
+        r = eval_probe(self.P, reply)
+        self.assertEqual(r.verdict, VERDICT_CONFUSION)
+
+    def test_anchor_not_applied_when_bad_in_answer_zone(self):
+        # 干扰项出现在主答案段内 = 真混淆，不豁免
+        reply = "你的大猫叫汤圆（不对，是团子？算了就汤圆）\n\n记录：大猫团子"
+        r = eval_probe(self.P, reply)
+        self.assertEqual(r.verdict, VERDICT_CONFUSION)
+
+    def test_anchor_not_applied_without_must_include(self):
+        # 无 must_include（纯 absence 探针）→ 锚定不适用，保持原语义。
+        # 这里干扰项出现在主答案段内，原语义即 confusion
+        p = {"probe_id": "p1", "type": "slot", "question": "q",
+             "expected": {"must_not_include": ["汤圆"]}}
+        r = eval_probe(p, "你的大猫叫团子\n\n（小猫叫汤圆）")
+        self.assertEqual(r.verdict, VERDICT_CONFUSION)
+
+    def test_sensitive_value_not_anchored_away(self):
+        # 敏感值（case.sensitive_patterns）命中 must_not_include 时按
+        # improper_persistence 归类，且锚定不豁免（敏感泄露位置无关）
+        case = make_case(sensitive=["汤圆"])
+        p = {"probe_id": "p1", "type": "slot", "question": "q",
+             "expected": {"must_include": ["团子"], "must_not_include": ["汤圆"]}}
+        r = eval_probe(p, "你的大猫叫团子\n\n（小猫叫汤圆）", case=case)
+        self.assertEqual(r.verdict, VERDICT_IMPROPER_PERSISTENCE)
+
+
 class TestChoice(unittest.TestCase):
     P = {"probe_id": "p1", "type": "choice", "question": "q",
          "expected": {"choices": ["emacs", "vim", "nano"], "answer": "vim",

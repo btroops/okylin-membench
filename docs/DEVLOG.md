@@ -332,3 +332,116 @@ diff 里看到 X 的痕迹；否则 message 与 reality 漂移，下一次审计
   session_end 仅产出一行 memory 消息）；e2e 以真实评测代替单测覆盖。
 - **下一步**：接入更多维度用例做真实对比；清理孤儿会话；openKylin 真机
   复跑。
+
+## 2026-09-05 · 轮次 N+19：测量有效性升级 + 答案锚定（answer anchoring）
+
+N+18 把管线跑通了（ret-01/ret-02 双用例 100%），但本轮揭出**两层更深的问题**
+——不修 N+18 提交里声称的 retention=100% 也不能作为评测证据。
+
+### 一、问题 A：探针的上下文泄漏（测量学）
+
+N+18 shim 把一个 episode 的所有 session（s1/s2/probe）放进**同一个** OpenClaw
+滚动会话键 `agent:main:mb-<uuid>`。探针会话里 s1 的剧本原文仍在上下文，
+模型答对**可能只是因为上下文窗口里还有 s1**，而非读了 USER.md。
+
+证据（探针回复原文）：
+
+```
+[probe:p1] 你叫小明（Xiaoming）——这是今天记下的称呼偏好，我会一直这么叫你。
+            （注：记忆索引目前有点问题——缺 OpenAI 的 API key…）
+```
+
+主答案正确，但口吻「记下的偏好"是"N+18 滚动会话里看到的原文，"读 USER.md"
+只补在括号里。
+
+### 三、设计 + 实现
+
+**shim 升级**（`agents/openclaw_shim.py`）：
+- 收到 harness 的 `session_start{session_id}` 时轮换 OpenClaw 会话键：
+  `agent:main:mb-<uuid>:<session_id>`。session_id 含 s1/s2/probe:pN，
+  各自会话无剧本原文。
+- `retrieval_trace_request` 调真实的 `openclaw memory search --json`，
+  解析 JSON 输出（容错 stdout 混入日志行）；失败/空结果优雅降级为空列表。
+- episode 层会话键前缀仍保留（多重保险）。
+
+**答案锚定（answer anchoring）**（`membench/scoring.py`）：
+- 量化发现：openclaw-full 35 用例重评分时，**10 条 confusion/improper_reuse
+  裁决中 10 条主答案正确**——模型答对了事实后再另起一段引用记忆原文（含
+  干扰项），确定性评分的全文 must_not_include 扫描被系统性误伤。
+- 内置参考智能体短句模板从没暴露过这面，故而不影响基线。
+- 修复：must_not_include 检查时，若主答案段（首个空行前的连续正文）已
+  包含全部 must_include，且主答案段内不含 must_not_include 项，则豁免
+  confusion/improper_reuse 裁决判为 correct。**前提**：
+  - 必须有 must_include（纯 absence 探针不豁免）；
+  - 敏感模式（case.sensitive_patterns）命中不受豁免；
+  - 必须 normalize_text **之前** 切分（后者会移除换行/空格）。
+- 实测：4/10 误伤探针被正确豁免（dis-01 p1 / tem-01 p1 / upd-01 p1 /
+  upd-02 p1），其余 6 条是真实混淆（dis-02 p1 答了家庭地址而非公司、
+  tem-01 p2 主答案段枚举所有事件等）。
+
+### 二、问题 B：评分系统的误伤（必须修，不能仅写文档）
+
+解决：见上「答案锚定」段。
+
+### 四、判别实验（gate test）
+
+N+18 commit 时声明的「同步落盘、读即最新」是更早的人工观察，未做实证
+测量。本轮用三个独立实验把根因落实：
+
+| 实验 | 假设 | 实测 |
+|---|---|---|
+| G1 跨会话召回 | 新会话键能否仅凭文件记忆召回 | ✅ `gate1b` 会话（无对话历史）答出「小明 + vim」，并标注"我是直接读的 USER.md" |
+| G2 空白对照 | reset 后新会话应无幻觉 | ✅ 干净 workspace 下新会话如实答「USER.md 是空的」 |
+| G3 retrieval_trace 可行性 | `memory search` 输出格式 | ⚠️ 仅返回 JSON 但 results 总为空——向量索引缺 OpenAI embedding key |
+
+### 五、实测数据
+
+| 智能体 | 总分 | retention | recall | dynamic_update | distractor | boundary | reuse | temporal | multi-session | causal |
+|---|---|---|---|---|---|---|---|---|---|---|
+| smart（规则） | 96.6 | 77 | 100 | 92 | 100 | 100 | 100 | 100 | 100 | 100 |
+| **openclaw-real** | **72.5** | **100** | **100** | 55 | 33 | 86 | 100 | 50 | 100 | 0 |
+| naive（全量） | 30.9 | 62 | 50 | 0 | 0 | 7 | 50 | 0 | 33 | 75 |
+| nomem | 18.9 | 17 | 0 | 54 | 0 | 100 | 0 | 0 | 0 | 0 |
+
+openclaw 在 retention / recall / task_reuse / multi_session 四个维度与 smart
+持平甚至更强（**retention 100 vs smart 77** — 真实智能体的文件级长期记忆
+比规则实现的全量回放更「知道什么是用户档案」）。弱项符合真实智能体预期：
+distractor 33（同类区分需要 prompt 显式控制）、temporal 50（时序枚举常误
+中干扰项）、dynamic_update 55（更新意图识别）、causal 0（推理但脚本用
+n/a 因网络抖动）。
+
+答案锚定修复对 smart/naive/nomem **零影响**（基线逐维逐分完全一致）——
+锚定只在「主答案段外提及干扰项」时触发，模板短句从未暴露该模式。
+这验证了改动不污染既有评分基线。
+
+### 六、测试
+
+- `tests/test_scoring.py`：新增 `TestAnswerAnchoring`（5 用例）：
+  - `test_anchor_passes_explanatory_mention` 主答案正确+干扰项仅在解释段→correct
+  - `test_anchor_requires_full_must_include_in_zone` 主答案段没给全→不豁免
+  - `test_anchor_not_applied_when_bad_in_answer_zone` 干扰项在主答案段→真混淆
+  - `test_anchor_not_applied_without_must_include` 纯 absence 探针→不适用
+  - `test_sensitive_value_not_anchored_away` 敏感值→improper_persistence 不豁免
+- `tests/test_openclaw_shim.py`（N+19 新增）：6 用例覆盖
+  - episode 前缀唯一性
+  - session_start 轮换正确性
+  - 探针会话键不含剧本原文
+  - retrieval_trace 解析容错（混日志输出、空结果、无 JSON 优雅降级）
+- 全测试套件 104 通过（原 94 + N+19 新增 10）。
+
+### 七、诚实记录的局限
+
+- **向量记忆降级未变**：memory-core 语义检索仍需 OpenAI embedding key；
+  本环境缺该 key，retrieval_trace 始终为空。已如实记录。
+- **网络抖动**：cau-01 因 Docker daemon 与网关的偶发连接错误（rc=1）、
+  而非模型能力问题被判 n/a；rerun 该用例可恢复。
+- **docker 组身份**：shim 调用 `docker compose exec` 需要宿主机评测用户
+  在 docker 组里，否则 PermissionError。本机由 `sg docker` 包装解决。
+- **openKylin 真机部分**仍属交付物 c/e 待办。
+
+### 八、下一步
+
+- 清理孤儿会话（state SQLite 中累积的 mb-* 会话键），大规模跑批前必要；
+- 跑一次 `--runs 3` 看 openclaw 稳定性 std（参考 N+15 跨运行 σ=0 的基线）；
+- 把 openclaw-real 跑分固化为 examples/sample_results/ 的标准参考物；
+- openKylin 真机 .deb 复跑 + 桌面录屏。
