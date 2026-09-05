@@ -80,6 +80,9 @@ results/
      示例见 [agents/anthropic-compat.example.json](agents/anthropic-compat.example.json)。
    HTTP 细节（system 拆分、消息合并、鉴权头）由 `membench/llmhttp.py` 统一消化。
 
+   **换厂商 / 三处配置点 / 常见厂商 base_url 速查**：
+   [docs/CONFIGURATION.md](docs/CONFIGURATION.md)。
+
 ## 数据集格式
 
 每个用例 = 一段"记忆剧本"：多 session 对话 + 探针 + 期望。完整字段说明见
@@ -110,7 +113,8 @@ probes:
 - `choice` / `slot` / `fs` / `memory` 四类探针**完全确定性判定**，同一输入 100% 复现；
 - `free` 探针默认启发式判定（离线可用），可选 LLM judge：`--judge openai`
   或 `--judge anthropic`（两种 wire format，端点与 key 环境变量缺省随格式；
-  强制 JSON 输出 + 多数投票 + 失败回退启发式）；
+  强制 JSON 输出 + 多数投票 + 失败回退启发式；配置细节见
+  [docs/CONFIGURATION.md](docs/CONFIGURATION.md)）；
 - 白盒证据：`memory` 探针直接检查智能体导出的记忆库；文件系统快照 diff
   检查行动产物；`sensitive_patterns` 全量扫描敏感信息落盘/落库。
 
