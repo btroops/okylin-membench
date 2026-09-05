@@ -1,0 +1,106 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-04-with-noise",
+  "dimension": "retention",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 花生",
+      "reply": "查了你的档案：目前记录的禁忌是**严重花生过敏**（USER.md 里有标注），没有其他忌口记录。所以我按\"绝对不含花生及花生制品\"来推荐，同时提醒交叉污染的风险。\n\n**推荐（花生安全、也基本不含坚果）：**\n\n1. **水果类** — 新鲜水果、冻干草莓/苹果脆片、芒果干。天然无花生，注意选配料表只有水果本身的。\n2. **乳制品类**（如果你不过敏乳糖）— 原味希腊酸奶、奶酪棒、纯牛奶。配料干净。\n3. **谷物/膨化类** — 米饼、小米锅巴、海苔脆、非油炸玉米片。买前扫一眼配料表有没有\"花生油\"或\"花生味\"。\n4. **海苔/紫菜类** — 原味海苔、夹心海苔脆（避开芝麻夹心如果担心的话，芝麻本身没问题）。\n5. **肉干/蛋类** — 牛肉干、鸡胸肉肠、卤蛋。选择调味简单的。\n\n**必须留意的坑：**\n- ⚠️ **配料表关键词**：花生、花生酱、花生碎、花生油（也叫\"落花生油/arachis oil\"）、花生蛋白、混合坚果都可能藏花生。\n- ⚠️ **交叉污染**：很多巧克力、饼干、麦片生产线和花生共线。哪怕配料表没有花生，包装上写\"可能含有花生/坚果（may contain peanuts）\"的就别碰。\n- ⚠️ **中式零食高危区**：鱼皮花生、花生酥、牛轧糖、沙琪玛（部分含花生碎）、辣条（油料来源不明，部分厂家用花生油）。\n- ⚠️ **坚果类**（杏仁、腰果、核桃等）——你的档案里没记录坚果过敏，但花生和坚果交叉过敏和共线污染都很常见，不确定的话优先选前面那些。\n\n我这是基于记录的忌口给的建议，不替代医生意见。**买任何包装零食都建议自己再核对一遍配料表和过敏原声明**——生产配方会变，我也没法实时核实每一批产品。\n\n要不要我把\"花生过敏\"相关的购物提醒做成一个固定规则，以后你问任何吃的我都自动带上这个检查？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的过敏源是花生。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了：你对花生过敏，已写入我的长期档案（USER.md）。\n\n以后凡是涉及食物、餐厅、菜谱或产品推荐，我都会避开花生及花生制品（如花生酱、花生油、含花生成分的零食点心），并会主动提醒你注意。还有别的过敏源或忌口需要一起记吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "噪声与临时信息",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天午餐随便点了点外卖。"
+          },
+          {
+            "role": "assistant",
+            "content": "哈哈,外卖党的日常。点了啥好吃的?还是说\"随便\"= 打开外卖软件纠结了二十分钟最后点了老样子?😄"
+          },
+          {
+            "role": "user",
+            "content": "刚才那个验证码短信我已经删了。"
+          },
+          {
+            "role": "assistant",
+            "content": "咦,我好像没跟你要过验证码?不管怎样——删得好。验证码这种东西就跟家门钥匙一样,谁要都别给,包括我。要是真有哪个环节需要验证,那也是通过正规渠道走,不会让你在聊天里报验证码的。\n\n放心,午餐继续,我这边没有任何需要验证码的事。😄"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我推荐一个安全的零食，注意我的禁忌。"
+          },
+          {
+            "role": "assistant",
+            "content": "查了你的档案：目前记录的禁忌是**严重花生过敏**（USER.md 里有标注），没有其他忌口记录。所以我按\"绝对不含花生及花生制品\"来推荐，同时提醒交叉污染的风险。\n\n**推荐（花生安全、也基本不含坚果）：**\n\n1. **水果类** — 新鲜水果、冻干草莓/苹果脆片、芒果干。天然无花生，注意选配料表只有水果本身的。\n2. **乳制品类**（如果你不过敏乳糖）— 原味希腊酸奶、奶酪棒、纯牛奶。配料干净。\n3. **谷物/膨化类** — 米饼、小米锅巴、海苔脆、非油炸玉米片。买前扫一眼配料表有没有\"花生油\"或\"花生味\"。\n4. **海苔/紫菜类** — 原味海苔、夹心海苔脆（避开芝麻夹心如果担心的话，芝麻本身没问题）。\n5. **肉干/蛋类** — 牛肉干、鸡胸肉肠、卤蛋。选择调味简单的。\n\n**必须留意的坑：**\n- ⚠️ **配料表关键词**：花生、花生酱、花生碎、花生油（也叫\"落花生油/arachis oil\"）、花生蛋白、混合坚果都可能藏花生。\n- ⚠️ **交叉污染**：很多巧克力、饼干、麦片生产线和花生共线。哪怕配料表没有花生，包装上写\"可能含有花生/坚果（may contain peanuts）\"的就别碰。\n- ⚠️ **中式零食高危区**：鱼皮花生、花生酥、牛轧糖、沙琪玛（部分含花生碎）、辣条（油料来源不明，部分厂家用花生油）。\n- ⚠️ **坚果类**（杏仁、腰果、核桃等）——你的档案里没记录坚果过敏，但花生和坚果交叉过敏和共线污染都很常见，不确定的话优先选前面那些。\n\n我这是基于记录的忌口给的建议，不替代医生意见。**买任何包装零食都建议自己再核对一遍配料表和过敏原声明**——生产配方会变，我也没法实时核实每一批产品。\n\n要不要我把\"花生过敏\"相关的购物提醒做成一个固定规则，以后你问任何吃的我都自动带上这个检查？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always treat peanut allergy as severe: never suggest foods/recipes containing peanuts or peanut-derived ingredients, and flag peanut mentions in food, restaurant, or product recommendations.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always treat peanut allergy as severe: never suggest foods/recipes containing peanuts or peanut-derived ingredients, and flag peanut mentions in food, restaurant, or product recommendations.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600796.6169078,
+  "duration_sec": 31.693963766098022
+}

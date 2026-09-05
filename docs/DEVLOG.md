@@ -476,7 +476,8 @@ n/a 因网络抖动）。
   | multi_session_reasoning | 66.7 | 0.0 | 3 |
   | causal_reasoning | 0.0 | 0.0 | 6 |
 
-  FAMA=64.3；单 run 探针均分 61.4 / 63.2 / 67.1。
+  FAMA=64.3；单 run 用例级均分 61.4 / 63.2 / 67.1（N+21 更正口径：
+  每用例 score 均值×100，run02 为 34/35——bnd-01 连接错误无分被剔除）。
 - **两点诚实结论**：
   1. **单次跑分会被幸运/不幸采样放大**：N+19 重评分得到的单 run 画像
      （如 task_reuse=100、multi_session=100）在三次均值下回落到 33 / 67
@@ -488,3 +489,51 @@ n/a 因网络抖动）。
 - **测试**：本轮无评分逻辑改动，104 测试基线不变；清理脚本以两轮实测
   代替单测（幂等性由"回到基线 20"直接验证）。
 - **下一步**：把 stability 结果固化为参考物；openKylin 真机复跑。
+
+## 2026-09-05 · 轮次 N+21：openclaw 三次稳定性固化为标准参考物
+
+- **为什么**：`results/` 在 .gitignore 里（定位为可再生产物），但三次
+  真实 LLM 全量评测花了 78 分钟、且"单 run 不得作口径"的结论必须有一份
+  可追溯证据背书——原始落盘必须进入版本库。
+- **做了什么**：把 `results/openclaw-stability/` 全量固化到被 git 跟踪的
+  `examples/sample_results/openclaw-stability/`（112 文件 / 1.5M）：
+  - `summary.json`：三次聚合（九维 score / std_across_runs / 裁决分布、
+    总分 54.5、FAMA 64.3、per_case、难度分层、记忆操作计数）；
+  - `runs/run01..03/`：105 个逐用例证据 JSON（每探针 verdict/score/
+    reason/reply/hits + transcript/memory_dump/fs 证据）——σ 可逐条复算；
+  - `comparison/`：单智能体报告四件套（comparison.md / report.html /
+    evidence.html / summaries.json + bin/判别度 JSON）。
+- **参考物 README**（该目录内）写明：来源与口径（日期/智能体/命令/耗时/
+  清理轮次/敏感扫描 0）、九维均值 ± σ 表、四条诚实结论（单 run 幸运采样
+  含 upd-04-memory-store 三次 1.0/0.0/1.0 的具体实例、causal 三次一致
+  失败非抖动、σ 受探针样本量限制、检索定位率 0.0 是 embedding key 缺失
+  的环境局限）、复现命令（含容器内执行清理脚本的准确调用）。
+- **口径更正**：61.4/63.2/67.1 实为**用例级**均分（每用例 score 均值
+  ×100；run02 为 34/35），N+20 误标为"探针均分"，DELIVERABLES/DEVLOG
+  已同步更正；全探针口径复算为 61.5/63.7/68.4，参考物 README 注明口径
+  以免歧义。入库前对全部 JSON 做了密钥/敏感串扫描（干净）。
+- **外层 comparison/ 升级为四智能体对比**（并行会话产出，合并入库）：
+  `examples/sample_results/comparison/` 由"三内置对比"重建为
+  smart/naive/nomem/openclaw-real 四智能体版——report.html（雷达/热力表，
+  openclaw 列为 3 次均值口径）、**evidence.html 内嵌四智能体全部证据**
+  （3×35 + 105 = 210 份逐用例 JSON，可按智能体/用例/裁决筛选）、
+  bin_report/case_discrimination 同步。数据来源：builtins←
+  results/controls-rerun（N+19 答案锚定后评分），openclaw←本参考物。
+  证据一致性已验证：openclaw-stability 的 summary/runs 与四智能体报告
+  引用逐字节一致。
+- **上层 README**：`examples/sample_results/README.md` 重写——内容表
+  （openclaw-stability 行 + 四智能体 comparison 行）、**「四智能体口径」节**
+  （smart 96.6 单次确定性 / openclaw-real 54.5 三次均值 ± σ / 单次跑分
+  不得用于答辩对比）、证据导读（naive 双包 + openclaw 真实软件行为属性）、
+  复现命令（内置一条命令；openclaw 78 分钟/3 runs + 清理脚本）、35 用例
+  数修正（旧文误写 24）。
+- **测试**：无 membench/tests 代码改动（相对 N+20 全绿提交 git diff 为空）。
+  提交时宿主 WSL2 回环网络故障（TCP 握手通、HTTP 数据黑洞——gateway
+  healthz、unittest mock server、最小回环实验同一症状，18:40 后出现），
+  unittest 改在容器内复跑：`docker run --rm -v <repo>:/work -v
+  /usr/lib/python3/dist-packages:/hostsite:ro -e PYTHONPATH=/hostsite
+  openclaw/openclaw:latest python3 -m unittest discover -s tests`
+  → **Ran 104 tests / OK**。容器网络栈独立于宿主回环，结论有效。
+- **下一步**：openKylin 真机 .deb 复跑 + 桌面录屏（需真机，环境外待办）；
+  可选：用 N+16 的 1995 例生成能力扩大数据集压低 σ；
+  宿主 loopback 故障若持续需 `wsl --shutdown` 重启（环境外操作）。

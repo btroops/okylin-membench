@@ -1,0 +1,81 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "reuse-04-cache-clean",
+  "dimension": "task_reuse",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "task_reuse",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 sudo apt clean",
+      "reply": "清理做完了，不过先说结论：**这个环境本身并不满**。\n\n**检查结果**\n- 磁盘：只用了 82G / 1007G（9%），剩 875G 可用\n- inode：用了 2%\n- 缓存目录都很小：`~/.cache` 8K、`~/.openclaw` 83M、`/tmp` 8.7M、`/var/cache` 1.6M\n\n**已做的安全清理**（量很小，回收空间可忽略）\n- npm / pnpm 缓存清理\n- apt 缓存清理\n- /tmp 中 7 天前的旧文件删除\n- journal 日志（容器内无 systemd，跳过）\n\n**如果\"满\"的感觉来自别处**，我这个容器看不到宿主机的磁盘。这个环境跑在 Docker（WSL2）里，宿主侧常见的占用大头是：\n- `/var/lib/docker`（镜像、悬空层、停止的容器）→ 在宿主机上跑 `docker system prune -af`（会清掉所有未使用的镜像/容器/网络，小心别误删要保留的）\n- WSL2 的虚拟磁盘（`.vhdx` 只涨不缩）→ 需要 `wsl --shutdown` 后用 `diskpart` compact 或 `Optimize-VHD`\n- 其他容器或机器\n\n如果你说的其实是宿主机变慢/变满，告诉我一声，我可以给出针对宿主机的具体清理步骤；如果只是想让这个环境保持干净，现在已经清过了。",
+      "hits": [],
+      "misses": [
+        "sudo apt clean"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "以后清理系统缓存的命令用 sudo apt clean，记下来。"
+          },
+          {
+            "role": "assistant",
+            "content": "记好了。以后清理系统缓存统一用 `sudo apt clean`。\n\n顺带一提:如果哪天 `sudo apt clean` 提示权限不足或命令不存在(比如换成了 dnf/yum 的发行版),我会再跟你确认,不会擅自换别的清理方式。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "系统有点满，帮我清理下缓存。"
+          },
+          {
+            "role": "assistant",
+            "content": "清理做完了，不过先说结论：**这个环境本身并不满**。\n\n**检查结果**\n- 磁盘：只用了 82G / 1007G（9%），剩 875G 可用\n- inode：用了 2%\n- 缓存目录都很小：`~/.cache` 8K、`~/.openclaw` 83M、`/tmp` 8.7M、`/var/cache` 1.6M\n\n**已做的安全清理**（量很小，回收空间可忽略）\n- npm / pnpm 缓存清理\n- apt 缓存清理\n- /tmp 中 7 天前的旧文件删除\n- journal 日志（容器内无 systemd，跳过）\n\n**如果\"满\"的感觉来自别处**，我这个容器看不到宿主机的磁盘。这个环境跑在 Docker（WSL2）里，宿主侧常见的占用大头是：\n- `/var/lib/docker`（镜像、悬空层、停止的容器）→ 在宿主机上跑 `docker system prune -af`（会清掉所有未使用的镜像/容器/网络，小心别误删要保留的）\n- WSL2 的虚拟磁盘（`.vhdx` 只涨不缩）→ 需要 `wsl --shutdown` 后用 `diskpart` compact 或 `Optimize-VHD`\n- 其他容器或机器\n\n如果你说的其实是宿主机变慢/变满，告诉我一声，我可以给出针对宿主机的具体清理步骤；如果只是想让这个环境保持干净，现在已经清过了。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always use `sudo apt clean` to clear system caches.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always use `sudo apt clean` to clear system caches.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601325.0676818,
+  "duration_sec": 40.21546149253845
+}

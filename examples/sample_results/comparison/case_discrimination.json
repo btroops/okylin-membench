@@ -4,9 +4,10 @@
     "difficulty": "easy",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 50.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 50.0,
+      "openclaw-real": 50.0
     }
   },
   {
@@ -14,9 +15,10 @@
     "difficulty": "easy",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 50.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 50.0,
+      "openclaw-real": 33.33
     }
   },
   {
@@ -24,9 +26,10 @@
     "difficulty": "easy",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 50.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 50.0,
+      "openclaw-real": 33.33
     }
   },
   {
@@ -34,9 +37,10 @@
     "difficulty": "hard",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 0.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 0.0,
+      "openclaw-real": 66.67
     }
   },
   {
@@ -44,9 +48,10 @@
     "difficulty": "hard",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 100.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 100.0,
+      "openclaw-real": 100.0
     }
   },
   {
@@ -54,9 +59,10 @@
     "difficulty": "medium",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 0.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 0.0,
+      "openclaw-real": 33.33
     }
   },
   {
@@ -64,9 +70,10 @@
     "difficulty": "hard",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 0.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 0.0,
+      "openclaw-real": 0.0
     }
   },
   {
@@ -74,9 +81,10 @@
     "difficulty": "medium",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 0.0,
+      "smart": 100.0,
       "naive": 100.0,
-      "smart": 100.0
+      "nomem": 0.0,
+      "openclaw-real": 100.0
     }
   },
   {
@@ -84,9 +92,10 @@
     "difficulty": "medium",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 0.0,
+      "smart": 100.0,
       "naive": 100.0,
-      "smart": 100.0
+      "nomem": 0.0,
+      "openclaw-real": 0.0
     }
   },
   {
@@ -94,9 +103,10 @@
     "difficulty": "medium",
     "discrimination": 100.0,
     "scores": {
-      "nomem": 0.0,
+      "smart": 100.0,
       "naive": 0.0,
-      "smart": 100.0
+      "nomem": 0.0,
+      "openclaw-real": 50.0
     }
   }
 ]

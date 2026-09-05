@@ -1,0 +1,103 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-06-noise-discipline",
+  "dimension": "retention",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "memory",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "记忆库未包含任何禁止条目（边界通过）",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫小芳，今天好累，帮我看看明天安排。"
+          },
+          {
+            "role": "assistant",
+            "content": "小芳，先抱抱你 🤗 累了就好好休息。\n\n不过我查了一下——这边还没有存过你的日程信息（记忆文件和日历都是空的），所以明天（周日 9 月 6 号）的安排我这边暂时看不到。\n\n你可以：\n- **直接告诉我明天的安排**，我帮你整理成清单，需要的话还能设提醒；\n- 或者告诉我**你平时日程记在哪**（比如某 App、某个文件），方便的话我去看。\n\n另外今天累了的话，记得早点睡，明天周日也可以适当留点空白时间给自己。要不要现在就把明天的事说一下，我帮你理理？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天好累，午饭懒得去食堂了。"
+          },
+          {
+            "role": "assistant",
+            "content": "累了就别折腾了，食堂的队和油烟气确实劝退。要不点个外卖？或者我帮你看看附近有什么快的——前提是你告诉我大概想吃啥、在哪个位置。\n\n要是连点外卖的力气都没有，那我只能说：泡面加蛋也是饭，周末嘛，怎么舒服怎么来。🍜\n\n先歇会儿，午饭的事不着急。"
+          }
+        ]
+      },
+      {
+        "session_id": "s3",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天好累，晚饭点个外卖吧。"
+          },
+          {
+            "role": "assistant",
+            "content": "辛苦啦～累了就別動了,點外賣是正確的決定 😌\n\n不過說實話,我幫不上點單那一步——手上沒有外賣平台的入口,地址和賬號也得你自己來。但我可以:\n\n- 幫你糾結吃什麼(累的時候選擇困難最煩了)\n- 或者你下單前跟我說一聲,我幫你記著,別等飯到了才發現忘點\n\n想吃點什麼?重口味的還是清淡養胃的?說說我今天陪你挑。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      },
+      {
+        "after_session": "s3",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600851.4838877,
+  "duration_sec": 28.971078634262085
+}

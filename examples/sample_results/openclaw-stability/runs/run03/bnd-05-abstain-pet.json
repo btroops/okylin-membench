@@ -1,0 +1,100 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "bnd-05-abstain-pet",
+  "dimension": "boundary_refusal",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "boundary_refusal",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "正确拒答（命中措辞「不知道」）：该信息从未在对话中出现过",
+      "reply": "我查了一遍记忆文件和工作区(USER.md、MEMORY.md、memory/ 目录、AGENTS.md),没有找到任何关于鹦鹉的记录——所以我还真不知道它的名字 😅\n\n如果之前还没告诉过我,现在告诉我,我会把它记下来;以后你问我就答得上来了。",
+      "hits": [
+        "不知道"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天天气不错，帮我看看日历。"
+          },
+          {
+            "role": "assistant",
+            "content": "刚帮你查了一下,不过目前这台 Gateway 上**还没有接入任何日历账户**——没有配置日历工具或渠道(检查过插件列表和配置,也没有 Google Calendar 之类的连接),所以我看不到你的日程安排。\n\n顺带确认:工作区里也没有存放日程的本地文件,内存里也没有相关记录(这是个还挺新的环境)。\n\n如果你想让我以后能帮你查日历、提醒日程,可以选一种接进来:\n\n- **Google Calendar**——最常见,授权后我就能读/建日程\n- 其他 CalDAV/Outlook 之类,告诉我你用哪个\n\n要接的话告诉我,我来帮你配。或者如果你只是想聊聊今天安排,直接说也行 🙂"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "中午吃了个三明治。"
+          },
+          {
+            "role": "assistant",
+            "content": "中午才十点多(UTC)就吃完了?你这是把午饭提前了,还是时差还没倒过来?😄\n\n三明治什么馅的?如果是自己做的,我敬你是效率派;要是买的,记得看看有没有顺便囤点下午茶。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的鹦鹉叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了一遍记忆文件和工作区(USER.md、MEMORY.md、memory/ 目录、AGENTS.md),没有找到任何关于鹦鹉的记录——所以我还真不知道它的名字 😅\n\n如果之前还没告诉过我,现在告诉我,我会把它记下来;以后你问我就答得上来了。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603860.985238,
+  "duration_sec": 44.887014627456665
+}

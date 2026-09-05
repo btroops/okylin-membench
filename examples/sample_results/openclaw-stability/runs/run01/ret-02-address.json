@@ -1,0 +1,113 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-02-address",
+  "dimension": "retention",
+  "run_index": 1,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 北京市海淀区中关村大街1号",
+      "reply": "根据记录，你家在 **北京市海淀区中关村大街1号**（No. 1 Zhongguancun Street, Haidian District, Beijing）。这也是我处理天气、本地信息、路线和时区等问题的默认位置。需要查天气或附近信息的话，直接说就行～",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "memory",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "记忆库包含全部期望条目",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 📍 以后涉及天气、本地生活信息或出行这类问题，我会默认按 **北京市海淀区中关村大街1号** 来参考。有什么需要帮忙的吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "隔了一个 session 的无关对话",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看今天有什么新闻。"
+          },
+          {
+            "role": "assistant",
+            "content": "今天（9月5日，周六）的新闻给你整理了一份摘要，主要来自新浪新闻首页，按类别分好了：\n\n**科技 / AI**\n- OpenAI 宣布 GPT-6 Astra 全量开放，据称评测得分 99.9%，宣称\"AGI 来临\"\n- AI Token 价格创新低，报道称中国模型厂商把价格\"打了下来\"\n\n**财经**\n- 美股存储、光通信板块大涨；黄金、白银下挫，市场对美联储加息预期出现突变\n- 基金发行爆发，\"一日结募\"再现\n- 两地证监会联手查办跨国\"内幕交易\"大案\n- 时隔十年《保险法》迎来大修，险资运用范围扩容；医保改革未来五年重点划定\n\n**国内 / 社会**\n- 受台风\"沙德尔\"影响，福建已转移 59.93 万人\n- 民政部：西藏吉隆泥石流灾害慈善捐赠已超 6.6 亿元\n- 武汉再推 8 条新政稳楼市，全面放开异地公积金贷款\n- 教育部：将继续坚守师德师风第一标准\n- 海南海口一装修餐厅起火，致 6 死 3 伤（当地已成立联合调查组）\n- 青岛一高校 40 名\"子涵\"扎堆报到（一则轻松花絮）\n\n**国际**\n- 美总统称可能很快打击伊朗\"镐山\"核设施\n- 泽连斯基：美总统特使访问期间不对俄发动空中打击；央视报道乌克兰国家安全局遭袭\n- 台风、地缘等多重因素下，国际金价陷入震荡拉锯\n\n**体育 / 文娱**\n- WTT 中国大满贯双打名单公布：孙颖莎/王楚钦组混双\n- 金鹰奖提名、白玉兰等话题上热搜（赵丽颖、杨紫等）\n\n---\n提醒一下：以上为单一来源（新浪）的标题摘要，具体细节我还没逐条核实过。如果你想深入了解某一条，我可以打开原文链接细看。另外我的常规新闻搜索服务暂时不可用，这次是靠直接抓取门户首页拿到的，覆盖面可能不全。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "根据记录，你家在 **北京市海淀区中关村大街1号**（No. 1 Zhongguancun Street, Haidian District, Beijing）。这也是我处理天气、本地信息、路线和时区等问题的默认位置。需要查天气或附近信息的话，直接说就行～"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home is at 北京市海淀区中关村大街1号 (No. 1 Zhongguancun Street, Haidian District, Beijing) — use it as the default location for weather, local info, delivery/route and timezone-related questions unless stated otherwise.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home is at 北京市海淀区中关村大街1号 (No. 1 Zhongguancun Street, Haidian District, Beijing) — use it as the default location for weather, local info, delivery/route and timezone-related questions unless stated otherwise.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600636.159737,
+  "duration_sec": 102.28405714035034
+}

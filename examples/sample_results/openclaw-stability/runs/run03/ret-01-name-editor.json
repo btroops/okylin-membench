@@ -1,0 +1,133 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-01-name-editor",
+  "dimension": "retention",
+  "run_index": 3,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 小明",
+      "reply": "你叫**小明**呀——USER.md 里记着呢（自称「小明」，用中文称呼）。怎么啦，考考我记性？😄",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "choice",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答命中正确选项「vim」",
+      "reply": "都不是。这个环境里 A、B、C 哪个都没配置:\n\n- `$EDITOR` 和 `$VISUAL` 都是空的\n- `emacs`、`vim`、`nano`、`vi` 等编辑器根本没有安装(连 `sensible-editor`/`select-editor` 也没有)\n- git 没有配置 `core.editor`\n\n如果这是指你本机/别的机器的默认编辑器,告诉我环境或操作系统,我可以帮你去查对应的配置(比如 `~/.bashrc`、`~/.selected_editor`、git 配置等)。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "首次配置",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫小明，我用 vim 作为默认编辑器。"
+          },
+          {
+            "role": "assistant",
+            "content": "你好，小明！👋 记住了：你叫小明，默认编辑器是 vim。已写进我的长期记忆（USER.md），以后涉及编辑文件或给出命令建议时会默认用 vim 的玩法（`:wq`、`:q!` 这些不用解释太多）。\n\n有什么想聊的，或者要我帮你做点什么？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "无关闲聊（干扰）",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天天气不错，帮我查下日历。"
+          },
+          {
+            "role": "assistant",
+            "content": "查过了,但目前情况是这样:\n\n**日历还没有接入** ⚠️\n- 我这个环境里没有配置任何日历(Google Calendar / Outlook / CalDAV 都没连)\n- 工作区里也没有日程文件,memory 里也没有你之前的安排记录\n- 所以「查日历」暂时查不到东西,不是没安排,是还没接上\n\n**想让我能帮你查日历,任选一个方向:**\n\n1. **接入真实日历** — 你有 Google 日历或 Outlook 的话,我可以帮你配置日历集成,以后直接问我就行(需要你授权)\n2. **让我记日程** — 直接把近期安排发我(比如「周六下午 3 点健身」),我存成日程文件,配合提醒,到点叫你\n3. **已有日程在哪** — 如果你的日历在手机/网页上,也可以告诉我大概内容,我帮你整理或设提醒\n\n顺带一提:今天的天气你说了算,不过你要是想让我确认天气或给出游建议,告诉我城市就行 ☀️\n\n想走哪条路?"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你叫**小明**呀——USER.md 里记着呢（自称「小明」，用中文称呼）。怎么啦，考考我记性？😄"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "以下哪个是我的默认编辑器？A. emacs B. vim C. nano"
+          },
+          {
+            "role": "assistant",
+            "content": "都不是。这个环境里 A、B、C 哪个都没配置:\n\n- `$EDITOR` 和 `$VISUAL` 都是空的\n- `emacs`、`vim`、`nano`、`vi` 等编辑器根本没有安装(连 `sensible-editor`/`select-editor` 也没有)\n- git 没有配置 `core.editor`\n\n如果这是指你本机/别的机器的默认编辑器,告诉我环境或操作系统,我可以帮你去查对应的配置(比如 `~/.bashrc`、`~/.selected_editor`、git 配置等)。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户自称「小明」，交流时用中文称呼即可。\n- 默认编辑器为 vim（涉及编辑操作、提示修改文件时优先建议/使用 vim 风格或兼容的操作）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户自称「小明」，交流时用中文称呼即可。\n- 默认编辑器为 vim（涉及编辑操作、提示修改文件时优先建议/使用 vim 风格或兼容的操作）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603948.6669333,
+  "duration_sec": 44.900346994400024
+}

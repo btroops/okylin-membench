@@ -1,0 +1,149 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-03-multi-fact",
+  "dimension": "retention",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 雪球",
+      "reply": "你的猫叫**雪球**（Snowball）🐱\n\nUSER.md 里记着,是你养的猫,以后聊到宠物的时候我会记得提他。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 13800001111",
+      "reply": "你的手机号是 **13800001111**（中国移动）。这是我在 USER.md 里记下的资料（Source: USER.md）。如果你最近换了号码，告诉我，我帮你更新。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我养了一只猫叫雪球。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了！🐱 雪球——这名字很可爱,听起来应该是一只白白的小家伙?\n\n给我讲讲他呗:什么品种?淘气还是粘人?我以后聊天会记得他,说不定哪天还能帮你记记他的疫苗、猫粮这些事。"
+          },
+          {
+            "role": "user",
+            "content": "我的电话是 13800001111。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了,你的电话是 13800001111。\n\n放心,这些信息只存在你的个人档案里,不会外传。需要的时候我可以帮你填表、记预约之类。还有什么想让我记住的吗?"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我打开浏览器看看天气。"
+          },
+          {
+            "role": "assistant",
+            "content": "浏览器这边暂时打不开(当前运行环境里没有可用的 Chrome/Chromium),不过天气已经查到了 —— 数据来自 wttr.in,定位在北京:\n\n**北京 · 现在(上午)**\n- ☀️ 晴朗,32°C,体感 30°C\n- 湿度 32%,南风 ~13 km/h,无降水\n- 紫外线偏强,出门注意防晒\n\n**未来三天**\n- 今天(9/5):22 ~ 33°C,晴\n- 明天(9/6):21 ~ 32°C,云量增多\n- 周一(9/7):16 ~ 29°C,明显转凉,可能多云/有雨\n\n一句话:**今天热且晒**,中午少出门、注意补水防晒;**周日降温近 10 度**,记得加件薄外套。\n\n如果你确实想用图形界面看天气(比如打开网页版),可以在这台机器上装个浏览器,或者告诉我要看哪个城市的详细预报,我再拉一份。"
+          },
+          {
+            "role": "user",
+            "content": "顺便提醒我明天早上九点开会。"
+          },
+          {
+            "role": "assistant",
+            "content": "✅ 提醒已设好:\n\n- **内容:** 明天(9/6 周日)早上 9 点开会\n- **提醒时间:** 明早 **8:50**(提前 10 分钟提醒你,免得手忙脚乱),到时在这个对话里直接告诉你\n- 一次性提醒,触发后自动清除,不会重复打扰\n\n如果你想改成准点 9:00 提醒、或者换别的提醒方式(比如发到手机/短信),跟我说一声就行。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的猫叫**雪球**（Snowball）🐱\n\nUSER.md 里记着,是你养的猫,以后聊到宠物的时候我会记得提他。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的电话是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的手机号是 **13800001111**（中国移动）。这是我在 USER.md 里记下的资料（Source: USER.md）。如果你最近换了号码，告诉我，我帮你更新。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Remember the user has a cat named 雪球 (Snowball); mention him warmly when conversation touches on pets.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- The user's phone number is 13800001111 (China mobile).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Remember the user has a cat named 雪球 (Snowball); mention him warmly when conversation touches on pets.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- The user's phone number is 13800001111 (China mobile).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600738.4721124,
+  "duration_sec": 58.11761403083801
+}

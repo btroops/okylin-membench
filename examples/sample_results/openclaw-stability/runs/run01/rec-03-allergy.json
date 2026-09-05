@@ -1,0 +1,98 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-03-allergy",
+  "dimension": "recall",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 花生",
+      "reply": "查了你的档案——记住了:你有**花生过敏(过敏性休克风险)**,清单里已全程避开,并标注了交叉风险点。先说明:你没提人数和形式,我按**家里聚会、6–8人、偏火锅+烧烤+零食混搭**先列一版,你告诉我人数/形式我再调量。\n\n## ⚠️ 红线:绝对不买 / 不点\n- ❌ 花生、花生制品(花生米、酒鬼花生、鱼皮花生、五香花生)\n- ❌ 含花生的酱料:**沙茶酱、花生酱、部分拌饭酱/烤肉蘸酱**——买前看配料表\n- ❌ 花生油(过敏严重时建议整个聚会不用;至少你的菜不用它炒)\n- ❌ 含花生碎点缀的菜:宫保鸡丁、部分凉拌菜、东南亚风味(泰式沙爹)、麻辣烫里的花生碎蘸料\n- ⚠️ 提醒:如果其他朋友**自带零食/菜**,提前说一声别带花生类,避免混放误食\n\n## 🍲 主菜食材(火锅/烧烤两用)\n- 肥牛卷、羊肉卷、五花肉片、鸡翅中、鸡腿肉\n- 虾、鱿鱼、扇贝、鱼丸虾滑(避开含花生的丸子,看配料)\n- 豆腐、冻豆腐、腐竹(确认无花生油)、午餐肉、火腿肠\n\n## 🥬 蔬菜菌菇\n- 生菜、娃娃菜、金针菇、香菇、土豆、红薯、莲藕、玉米、青笋、白萝卜、西兰花、香菜、葱姜蒜\n\n## 🍚 主食\n- 火锅面/方便面、年糕、饺子(买品牌货,避开花生馅)\n\n## 🧂 调料(重点自查)\n- 麻酱(纯芝麻酱,不是花生酱)、蒜泥、小米辣、蚝油、生抽、醋、孜然粉、辣椒面、香油\n- 蘸料全部自己调,不买现成的混合蘸料(易含花生)\n\n## 🍉 水果零食\n- 西瓜、葡萄、圣女果、橘子(聚会好切)\n- 薯片、虾条、饼干、巧克力、果冻——**全部核对配料表无花生/可能含花生字样**\n\n## 🥤 饮品\n- 可乐/雪碧、果汁、茶、啤酒/气泡水(有小孩或开车的人备无酒精选项)\n\n## 🧻 用品\n- 一次性碗筷杯盘、烤盘纸/锡纸、垃圾袋、纸巾、湿巾、保鲜袋\n\n要不要我按**人数、地点(家里/户外烧烤/店里聚餐)**帮你精化数量?或者你把菜单定了,我直接生成一份可勾选清单。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我对花生过敏。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了。以后涉及食物、菜谱、餐厅或产品推荐时,我会默认避开花生,并帮你留意交叉过敏风险。\n\n还有其他过敏或饮食禁忌要一并告诉我吗?"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看有什么电影。"
+          },
+          {
+            "role": "assistant",
+            "content": "帮你查了当前院线正在上映的电影(数据来自猫眼,今天 9 月 5 日):\n\n**🎬 本周新上映**\n- **燃烧吧!爸爸**(9/5 今日上映)— 文淇 / 倪虹洁 / 喻恩泰\n- **坠落2:死点** — 高空惊悚续集\n- **怪屋** — 傅菁主演悬疑\n- **怒之杀** — 杰森·斯坦森动作片\n- **杀死比尔:血色全传** — 昆汀经典重映\n\n**🔥 热映口碑片**\n- **欢迎来龙餐馆** ⭐9.7 — 沈腾喜剧\n- **八仙!** ⭐9.7 — 动画/仙侠\n- **空枪** ⭐9.6 — 朱一龙 / 檀健次 / 梁家辉,犯罪悬疑\n- **奥德赛** ⭐9.5 — 诺兰史诗大片,马特·达蒙 / 荷兰弟\n- **蜘蛛侠:崭新之日** ⭐9.4 — 漫威暑期档\n- **汪汪队立大功大电影3** ⭐9.5 — 亲子动画\n\n想看哪个类型我帮你细说(剧情/主演/口碑评价都行)。另外如果你告诉我你在哪个城市,我可以帮你查具体影院的放映场次～"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "周末聚会帮我列一份采购清单，注意我的禁忌。"
+          },
+          {
+            "role": "assistant",
+            "content": "查了你的档案——记住了:你有**花生过敏(过敏性休克风险)**,清单里已全程避开,并标注了交叉风险点。先说明:你没提人数和形式,我按**家里聚会、6–8人、偏火锅+烧烤+零食混搭**先列一版,你告诉我人数/形式我再调量。\n\n## ⚠️ 红线:绝对不买 / 不点\n- ❌ 花生、花生制品(花生米、酒鬼花生、鱼皮花生、五香花生)\n- ❌ 含花生的酱料:**沙茶酱、花生酱、部分拌饭酱/烤肉蘸酱**——买前看配料表\n- ❌ 花生油(过敏严重时建议整个聚会不用;至少你的菜不用它炒)\n- ❌ 含花生碎点缀的菜:宫保鸡丁、部分凉拌菜、东南亚风味(泰式沙爹)、麻辣烫里的花生碎蘸料\n- ⚠️ 提醒:如果其他朋友**自带零食/菜**,提前说一声别带花生类,避免混放误食\n\n## 🍲 主菜食材(火锅/烧烤两用)\n- 肥牛卷、羊肉卷、五花肉片、鸡翅中、鸡腿肉\n- 虾、鱿鱼、扇贝、鱼丸虾滑(避开含花生的丸子,看配料)\n- 豆腐、冻豆腐、腐竹(确认无花生油)、午餐肉、火腿肠\n\n## 🥬 蔬菜菌菇\n- 生菜、娃娃菜、金针菇、香菇、土豆、红薯、莲藕、玉米、青笋、白萝卜、西兰花、香菜、葱姜蒜\n\n## 🍚 主食\n- 火锅面/方便面、年糕、饺子(买品牌货,避开花生馅)\n\n## 🧂 调料(重点自查)\n- 麻酱(纯芝麻酱,不是花生酱)、蒜泥、小米辣、蚝油、生抽、醋、孜然粉、辣椒面、香油\n- 蘸料全部自己调,不买现成的混合蘸料(易含花生)\n\n## 🍉 水果零食\n- 西瓜、葡萄、圣女果、橘子(聚会好切)\n- 薯片、虾条、饼干、巧克力、果冻——**全部核对配料表无花生/可能含花生字样**\n\n## 🥤 饮品\n- 可乐/雪碧、果汁、茶、啤酒/气泡水(有小孩或开车的人备无酒精选项)\n\n## 🧻 用品\n- 一次性碗筷杯盘、烤盘纸/锡纸、垃圾袋、纸巾、湿巾、保鲜袋\n\n要不要我按**人数、地点(家里/户外烧烤/店里聚餐)**帮你精化数量?或者你把菜单定了,我直接生成一份可勾选清单。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always assume the user has a peanut allergy (anaphylaxis risk): never recommend food containing peanuts, and flag peanut risk when suggesting restaurants, recipes, or products.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always assume the user has a peanut allergy (anaphylaxis risk): never recommend food containing peanuts, and flag peanut risk when suggesting restaurants, recipes, or products.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600926.0366168,
+  "duration_sec": 50.052088499069214
+}

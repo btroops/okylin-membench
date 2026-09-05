@@ -1,0 +1,108 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-05-dedup",
+  "dimension": "retention",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 杭州市西湖区文二路39号",
+      "reply": "根据记录，你的家在：\n\n**杭州市西湖区文二路39号**\n\n需要我查一下那边的天气、路线，或者做点什么别的吗？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p1",
+      "probe_type": "memory",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "记忆库未包含任何禁止条目（边界通过）",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在杭州市西湖区文二路39号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 📍 杭州市西湖区文二路39号 已存入你的档案，以后查天气、算路线、规划出行都能直接用。\n\n想拿它做什么？比如今天杭州的天气、某地的通勤路线，或者别的什么事？"
+          },
+          {
+            "role": "user",
+            "content": "对了，我家住杭州市西湖区文二路39号，你记一下。"
+          },
+          {
+            "role": "assistant",
+            "content": "已经记好啦 ✅ 就在刚才我把它存进了你的长期档案（`USER.md`）：\n\n> 家庭住址：杭州市西湖区文二路39号\n\n以后说\"查天气\"\"算路线\"这类事，我会自动用这个地址。不用重复发～"
+          },
+          {
+            "role": "user",
+            "content": "地址再说一次：杭州市西湖区文二路39号。"
+          },
+          {
+            "role": "assistant",
+            "content": "确认无误，已记录：**杭州市西湖区文二路39号** ✅\n\n地址已存在你的长期档案里，不用再发啦。需要的话我可以现在帮你查一下杭州的天气 😊"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "根据记录，你的家在：\n\n**杭州市西湖区文二路39号**\n\n需要我查一下那边的天气、路线，或者做点什么别的吗？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址：杭州市西湖区文二路39号（查询天气、路线规划、外卖/快递地址等场景使用）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址：杭州市西湖区文二路39号（查询天气、路线规划、外卖/快递地址等场景使用）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600828.3383987,
+  "duration_sec": 23.116588830947876
+}

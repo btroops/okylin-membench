@@ -1,0 +1,186 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "tem-01-events",
+  "dimension": "temporal_reasoning",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "temporal_reasoning",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「2026-03-22」（记忆混淆/未更新）",
+      "reply": "根据我的记录（工作记忆从今天 2026-09-05 才开始建立），你提到过的最早的一件事是 **2026年3月15日参加产品评审会**。\n\n你告诉我的时间线是（来自 `memory/2026-09-05.md`）：\n\n- **2026-03-15** · 参加产品评审会（最早）\n- **2026-03-18** · 去体检\n- **2026-03-22** · 提交季度报告\n\n也就是说，最早是 **3月15日** 那场产品评审会。需要我把那件事的具体背景补全吗？目前只记了日期，细节还是空的。",
+      "hits": [
+        "2026-03-22"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "temporal_reasoning",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "主答案包含全部必需信息（答案锚定通过；干扰项仅出现在解释性部分: 「2026-03-15」）",
+      "reply": "你记录里最近的一件事是：**2026-03-22 提交季度报告** 📄\n\n你告诉我的时间线（都记在 `memory/2026-09-05.md`）一共三件，按时间排序：\n\n- 2026-03-15 · 参加产品评审会\n- 2026-03-18 · 去体检\n- **2026-03-22 · 提交季度报告** ← 最近的一件\n\n另外提醒一下：我的记忆是今天才开始建立的，所以只能覆盖你刚才跟我讲的这些。要是你说的\"那件事\"不是季度报告，比如今早刚弄的**周报框架**（`reports/2026-W36-周报.md`，三段式模板，内容还空着等填），跟我说一声，我随时补记或帮你整理。",
+      "hits": [
+        "2026-03-22",
+        "季度报告"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.5,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "2026-03-15，我去参加了产品评审会。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 📝 已写入今日备忘：**2026-03-15 你参加了产品评审会**。\n\n这是要补记过去的事项，还是想接着聊那次评审会的内容？如果是后者，可以跟我说说是什么产品、会上有什么结论或待办，我帮你整理成正式记录。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "几天后",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "2026-03-18，我去体检了。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 ✅ 2026-03-18 去体检了。\n\n这是在回顾 3 月份那段时间的事吧？如果后面还有安排或细节（体检结果、复查提醒之类的），继续讲，我一并记着。"
+          }
+        ]
+      },
+      {
+        "session_id": "s3",
+        "note": "又过了一周",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "2026-03-22，我提交了季度报告。"
+          },
+          {
+            "role": "assistant",
+            "content": "已记下：**2026-03-22 你提交了季度报告**。\n\n顺着你之前提到的 2026-03-15 产品评审会、2026-03-18 体检，这看起来是一份三月时间线记录。需要的话可以继续补充这条的细节（报告内容、提交给谁/哪个系统），或者告诉我这些日期记录最终要用来做什么——比如整理成简历、工作总结或某种申报材料——我可以帮你汇总成正式文档。"
+          }
+        ]
+      },
+      {
+        "session_id": "s4",
+        "note": "两天后",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天天气真好。"
+          },
+          {
+            "role": "assistant",
+            "content": "是啊，好天气会让人心情都变好 🌞 你那边是晴天吗？要是告诉我你在哪个城市，我还能顺手帮你看看今天的温度和空气质量，看看这好天气能持续多久。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我最早做的那件事是什么时候？"
+          },
+          {
+            "role": "assistant",
+            "content": "根据我的记录（工作记忆从今天 2026-09-05 才开始建立），你提到过的最早的一件事是 **2026年3月15日参加产品评审会**。\n\n你告诉我的时间线是（来自 `memory/2026-09-05.md`）：\n\n- **2026-03-15** · 参加产品评审会（最早）\n- **2026-03-18** · 去体检\n- **2026-03-22** · 提交季度报告\n\n也就是说，最早是 **3月15日** 那场产品评审会。需要我把那件事的具体背景补全吗？目前只记了日期，细节还是空的。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我最近做的那件事是什么？"
+          },
+          {
+            "role": "assistant",
+            "content": "你记录里最近的一件事是：**2026-03-22 提交季度报告** 📄\n\n你告诉我的时间线（都记在 `memory/2026-09-05.md`）一共三件，按时间排序：\n\n- 2026-03-15 · 参加产品评审会\n- 2026-03-18 · 去体检\n- **2026-03-22 · 提交季度报告** ← 最近的一件\n\n另外提醒一下：我的记忆是今天才开始建立的，所以只能覆盖你刚才跟我讲的这些。要是你说的\"那件事\"不是季度报告，比如今早刚弄的**周报框架**（`reports/2026-W36-周报.md`，三段式模板，内容还空着等填），跟我说一声，我随时补记或帮你整理。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提到：2026-03-15 参加了产品评审会（具体产品/项目背景待补充）。\n- 用户提到：2026-03-18 去体检了（结果/细节待补充）。\n- 用户提到：2026-03-22 提交了季度报告（报告内容/去向待补充）。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提到：2026-03-15 参加了产品评审会（具体产品/项目背景待补充）。"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提到：2026-03-15 参加了产品评审会（具体产品/项目背景待补充）。\n- 用户提到：2026-03-18 去体检了（结果/细节待补充）。"
+        ],
+        "removed": [
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提到：2026-03-15 参加了产品评审会（具体产品/项目背景待补充）。"
+        ]
+      },
+      {
+        "after_session": "s3",
+        "n_items": 2,
+        "added": [
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提到：2026-03-15 参加了产品评审会（具体产品/项目背景待补充）。\n- 用户提到：2026-03-18 去体检了（结果/细节待补充）。\n- 用户提到：2026-03-22 提交了季度报告（报告内容/去向待补充）。"
+        ],
+        "removed": [
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提到：2026-03-15 参加了产品评审会（具体产品/项目背景待补充）。\n- 用户提到：2026-03-18 去体检了（结果/细节待补充）。"
+        ]
+      },
+      {
+        "after_session": "s4",
+        "n_items": 2,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601365.310222,
+  "duration_sec": 100.16553020477295
+}

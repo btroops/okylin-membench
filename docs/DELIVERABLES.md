@@ -10,7 +10,7 @@
 | a 方案说明 | 测试目标/前提/数据生成/用例设计/结果收集/自动评分全流程 | `docs/DESIGN.md`（11 节）、`docs/SCHEMA.md`、`docs/RESEARCH.md`（4 系列 25 项）、`docs/DEVLOG.md`（11 轮）、`docs/RELATED_WORK.md`（相关工作一页） | 文档间数字与代码输出一致性经三轮复查 | ✅ |
 | a 数据集设计 | 可扩展结构，覆盖记忆样本与验证项 | `membench/schema.py`（9 维度、5 探针类型、fact_lifecycle、memory_max_count、superseded_values、evidence_sessions）；`cases/` 35 手写用例；`membench gen` 21 模板 | `membench validate` 静态校验；生成器种子可复现（diff 为空）；测试锁定 | ✅ |
 | a 自动评测方案 | 少人工介入、按证据评分、可解释 | `membench/scoring.py` + `judge.py`：确定性优先（choice/slot/fs/memory 零 LLM）、五分类裁决、criteria 级 FAMA、LLM judge 自检 | `tests/test_scoring.py` 等；同一输入跨 run std=0（测试锁定） | ✅ |
-| b 样例数据与结果 | 示例任务/运行证据/评分结果 | `cases/` 31 例；`examples/sample_results/`（对比报告 HTML/MD/JSON、bin 报告、证据查看器、2 个证据包 + README 解读） | 样例与当前代码输出逐字节一致（自查脚本） | ✅ |
+| b 样例数据与结果 | 示例任务/运行证据/评分结果 | `cases/` 35 例；`examples/sample_results/`（**四智能体**对比报告 HTML/MD/JSON、bin 报告、证据查看器（内嵌全部证据）、2 个证据包 + README 解读）；`openclaw-stability/`（真实智能体三次全量标准参考物，105 个逐用例证据文件 + σ 口径说明） | 三内置样例与当前代码输出逐字节一致（确定性，测试锁定）；openclaw-real 为真实 LLM 采样，以三次均值 ± σ 为口径（README「四智能体口径」节） | ✅ |
 | c 可复现材料 | 脚本/配置/README/代码在 openKylin 直接运行 | 全仓库；零第三方依赖（python3≥3.8 + python3-yaml）；`membench doctor` 8 项环境自检；tests/ 90 个测试随 deb 分发 | 干净副本 tar 解开从零跑全绿；.deb 解包后包内测试全绿 | 🔶 本机（Ubuntu22.04/py3.8）验证；openKylin 真机各跑一次由参赛者完成 |
 | d 工具化封装 | CLI 一键运行、批量对比、.deb | `membench/cli.py` 7 子命令（doctor/list/validate/gen/run/report/demo）；`--agent` 支持批量配置数组；`packaging/build_deb.sh` | deb 构建+解包实测（CLI/批量配置/包内测试）；多智能体批量对比实测 | ✅ |
 | e 演示视频 | openKylin 桌面、≥2 款智能体、3~5 分钟、雷达图 | `docs/DEMO_SCRIPT.md`（5 分镜+口播稿+防翻车清单）、`scripts/rehearse.sh`（彩排脚本）、`agents/*.json` 模板 | 框架侧全链路彩排通过；录制需真实桌面 | 🔶 需参赛者在 openKylin 真机录制（约 15 分钟） |
@@ -37,10 +37,12 @@ nomem(无记忆)      18.9   17        0      54             0         100      
 ```
 
 † **openclaw-real 为 3 次全量独立评测（35 用例 × 3，约 78 分钟）的均值**；
-单 run 探针均分 61.4 / 63.2 / 67.1。各维跨 run σ 见 DEVLOG N+20
+单 run 用例级均分 61.4 / 63.2 / 67.1。各维跨 run σ 见 DEVLOG N+20
 （distractor σ=20.4、temporal σ=40.8 但仅 6 探针——方差估计受样本量限制）。
 N+19 的单 run 画像（总分 72.5、reuse/multi_session=100）属于幸运采样，
-不作为口径；单次跑分不得用于答辩对比。
+不作为口径；单次跑分不得用于答辩对比。三次评测的完整证据（105 个逐用例
+JSON + 聚合 summary）已固化为标准参考物：
+`examples/sample_results/openclaw-stability/`，σ 可由此逐条复算。
 
 **openclaw-real 三次均值下的诚实画像**：retention 95 与 boundary 84 仍显著
 高于 naive/nomem（文件级长期记忆 + 敏感信息拒存是真实优势）；弱项为

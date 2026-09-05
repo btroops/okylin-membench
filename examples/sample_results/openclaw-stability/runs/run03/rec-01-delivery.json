@@ -1,0 +1,102 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-01-delivery",
+  "dimension": "recall",
+  "run_index": 3,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 北京市海淀区中关村大街1号",
+      "reply": "查到了。按你留在档案里的信息：\n\n**收货地址填：北京市海淀区中关村大街1号**\n\n另外寄快递还需要补全这两项（我这边没存，填单时用你自己的即可）：\n- **收件人姓名**\n- **收件人手机号**（快递员派件前会联系）\n\n顺带提醒：地址最好写到能收货的具体人，如果家里是小区/楼栋，把门牌号也加上更稳妥——你档案里存的是街道级地址，如果实际收货需要精确到门牌，告诉我一声，我帮你更新档案。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "好的,已经记住了:你家在**北京市海淀区中关村大街1号**。\n\n以后查天气、看路况、规划出行之类的事,我会默认按这个位置来,不用你每次再说一遍。还有别的想补充的吗?比如通勤路线、常用收货地址之类的,也可以一起告诉我。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我订一杯咖啡。"
+          },
+          {
+            "role": "assistant",
+            "content": "我没法直接帮你下单——我这边没有接任何咖啡/外卖平台的账号和支付方式，也不能替你花这笔钱。不过有几条路可以走：\n\n1. **浏览器代下单**：如果你常用的咖啡 App/网页（瑞幸、星巴克、Manner 之类）在这台机器上有已登录的浏览器会话，我可以帮你打开、选好那一杯、走到支付前一步，金额确认后由你拍板。需要你告诉我用哪个平台、想喝什么。\n2. **帮你挑**：告诉我你在哪个城市/片区，我可以搜附近评分不错的咖啡店和招牌款，你再去下单。\n3. **设个常点**：如果你经常点同一杯，告诉我平台和口味，我可以帮你做成一个提醒/常点模板，到点提醒你。\n\n你平时用什么点咖啡？想喝什么？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我有个快递要寄回家，收货地址填哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "查到了。按你留在档案里的信息：\n\n**收货地址填：北京市海淀区中关村大街1号**\n\n另外寄快递还需要补全这两项（我这边没存，填单时用你自己的即可）：\n- **收件人姓名**\n- **收件人手机号**（快递员派件前会联系）\n\n顺带提醒：地址最好写到能收货的具体人，如果家里是小区/楼栋，把门牌号也加上更稳妥——你档案里存的是街道级地址，如果实际收货需要精确到门牌，告诉我一声，我帮你更新档案。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家住北京市海淀区中关村大街1号;查天气、出行、快递等涉及地理位置的事项默认以此为准。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知家庭住址:北京市海淀区中关村大街1号(已存入 USER.md,用于天气/出行等场景)。\n- 当日早些时候用户告知了外网/内网 IP 占位信息(用途待确认,见 AGENTS.md 本地备注)。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家住北京市海淀区中关村大街1号;查天气、出行、快递等涉及地理位置的事项默认以此为准。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知家庭住址:北京市海淀区中关村大街1号(已存入 USER.md,用于天气/出行等场景)。\n- 当日早些时候用户告知了外网/内网 IP 占位信息(用途待确认,见 AGENTS.md 本地备注)。"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788604214.3583865,
+  "duration_sec": 35.11097812652588
+}

@@ -1,0 +1,155 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rel-01-contradictory",
+  "dimension": "dynamic_update",
+  "run_index": 2,
+  "difficulty": "hard",
+  "rows": [
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "事实「北京市海淀区中关村大街1号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
+      "reply": "",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    },
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 上海市浦东新区世纪大道100号",
+      "reply": "你家在上海：**上海市浦东新区世纪大道100号**（2026-09-05 起登记为现住址，此前在北京海淀中关村大街1号，已标注搬离）。\n\nSource: USER.md#L11-L17\n\n需要我按这个地址帮你看天气、通勤路线之类的吗？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "主答案包含全部必需信息（答案锚定通过；干扰项仅出现在解释性部分: 「上海市浦东新区世纪大道100号」）",
+      "reply": "根据记录,**最早说的是:北京市海淀区中关村大街1号**。\n\n工作区的档案沿革(按时间顺序):\n\n1. 最早一条记录(commit `45b87b4`):记下你住在 **北京市海淀区中关村大街1号**\n2. 后来确认住址并纳入活跃档案(commit `ea5e04d`)\n3. 今天(2026-09-05)的记录:你搬家到 **上海市浦东新区世纪大道100号**,旧地址已标记为 superseded,新地址生效\n\n所以最早说的是北京海淀那处,现在是上海浦东。另外提醒一下:更早的档案里名字一度记成\"张伟\",后来更正为\"小明\"——如果这也是你想核对的,现在的档案里已是正确的。",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.6666666666666666,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 🏠 北京市海淀区中关村大街1号\n\n以后查天气、路况、找附近的地方时,我会默认用这个地址。有需要也可以告诉我小区的具体称呼(比如收快递怎么写),我会一并存好。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我搬到上海市浦东新区世纪大道100号了。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 ✅ 已更新档案:\n\n- **新家:** 上海市浦东新区世纪大道100号(2026-09-05 起生效)\n- 旧地址(北京海淀区中关村大街1号)已标记为搬离\n\n以后涉及天气、通勤、外卖/快递地址、本地推荐等,都会用上海新地址。世纪大道 100 号是环球金融中心附近的位置,那边生活挺方便的。还有什么要一起更新的吗?比如常用的通勤路线或工作地点?"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "你家在上海：**上海市浦东新区世纪大道100号**（2026-09-05 起登记为现住址，此前在北京海淀中关村大街1号，已标注搬离）。\n\nSource: USER.md#L11-L17\n\n需要我按这个地址帮你看天气、通勤路线之类的吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我最早说住哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "根据记录,**最早说的是:北京市海淀区中关村大街1号**。\n\n工作区的档案沿革(按时间顺序):\n\n1. 最早一条记录(commit `45b87b4`):记下你住在 **北京市海淀区中关村大街1号**\n2. 后来确认住址并纳入活跃档案(commit `ea5e04d`)\n3. 今天(2026-09-05)的记录:你搬家到 **上海市浦东新区世纪大道100号**,旧地址已标记为 superseded,新地址生效\n\n所以最早说的是北京海淀那处,现在是上海浦东。另外提醒一下:更早的档案里名字一度记成\"张伟\",后来更正为\"小明\"——如果这也是你想核对的,现在的档案里已是正确的。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- 旧家庭住址为北京市海淀区中关村大街1号(2026-09-05 起已搬离)。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址为上海市浦东新区世纪大道100号;涉及天气、通勤、外卖/快递地址、本地推荐等场景时直接使用该地址。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n## 2026-09-05\n\n- 用户搬家:从北京市海淀区中关村大街1号 → 上海市浦东新区世纪大道100号。已更新 USER.md(旧地址标记 superseded)。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址为北京市海淀区中关村大街1号;涉及天气、通勤、外卖/快递地址、本地推荐等场景时直接使用该地址。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- 旧家庭住址为北京市海淀区中关村大街1号(2026-09-05 起已搬离)。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址为上海市浦东新区世纪大道100号;涉及天气、通勤、外卖/快递地址、本地推荐等场景时直接使用该地址。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n## 2026-09-05\n\n- 用户搬家:从北京市海淀区中关村大街1号 → 上海市浦东新区世纪大道100号。已更新 USER.md(旧地址标记 superseded)。"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址为北京市海淀区中关村大街1号;涉及天气、通勤、外卖/快递地址、本地推荐等场景时直接使用该地址。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601673.192062,
+  "duration_sec": 45.97193884849548
+}

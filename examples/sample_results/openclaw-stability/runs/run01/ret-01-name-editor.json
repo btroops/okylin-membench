@@ -1,0 +1,133 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-01-name-editor",
+  "dimension": "retention",
+  "run_index": 1,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 小明",
+      "reply": "你叫小明！😄 我记住了。有什么可以帮你的吗？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "choice",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答命中正确选项「vim」",
+      "reply": "答案：**以上都不是（没有设置默认编辑器）**。\n\n我检查了当前环境：\n\n- `$EDITOR` 和 `$VISUAL` 均为空\n- git 全局 `core.editor` 未配置\n- `~/.bashrc` / `~/.profile` 等 shell 配置中没有编辑器相关设置\n- 系统里连 emacs、vim、nano 都没安装（`/usr/bin/editor` 符号链接也不存在）\n\n所以这个环境里没有 A/B/C 任何一项作为默认编辑器。如果你指的是**其他某台机器**（比如你的个人电脑），告诉我那台机器的情况或让我连上去查，我可以帮你确认。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "首次配置",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫小明，我用 vim 作为默认编辑器。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了，小明！📝\n\n- **称呼**：小明\n- **默认编辑器**：vim\n\n以后涉及文件编辑的活儿我会优先按 vim 的习惯来（比如直接给 vim 命令、考虑 ex 模式这类流程）。有什么需要帮忙的随时说。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "无关闲聊（干扰）",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天天气不错，帮我查下日历。"
+          },
+          {
+            "role": "assistant",
+            "content": "小明，我查了一圈没查到日历 —— 目前这台网关还没接入任何日历（本地没有日历工具/插件，也没有配置过 Google Calendar 或 CalDAV 账户，记忆里也没有相关记录），所以暂时看不到你的日程。😅\n\n我能做的是：\n\n- **接入日历**：如果你平时用 Google Calendar / Outlook / CalDAV，我可以帮你配一个日历插件，之后每天自动帮你过一遍日程。需要你提供账户或完成授权（用 `/approve` 或告诉我用哪个服务）。\n- **临时替代**：你也可以直接把今天/本周的安排贴给我，我帮你整理成清单、设提醒都没问题。\n\n顺带一提，今天是 **2026-09-05 周六**。你说天气不错——要不要我顺便查下你所在城市的天气，安排个出行建议？告诉我城市就行。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你叫小明！😄 我记住了。有什么可以帮你的吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "以下哪个是我的默认编辑器？A. emacs B. vim C. nano"
+          },
+          {
+            "role": "assistant",
+            "content": "答案：**以上都不是（没有设置默认编辑器）**。\n\n我检查了当前环境：\n\n- `$EDITOR` 和 `$VISUAL` 均为空\n- git 全局 `core.editor` 未配置\n- `~/.bashrc` / `~/.profile` 等 shell 配置中没有编辑器相关设置\n- 系统里连 emacs、vim、nano 都没安装（`/usr/bin/editor` 符号链接也不存在）\n\n所以这个环境里没有 A/B/C 任何一项作为默认编辑器。如果你指的是**其他某台机器**（比如你的个人电脑），告诉我那台机器的情况或让我连上去查，我可以帮你确认。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Call the user 小明 (Xiaoming); they write in Chinese and expect replies in Chinese unless stated otherwise.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Prefer vim as the default editor for any editing tasks; use vim-style commands/flows when interacting with files.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Call the user 小明 (Xiaoming); they write in Chinese and expect replies in Chinese unless stated otherwise.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Prefer vim as the default editor for any editing tasks; use vim-style commands/flows when interacting with files.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600596.2402391,
+  "duration_sec": 39.896392822265625
+}

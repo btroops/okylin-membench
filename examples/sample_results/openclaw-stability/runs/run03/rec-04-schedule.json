@@ -1,0 +1,103 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-04-schedule",
+  "dimension": "recall",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 下周三、项目评审会",
+      "reply": "我查了一圈,目前没有找到任何关于你这周安排的记录:\n\n- 记忆库(memory/)是空的,还没有 MEMORY.md 或每日笔记\n- USER.md 里也还没有你的偏好或计划信息\n- 定时任务里只有系统的心跳和技能检查,没有待办/提醒\n- 另外我这边的工具没有接入你的日历,看不到日程\n\n所以没法凭空告诉你\"重要安排\"是什么 😅\n\n如果你愿意,可以:\n1. 直接把本周重要安排告诉我,我记到记忆里,并按需设置提醒;\n2. 或者如果你用 Google Calendar / Outlook 之类的,告诉我一声,我看看能不能接上再帮你查。\n\n你说说看,这周有什么是需要我记住的?",
+      "hits": [],
+      "misses": [
+        "下周三",
+        "项目评审会"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "下周三我有个项目评审会。"
+          },
+          {
+            "role": "assistant",
+            "content": "收到。下周三 = **9月9日**,今天是周六 9月5日,还有 4 天。\n\n我这边没有关于这个评审会的更多背景(之前没记录过)。想让我做点什么?\n\n- **提醒** — 比如周二(9/8)上午提醒你准备、或会前 1-2 小时再催一次\n- **帮你准备** — 评审材料/PPT 提纲、可能的提问预演、或者你手头某个项目文件的梳理(告诉我是哪个项目)\n- **只记一笔** — 我记到便签里,到时候自然跟进\n\n你说一声,我就安排。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我放点音乐。"
+          },
+          {
+            "role": "assistant",
+            "content": "目前没有检测到已配对的设备（手机/音箱/电脑节点都是空的），我这边没法直接驱动扬声器出声。给你几个可行选项，你挑一个：\n\n1. **浏览器播放** —— 我在本机浏览器打开一个音乐页面（比如 YouTube Music、网易云网页版或某个在线电台），有浏览器的地方就有声音。\n2. **配对设备节点** —— 如果你有装了 OpenClaw 的手机（Android/iOS）或 Mac，配对成节点后我可以远程控制播放。\n3. **指定平台/歌单** —— 告诉我你想听什么（歌手、风格、场景），我找好链接再放。\n\n想用哪个？或者直接说\"用浏览器放\"，我就去开。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我这周有什么重要安排来着？"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了一圈,目前没有找到任何关于你这周安排的记录:\n\n- 记忆库(memory/)是空的,还没有 MEMORY.md 或每日笔记\n- USER.md 里也还没有你的偏好或计划信息\n- 定时任务里只有系统的心跳和技能检查,没有待办/提醒\n- 另外我这边的工具没有接入你的日历,看不到日程\n\n所以没法凭空告诉你\"重要安排\"是什么 😅\n\n如果你愿意,可以:\n1. 直接把本周重要安排告诉我,我记到记忆里,并按需设置提醒;\n2. 或者如果你用 Google Calendar / Outlook 之类的,告诉我一声,我看看能不能接上再帮你查。\n\n你说说看,这周有什么是需要我记住的?"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788604316.7034554,
+  "duration_sec": 32.735291957855225
+}

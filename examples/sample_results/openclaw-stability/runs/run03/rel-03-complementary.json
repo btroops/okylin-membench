@@ -1,0 +1,102 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rel-03-complementary",
+  "dimension": "retention",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "retention",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 代码审查、Danger、ESLint",
+      "reply": "说实话，我翻了记忆和工作区——目前还没有任何\"团队\"的上下文记录：`USER.md`、`MEMORY.md`、`IDENTITY.md` 都还是空的，我也还没有名字和身份设定。所以我没有一个\"既定团队角色\"可以背出来，不想瞎编一个骗你。\n\n不过我能告诉你我现在实际是**怎么被配置来工作的**，以及我适合在团队里顶什么位置：\n\n**我现在是什么**\n- 一个跑在 OpenClaw 里的个人助理智能体，工作目录是你的 workspace，负责照看好你的机器和数据。\n\n**我实际在做的（按 AGENTS.md 的约定）**\n- **记忆与文档管理**：每天写 `memory/YYYY-MM-DD.md` 日志，把稳定的偏好沉淀进 `USER.md`，把重要决策写进 `MEMORY.md`——这样每次会话\"醒来\"都不会失忆。\n- **主动巡检**：通过定时任务每天几次检查邮件、日历、社交提及、天气，有重要的事主动找你。\n- **执行与跟进**：读写文件、跑命令、控制浏览器、管理后台任务、派生子代理做并行工作；承诺过的事会负责到底。\n- **边界感**：内部操作（读、整理、学习）放手做；外部动作（发邮件、发帖）先问你。\n\n**听起来像是你想让我加入一个团队？** 如果有个具体团队（比如你在跑一个 KYLIN 项目，或一组 AI 协作者），告诉我：\n1. 团队里现在有哪些角色/成员？\n2. 你希望我负责哪块（比如代码实现、调研、进度追踪、消息汇总）？\n\n我就能把身份、职责和做事方式真正立起来——而不是现在这样泛泛而谈。",
+      "hits": [],
+      "misses": [
+        "代码审查",
+        "Danger",
+        "ESLint"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我负责我们团队的代码审查。"
+          },
+          {
+            "role": "assistant",
+            "content": "收到 —— 团队代码审查交给你了。这活儿我能帮上不少忙,比如:\n\n- **审 diff**:你把 PR / diff 贴过来或指个仓库,我按变更逐块看,挑逻辑漏洞、并发隐患、安全问题、风格不一致的地方\n- **出审查意见**:整理成清晰的 comment 风格清单(阻塞项 / 建议项 / 疑问),方便你直接贴回 PR\n- **做检查清单**:你们团队如果有固定的审查标准(比如安全红线、错误处理规范),告诉我,我按那套来审\n- **常见坑扫描**:帮你快速识别高危模式,像 SQL 注入、未校验输入、竞态、密钥硬编码这些\n\n几个问题方便我干活:\n\n1. 你们用什么语言 / 技术栈为主?\n2. 代码一般从哪来 —— GitLab/GitHub 链接、本地仓库、还是直接贴文本?\n3. 已经有固定的审查规范,还是让我按通用最佳实践来?\n\n先说一个你想审的,或者讲讲你们的流程,我们直接开始。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "代码审查时我用 Danger + ESLint。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 —— 你的代码审查栈是 **Danger(PR 自动化检查)+ ESLint(静态规则)**。这套搭配挺顺:Danger 管 PR 层面的东西(改动规模、changelog、测试覆盖 diff、危险文件白名单),ESLint 管代码本身的规则,两层互补不重叠。\n\n这是要:\n\n1. **记到你的偏好里**(以后涉及 CI/审查配置时我会默认按这个来)?\n2. 还是在配置或调某个仓库的 Dangerfile/ESLint,遇到了具体问题?\n\n说一声我就接着办。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "你在团队里负责什么？怎么做的？"
+          },
+          {
+            "role": "assistant",
+            "content": "说实话，我翻了记忆和工作区——目前还没有任何\"团队\"的上下文记录：`USER.md`、`MEMORY.md`、`IDENTITY.md` 都还是空的，我也还没有名字和身份设定。所以我没有一个\"既定团队角色\"可以背出来，不想瞎编一个骗你。\n\n不过我能告诉你我现在实际是**怎么被配置来工作的**，以及我适合在团队里顶什么位置：\n\n**我现在是什么**\n- 一个跑在 OpenClaw 里的个人助理智能体，工作目录是你的 workspace，负责照看好你的机器和数据。\n\n**我实际在做的（按 AGENTS.md 的约定）**\n- **记忆与文档管理**：每天写 `memory/YYYY-MM-DD.md` 日志，把稳定的偏好沉淀进 `USER.md`，把重要决策写进 `MEMORY.md`——这样每次会话\"醒来\"都不会失忆。\n- **主动巡检**：通过定时任务每天几次检查邮件、日历、社交提及、天气，有重要的事主动找你。\n- **执行与跟进**：读写文件、跑命令、控制浏览器、管理后台任务、派生子代理做并行工作；承诺过的事会负责到底。\n- **边界感**：内部操作（读、整理、学习）放手做；外部动作（发邮件、发帖）先问你。\n\n**听起来像是你想让我加入一个团队？** 如果有个具体团队（比如你在跑一个 KYLIN 项目，或一组 AI 协作者），告诉我：\n1. 团队里现在有哪些角色/成员？\n2. 你希望我负责哪块（比如代码实现、调研、进度追踪、消息汇总）？\n\n我就能把身份、职责和做事方式真正立起来——而不是现在这样泛泛而谈。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603707.4898775,
+  "duration_sec": 38.026787996292114
+}

@@ -1,0 +1,98 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-02-greeting",
+  "dimension": "recall",
+  "run_index": 2,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 小明",
+      "reply": "你好，小明！☀️ 很高兴见到你。今天有什么我可以帮忙的吗？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫小明。"
+          },
+          {
+            "role": "assistant",
+            "content": "你好，小明！👋 很高兴认识你。我已经把你的名字记下了。\n\n我是你的个人助理，住在这个工作区里。平时可以帮你：\n\n- 📅 查日历、设提醒、安排日程\n- ✉️ 处理邮件和信息\n- 🔍 查资料、搜网页\n- 📁 整理文件、管理项目\n- ⚙️ 各种自动化的小任务\n\n今天有什么想做的吗？或者就是想先打个招呼也完全没问题 😄"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天有点累。"
+          },
+          {
+            "role": "assistant",
+            "content": "累了就歇会儿,周六嘛,不用硬撑 😌\n\n有什么我能搭把手的吗?比如整理下待办、看看有没有积压的消息或日程,或者干脆就这么闲聊两句放松下也行。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "请用我的名字跟我打个招呼。"
+          },
+          {
+            "role": "assistant",
+            "content": "你好，小明！☀️ 很高兴见到你。今天有什么我可以帮忙的吗？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- The user's name is 小明 (Xiaoming); address them in Chinese (Simplified) by default.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Prefer replies in Chinese when the user writes in Chinese.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- The user's name is 小明 (Xiaoming); address them in Chinese (Simplified) by default.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Prefer replies in Chinese when the user writes in Chinese.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602835.7650726,
+  "duration_sec": 18.148058652877808
+}

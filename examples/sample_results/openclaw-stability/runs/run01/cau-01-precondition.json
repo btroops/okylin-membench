@@ -1,0 +1,119 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "cau-01-precondition",
+  "dimension": "causal_reasoning",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "causal_reasoning",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 Go、改用",
+      "reply": "我看了一下工作区——还没有相关的既有项目或上下文，所以先确认几个关键点，免得写偏方向。\n\n这类「Python K8s 部署脚本」通常有几种形态，差别挺大：\n\n1. **渲染 + 应用 YAML**：脚本根据参数（镜像、副本数、命名空间等）生成 Deployment/Service 清单，再 `kubectl apply`，并等待 rollout 完成。适合不想用 Helm 的场景。\n2. **官方 client 直连**：用 `kubernetes` Python SDK 直接调 API 创建/更新资源，带健康检查与回滚逻辑，适合 CI/CD 里跑。\n3. **打包部署流水线**：构建镜像 → push 仓库 → 触发 rollout → 验证（包含上面两种的编排）。\n\n另外还需要知道：\n\n- 你要部署什么应用？现在**有现成的 YAML** 还是从零写？\n- 跑在**哪个环境**：本地 kind/minikube、测试集群还是生产？（影响用 kubeconfig 还是 in-cluster 配置）\n- 部署完要不要**等 Pod 就绪**、失败自动**回滚**、多环境参数化这些？\n\n如果没特别偏好，我可以直接按最常见的方案写：**Python SDK + 模板渲染，支持 --image/--replicas/--namespace 参数、等待 rollout、失败回滚**，大概 150 行左右，你告诉我上面几点（哪怕只说「按默认来」）我就开工。",
+      "hits": [],
+      "misses": [
+        "Go",
+        "改用"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "memory",
+      "dimension": "causal_reasoning",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "记忆库中未找到任何期望条目: Python、Go",
+      "reply": "",
+      "hits": [],
+      "misses": [
+        "Python",
+        "Go"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "坦白说我不会 Python，只用过 Go。"
+          },
+          {
+            "role": "assistant",
+            "content": "明白，那咱们就按\"你会 Go\"来对齐。Python 和 Go 差别不小，但如果只是\"看懂/改小脚本\"，其实比学一门新语言轻得多。\n\n几个最直观的对照，帮你快速建立坐标：\n\n- **变量**：Go 的 `x := 1` ↔ Python 直接 `x = 1`，没有类型声明、没有 `var`\n- **循环**：Go 的 `for i := 0; i < n; i++` ↔ Python 的 `for i in range(n)`；Go 的 `for _, v := range slice` ↔ Python 的 `for v in slice`\n- **字典**：Go 的 `map[string]int` ↔ Python 的 `dict`（`{}`），基本同构\n- **函数**：Go 的 `func f(a int) int` ↔ Python 的 `def f(a):`，不需要写返回类型，也没有花括号——**缩进就是语法**\n- **错误处理**：Go 的 `if err != nil` 满天飞 ↔ Python 的 `try/except` 或直接让异常往上抛\n- **依赖**：没有 `go.mod`，用 `pip install`，而且通常不用像 Go 那样把二进制编出来——`python x.py` 直接跑\n\n最大的坑就一个：**缩进**。Go 里缩进是风格，Python 里缩进是语法，混用空格和 Tab 会直接报错。\n\n你是打算上手某个 Python 项目、要写点脚本，还是在考虑学 Python？说下背景，我可以给你更有针对性的东西——比如直接把某个 Go 思路翻译成 Python 给你看。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "隔了一天",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我在学 Kubernetes。"
+          },
+          {
+            "role": "assistant",
+            "content": "欢迎入坑 —— K8s 是那种\"看十遍文档不如自己 deploy 一个坏掉的 Pod\"的东西，动手学最快。\n\n我先说下我能帮上的几种方式，你挑一个方向：\n\n- **搭环境**：我这边可以直接帮你起一个本地集群（kind / k3s 都行，WSL2 里跑得动），然后你跟着实操，我随时答疑\n- **概念梳理**：Pod、Deployment、Service、Ingress、控制器、调度这些，讲到你能用自己的话讲清楚为止\n- **目标导向**：如果你是为了 CKA 考试或者工作需要，我可以按考点/实际场景给你排学习路径\n- **排障练习**：真实场景里最常见的坑（镜像拉不下来、CrashLoopBackOff、Pending、Service 不通……）我可以造出来让你练\n\n为了不给你铺一条没用的路，先问两句：\n\n1. 你现在到哪一步了？(还没装环境 / Docker 刚会 / 已经在玩 Pod 了)\n2. 学它是为了什么？(工作要用 / 考 CKA / 纯兴趣搞明白架构)\n\n还有一点我的个人建议：**先别啃大部头**（Kubernetes in Action 那类先放放），把 `kubectl` 玩熟、弄清楚\"声明式 API + 控制循环\"这两个核心心智模型，后面所有东西都是这两个的展开。\n\n你现在什么情况？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我用 Python 写个 K8s 部署脚本。"
+          },
+          {
+            "role": "assistant",
+            "content": "我看了一下工作区——还没有相关的既有项目或上下文，所以先确认几个关键点，免得写偏方向。\n\n这类「Python K8s 部署脚本」通常有几种形态，差别挺大：\n\n1. **渲染 + 应用 YAML**：脚本根据参数（镜像、副本数、命名空间等）生成 Deployment/Service 清单，再 `kubectl apply`，并等待 rollout 完成。适合不想用 Helm 的场景。\n2. **官方 client 直连**：用 `kubernetes` Python SDK 直接调 API 创建/更新资源，带健康检查与回滚逻辑，适合 CI/CD 里跑。\n3. **打包部署流水线**：构建镜像 → push 仓库 → 触发 rollout → 验证（包含上面两种的编排）。\n\n另外还需要知道：\n\n- 你要部署什么应用？现在**有现成的 YAML** 还是从零写？\n- 跑在**哪个环境**：本地 kind/minikube、测试集群还是生产？（影响用 kubeconfig 还是 in-cluster 配置）\n- 部署完要不要**等 Pod 就绪**、失败自动**回滚**、多环境参数化这些？\n\n如果没特别偏好，我可以直接按最常见的方案写：**Python SDK + 模板渲染，支持 --image/--replicas/--namespace 参数、等待 rollout、失败回滚**，大概 150 行左右，你告诉我上面几点（哪怕只说「按默认来」）我就开工。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600141.2305198,
+  "duration_sec": 34.87322521209717
+}

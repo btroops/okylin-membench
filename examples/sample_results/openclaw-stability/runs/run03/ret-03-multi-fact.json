@@ -1,0 +1,151 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-03-multi-fact",
+  "dimension": "retention",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 雪球",
+      "reply": "你的猫叫**雪球**(Snowball)🐱 —— 这是今天记入备忘的,我看过记录确认了。\n\nSource: memory/2026-09-05.md / USER.md",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 13800001111",
+      "reply": "你的联系电话是 **138 0000 1111**（中国手机号）。放心，只在你要求时才会用到，不会外传。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我养了一只猫叫雪球。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 🐱 雪球——我会记住这个名字。以后聊天提到它我会记得是谁。\n\n雪球是什么品种呀？还是捡来的小流浪？"
+          },
+          {
+            "role": "user",
+            "content": "我的电话是 13800001111。"
+          },
+          {
+            "role": "assistant",
+            "content": "好的，已记录你的电话 13800001111。放心，只会在你需要时用（比如发提醒或需要验证身份的场景），不会随便外传。\n\n还有别的想让我记住的吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我打开浏览器看看天气。"
+          },
+          {
+            "role": "assistant",
+            "content": "浏览器这边确实开不了（环境里没装浏览器，也没连上任何设备），我用天气接口直接查了——按网络出口定位显示你在**成都**附近，天气如下：\n\n**成都 · 现在（9月5日）**\n- ☁️ 多云间晴，**30°C**（体感 30°C）\n- 💧 湿度 39%，无降水\n- 🌬️ 西南风 12 km/h\n- 🌞 紫外线指数 2（当前）\n\n**未来三天**\n| 日期 | 天气参考 | 温度 |\n|---|---|---|\n| 今天 9/5 | 晴间多云 | 23 ~ 32°C |\n| 明天 9/6 | 多云 | 24 ~ 32°C |\n| 周日 9/7 | 云量增多 | 23 ~ 31°C |\n\n如果这个定位不是你所在的城市，直接告诉我城市名（比如\"北京\"\"上海\"），我马上给你查对应的天气。"
+          },
+          {
+            "role": "user",
+            "content": "顺便提醒我明天早上九点开会。"
+          },
+          {
+            "role": "assistant",
+            "content": "✅ 已设置提醒：**明天（9月6日）早上 9:00**（北京时间）提醒你开会，到时候会直接发到这个对话里，提醒一次后自动清除。\n\n需要改时间或加个提前量（比如 8:45 再提醒一次）的话，随时说。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的猫叫**雪球**(Snowball)🐱 —— 这是今天记入备忘的,我看过记录确认了。\n\nSource: memory/2026-09-05.md / USER.md"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的电话是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的联系电话是 **138 0000 1111**（中国手机号）。放心，只在你要求时才会用到，不会外传。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户的联系电话：13800001111（中国手机号）。仅在用户要求时使用，不外传。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Prefer replying in Chinese when the user writes in Chinese.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户养了一只猫，名叫雪球（Snowball）。聊天时可自然提及。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知：养了一只猫，名叫雪球（Snowball）。已记入 USER.md。\n- 用户使用中文交流，回复用中文。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户的联系电话：13800001111（中国手机号）。仅在用户要求时使用，不外传。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Prefer replying in Chinese when the user writes in Chinese.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户养了一只猫，名叫雪球（Snowball）。聊天时可自然提及。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知：养了一只猫，名叫雪球（Snowball）。已记入 USER.md。\n- 用户使用中文交流，回复用中文。"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788604061.3311398,
+  "duration_sec": 57.01153635978699
+}

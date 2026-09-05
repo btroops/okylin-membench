@@ -1,0 +1,124 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-03-editor",
+  "dimension": "dynamic_update",
+  "run_index": 1,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "事实「vim」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
+      "reply": "",
+      "hits": [
+        "vim"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    },
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "复用了已被覆盖/失效的事实「vim」（FAMA 风格）",
+      "reply": "目前没有设置任何默认编辑器。我查了这几个地方，都是空的:\n\n- 环境变量 `EDITOR` / `VISUAL` — 未设置\n- Git 全局配置 `core.editor` — 未设置\n- `~/.selected_editor`、系统 alternatives — 也不存在\n\n也就是说系统在调用编辑器时(比如 git commit)会回退到 Vi 或直接报错。如果你有偏好的编辑器(比如 vim、nano、VS Code),告诉我一声,我可以帮你配置成默认。",
+      "hits": [
+        "vim"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s2"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我用 vim 作为默认编辑器。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了，已写入 USER.md：你默认用 vim 作为编辑器。以后涉及编辑器选择（`$EDITOR`、git 默认编辑器、命令行编辑操作等）我会默认按 vim 来。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我改用 emacs 了，以后默认编辑器换成 emacs。"
+          },
+          {
+            "role": "assistant",
+            "content": "已更新 USER.md：旧的 vim 偏好标记为 superseded，新增 emacs 为默认编辑器。以后涉及 `$EDITOR`、git core.editor 或编辑器相关建议时，我都会默认 emacs。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的默认编辑器是什么？"
+          },
+          {
+            "role": "assistant",
+            "content": "目前没有设置任何默认编辑器。我查了这几个地方，都是空的:\n\n- 环境变量 `EDITOR` / `VISUAL` — 未设置\n- Git 全局配置 `core.editor` — 未设置\n- `~/.selected_editor`、系统 alternatives — 也不存在\n\n也就是说系统在调用编辑器时(比如 git commit)会回退到 Vi 或直接报错。如果你有偏好的编辑器(比如 vim、nano、VS Code),告诉我一声,我可以帮你配置成默认。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Use vim as the default editor preference (e.g., when suggesting editor usage, commands, or config such as `$EDITOR`/`git` core.editor).\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use emacs as the default editor preference (e.g., when suggesting editor usage, commands, or config such as `$EDITOR`/`git` core.editor).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use vim as the default editor preference (e.g., when suggesting editor usage, commands, or config such as `$EDITOR`/`git` core.editor).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Use vim as the default editor preference (e.g., when suggesting editor usage, commands, or config such as `$EDITOR`/`git` core.editor).\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use emacs as the default editor preference (e.g., when suggesting editor usage, commands, or config such as `$EDITOR`/`git` core.editor).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use vim as the default editor preference (e.g., when suggesting editor usage, commands, or config such as `$EDITOR`/`git` core.editor).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788599735.462206,
+  "duration_sec": 23.901137828826904
+}

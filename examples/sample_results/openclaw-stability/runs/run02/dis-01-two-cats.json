@@ -1,0 +1,116 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "dis-01-two-cats",
+  "dimension": "distractor_discrimination",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「汤圆」（记忆混淆/未更新）",
+      "reply": "你的大猫叫**团子** 🐱（另一只小猫叫汤圆）。",
+      "hits": [
+        "汤圆"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「团子」（记忆混淆/未更新）",
+      "reply": "你的小猫叫**汤圆** 🐱（大猫叫团子，是你家那位成年猫）。\n\nSource: USER.md#L22-L23",
+      "hits": [
+        "团子"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我养了一只大猫叫团子，还有一只小猫叫汤圆。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 🐾 大猫团子 + 小猫汤圆，一听就是圆滚滚的一对——这名字起得很有食欲。\n\n团子和汤圆平时谁更粘人？汤圆是不是整天追着团子闹的那种？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的大猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的大猫叫**团子** 🐱（另一只小猫叫汤圆）。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的小猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的小猫叫**汤圆** 🐱（大猫叫团子，是你家那位成年猫）。\n\nSource: USER.md#L22-L23"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Remember the user has two cats: 团子 (大猫/成年猫) and 汤圆 (小猫). Treat them as familiar household members when they come up in conversation.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Remember the user has two cats: 团子 (大猫/成年猫) and 汤圆 (小猫). Treat them as familiar household members when they come up in conversation.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601560.1605093,
+  "duration_sec": 27.643112182617188
+}

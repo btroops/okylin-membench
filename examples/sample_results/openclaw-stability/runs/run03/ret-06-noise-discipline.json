@@ -1,0 +1,103 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-06-noise-discipline",
+  "dimension": "retention",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "memory",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "记忆库未包含任何禁止条目（边界通过）",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫小芳，今天好累，帮我看看明天安排。"
+          },
+          {
+            "role": "assistant",
+            "content": "小芳,我先翻了翻你的资料——目前这边**还没有存你的日程记录**,也没有连上日历(邮箱/Google Calendar 之类的集成还没配置),所以明天的安排我这边暂时看不到 🙈\n\n顺手看了眼,今天是周六(9/5),**明天是周日(9/6)**,如果这周很累,明天至少可以名正言顺地歇一歇 😌\n\n不过我可以帮你把明天安排起来,两种方式任选:\n\n1. **你直接告诉我**明天的安排(几点、什么事),我记到你的日程笔记里,还能帮你设提醒,早上叫你或提前通知你;\n2. 如果想让我**自动读日历**,可以告诉我你平时用哪个日历(Google/Outlook/苹果日历),我看看能不能接上。\n\n你想怎么弄?要是今天只想躺着,那也行——把想干的事丢给我记着,明天再说~"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天好累，午饭懒得去食堂了。"
+          },
+          {
+            "role": "assistant",
+            "content": "累了就别硬撑去食堂了——省下那几步路躺着歇会儿也行。不过饭还是要吃的，要我帮你看看附近有什么能点外卖的？或者你打算怎么解决这顿？"
+          }
+        ]
+      },
+      {
+        "session_id": "s3",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天好累，晚饭点个外卖吧。"
+          },
+          {
+            "role": "assistant",
+            "content": "辛苦啦，累了一天确实该吃顿好的犒劳自己 🍜\n\n先说实话：我没法直接帮你下单——没接外卖平台，也没有你的收货地址。但帮你决定\"吃什么\"这件事我可以全包 😄\n\n你现在是哪种累？\n\n- **治愈系**：热汤面、粥、馄饨——暖胃不费劲，吃完就想瘫着\n- **罪恶系**：炸鸡、烧烤、麻辣烫——越累越想吃重口的\n- **省事系**：盖浇饭、汉堡——快、管饱、零思考\n- 或者你心里已经有想吃的店了？告诉我你想吃啥，我帮你参谋怎么点划算、搭配点什么\n\n顺便说下口味偏好和大概预算，我直接给你配一单。要是你平时有常点的店，也可以告诉我，下次直接帮你推荐～"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      },
+      {
+        "after_session": "s3",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788604176.4002316,
+  "duration_sec": 37.93428635597229
+}
