@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 """OpenAI 兼容接口适配器（stdlib urllib 实现，便于离线单测）。
 
-可对接任何 OpenAI Chat Completions 兼容端点（vLLM / Ollama / FastChat 等），
-并支持可插拔的"记忆策略"，用于对比同一 LLM 在不同记忆策略下的表现：
+类名沿用 OpenAICompatAgent，实际支持双 wire format（api 字段，N+26）：
+
+  api = "openai"     Chat Completions，base_url 含版本段（vLLM / Ollama 等）
+  api = "anthropic"  Messages 格式，base_url 不含版本段
+                     （https://api.anthropic.com、DeepSeek 的
+                     https://api.deepseek.com/anthropic 等）
+
+两种格式共用可插拔的"记忆策略"，用于对比同一 LLM 在不同记忆策略下的表现：
 
   strategy = none       不做长期记忆（每次会话仅保留当前 session 上下文）
   strategy = full_log   全量历史拼进上下文（对照：窗口越大越贵）
@@ -15,19 +21,20 @@
   "kind": "openai_compat",
   "base_url": "http://127.0.0.1:11434/v1",
   "model": "qwen2.5:7b",
+  "api": "openai",
   "api_key_env": "OPENAI_API_KEY",
   "memory": {"strategy": "store", "top_k": 5},
   "system_prompt": "你是 openKylin 桌面助手。",
   "temperature": 0.2
 }
+anthropic 格式示例见 agents/anthropic-compat.example.json（HTTP 细节由
+membench/llmhttp.py 消化：system 拆顶层、消息合并、max_tokens 默认值）。
 """
 from __future__ import annotations
 
-import json
-import urllib.error
-import urllib.request
 from typing import Dict, List, Optional
 
+from .. import llmhttp
 from ..httputil import opener_for
 from .base import AgentAdapter, AgentError
 from .builtin import SECRET_RE
@@ -73,12 +80,17 @@ class OpenAICompatAgent(AgentAdapter):
     def __init__(self, name: str, base_url: str, model: str,
                  api_key: str = "", memory: Optional[dict] = None,
                  system_prompt: str = "你是 openKylin 桌面智能助手。",
-                 temperature: float = 0.2, timeout: float = 120.0) -> None:
+                 temperature: float = 0.2, timeout: float = 120.0,
+                 api: str = "openai", max_tokens: Optional[int] = None) -> None:
         self.name = name
         self.base_url = base_url.rstrip("/")
         self._opener = opener_for(self.base_url)
         self.model = model
         self.api_key = api_key
+        if api not in llmhttp.APIS:
+            raise AgentError("未知 api 格式: %r（可选 %s）" % (api, llmhttp.APIS))
+        self.api = api
+        self.max_tokens = max_tokens
         self.system_prompt = system_prompt
         self.temperature = temperature
         self.timeout = timeout
@@ -138,22 +150,11 @@ class OpenAICompatAgent(AgentAdapter):
         return msgs
 
     def _chat(self, messages: List[Dict[str, str]]) -> str:
-        payload = json.dumps({
-            "model": self.model,
-            "messages": messages,
-            "temperature": self.temperature,
-        }).encode("utf-8")
-        req = urllib.request.Request(
-            self.base_url + "/chat/completions", data=payload,
-            headers={"Content-Type": "application/json",
-                     **({"Authorization": "Bearer " + self.api_key} if self.api_key else {})})
         try:
-            open_fn = self._opener.open if self._opener else urllib.request.urlopen
-            with open_fn(req, timeout=self.timeout) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-        except urllib.error.URLError as e:
-            raise AgentError("[%s] 请求失败: %s" % (self.name, e)) from e
-        try:
-            return data["choices"][0]["message"]["content"] or ""
-        except (KeyError, IndexError, TypeError) as e:
-            raise AgentError("[%s] 响应格式异常: %r" % (self.name, data)) from e
+            return llmhttp.chat(self.base_url, self.api, self.model, messages,
+                                api_key=self.api_key,
+                                temperature=self.temperature,
+                                timeout=self.timeout, opener=self._opener,
+                                max_tokens=self.max_tokens)
+        except llmhttp.LLMHTTPError as e:
+            raise AgentError("[%s] %s" % (self.name, e)) from e
