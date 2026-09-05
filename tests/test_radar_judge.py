@@ -82,6 +82,31 @@ class TestLLMJudge(unittest.TestCase):
             out = j.judge_free(probe, case, "随便")
         self.assertEqual(out["verdict"], VERDICT_NOT_EVALUABLE)
 
+    def test_failure_counters_and_health(self):
+        """N+29：judge 静默降级必须留痕——计数与 last_error 可被 summary 消费。"""
+        from membench import VERDICT_NOT_EVALUABLE
+        j = LLMJudge(base_url="http://127.0.0.1:1/v1", model="m")  # 端口必失败
+        case = _make_case()
+        out = j.judge_free(case.probes[0], case, "你叫小明")
+        self.assertEqual(out["verdict"], VERDICT_NOT_EVALUABLE)
+        self.assertEqual((j.calls, j.failures), (1, 1))
+        self.assertTrue(j.last_error)
+        h = j.health()
+        self.assertEqual(h["api"], "openai")
+        self.assertEqual(h["model"], "m")
+        self.assertEqual((h["calls"], h["failures"]), (1, 1))
+
+    def test_success_path_counters_clean(self):
+        from unittest import mock
+        j = LLMJudge(base_url="http://127.0.0.1:1/v1", model="m")
+        case = _make_case()
+        with mock.patch.object(LLMJudge, "_post",
+                               return_value={"verdict": "correct", "score": 1.0,
+                                             "reason": "含小明"}):
+            j.judge_free(case.probes[0], case, "你叫小明")
+        self.assertEqual((j.calls, j.failures), (1, 0))
+        self.assertEqual(j.health()["last_error"], "")
+
 
 if __name__ == "__main__":
     unittest.main()

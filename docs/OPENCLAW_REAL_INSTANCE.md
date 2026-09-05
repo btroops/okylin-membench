@@ -72,7 +72,9 @@ openclaw-gateway 容器（uid=评测用户，端口 18789）
 | 11 | 探针的上下文泄漏（测量学） | 同会话键下探针答"刚才你告诉我的"（retention 假正确） | session_start 时轮换会话键（见二）；空白对照实验验证新会话只读记忆文件 |
 | 12 | 探针读旧快照疑云 | 教天津→探针答重庆 | 判别实验排除注入延迟（教学返回即落盘、立即可读）；真因是实验序列残留的 superseded 地址链，隔离还原后消失 |
 
-## 四、运行步骤（全部实测）
+## 四、运行步骤（配方 A 已实测；配方 B 为 N+26 双 provider 改造新增）
+
+**配方 A：Anthropic 兼容端点（原实测路径，DeepSeek 为例）**
 
 ```bash
 # 0) 前置：docker daemon 可用；评测用户对 docker socket 有访问权
@@ -107,6 +109,53 @@ python3 -m membench.cli run --agent agents/openclaw.agent.json \
 python3 -m membench.cli report results/openclaw
 ```
 
+**配方 B：OpenAI 兼容端点（N+26 新增；compose 已透传 `OPENAI_BASE_URL` /
+`OPENAI_MODEL` / `OPENAI_API_KEY`，见 .env.example）**
+
+步骤与配方 A 同构，仅 provider 段不同（以 `<OPENAI_BASE_URL>` 指向
+任意 Chat Completions 兼容端点，如 `https://api.deepseek.com/v1`）：
+
+```bash
+docker compose exec -T openclaw-gateway openclaw config set \
+  models.providers.openai.baseUrl "$OPENAI_BASE_URL"
+# ⚠️ 待实测项：openai provider 的 api 取值。anthropic 配方实测用的是
+#    "anthropic-messages"，openai 对应值（如 openai-completions / openai-chat）
+#    请先在容器内 `docker compose exec -T openclaw-gateway openclaw models list`
+#    或官方文档确认后回填本节，报 provider api 不识别就换候选值。
+docker compose exec -T openclaw-gateway openclaw config set \
+  models.providers.openai.api "<待实测：openai-completions>"
+docker compose exec -T openclaw-gateway openclaw config set --json \
+  models.providers.openai.models \
+  '[{"id":"deepseek-v4-flash","name":"deepseek-v4-flash"}]'
+printf '%s' "$OPENAI_API_KEY" | docker compose exec -T openclaw-gateway \
+  openclaw models auth paste-api-key --provider openai
+docker compose exec -T openclaw-gateway openclaw models set openai/deepseek-v4-flash
+docker compose restart openclaw-gateway
+```
+
+**配方 B 附：embedding 自定义（memory-core 语义检索，N+28）**
+
+OpenClaw 的 memory-core 语义检索固定通过 **openai provider** 调
+`/v1/embeddings`（实测行为：无该 provider key 时持续报
+`No API key found for provider "openai"`，见局限 2）。由此：
+
+- **embedding 走哪家厂商 = 用户配置**：把 `models.providers.openai.baseUrl`
+  指向任意实现了 `/v1/embeddings` 的兼容端点（DeepSeek /v1、Qwen、自建
+  网关皆可）并贴入其 key，embedding 即随该端点走——可与 chat 模型同
+  端点，也可单独指一家。
+- **embedding 模型名的指定键待实测**：候选为
+  `openclaw config set memory.embedding.model <id>`、或在
+  `models.providers.openai.models[]` 中登记 embedding 模型、或专用环境
+  变量。验证方法：`openclaw config list` 输出 grep embed 定位真实键名；
+  配置后 memory sync 日志不再报 `No API key found` / 模型不存在即生效。
+  确认后请回填本节并注明 openclaw 镜像版本号。
+- **兜底**：若所用版本不支持改 embedding 模型名，可在自建 OpenAI 兼容
+  网关侧把其请求的模型名映射为厂商实际模型（网关层重写请求体）。
+
+切换 provider 的口径纪律（DEVLOG）：被测后端一换，归档的 openclaw-real
+三次稳定性均值 ± σ 与四智能体对比雷达即作废，必须重跑三次稳定性并
+归档新样例（标注 provider/模型），旧数据不得混用。
+
 ## 五、GATING ITEM 与已知局限（诚实记录）
 
 1. **LLM 后端是硬前提**：无可用模型则 OpenClaw 不产生任何记忆，2A 仍是 🔶。
@@ -119,6 +168,10 @@ python3 -m membench.cli report results/openclaw
    因此常为空列表（shim 已接入真实 `openclaw memory search --json`，
    解析成功且非空才返回条目，失败/空结果优雅降级不影响评分）——这是
    被测环境的真实能力上限，如实报告而非掩盖。
+   **解锁与自定义（N+26/N+28）**：`.env` 设 `OPENAI_API_KEY` 且端点支持
+   `/v1/embeddings`，语义检索即恢复；双 provider 改造（配方 B）后，embedding
+   走哪家厂商由用户配置（见配方 B 附「embedding 自定义」），不再是
+   "只有 anthropic 端点"的结构性局限。
 3. **答案锚定豁免的副作用**（N+19）：shim 让探针会话仅靠记忆文件作答
    后，真实 LLM 常在主答案后另起一段引用记忆原文（含干扰项），确定性
    评分的全文 must_not_include 扫描会被系统性误伤。membench 评分器

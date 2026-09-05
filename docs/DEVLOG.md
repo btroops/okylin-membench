@@ -624,3 +624,102 @@ n/a 因网络抖动）。
   n19-stage1。
 - **未做（待用户确认）**：删 membench-evaluator / pitch-correction 分支
   ✋、drop `stash@{0}`（relation WIP 备份）✋、master 快进 ✋。
+
+## 2026-09-05 · 轮次 N+26：多 provider 双格式改造——OpenAI / Anthropic 可配置
+
+- **决策来源**：用户拍板"LLM 接入格式应由用户自行配置，openai 与
+  anthropic 并存；现状兼容性太差，工程上不对"。方案三层设计已沉淀
+  `docs/PLAN_MULTI_PROVIDER.md`（背景/设计/验收/不做清单），本文只记执行。
+- **做了什么**（工作台 multi-provider，基于 master 7189e79）：
+  1. `membench/llmhttp.py` 新模块：`chat()` 单一入口覆盖两种 wire format。
+     anthropic 路径：`POST {base}/v1/messages`（base_url 约定不含版本段）、
+     `x-api-key` + `Authorization: Bearer` 双发（官方认前者，DeepSeek 等
+     兼容网关认后者）、system 拆顶层字段、连续同角色合并（协议要求
+     user 开头交替）、`max_tokens` 必填默认 1024、解析 `content[].text`；
+     错误统一归一 `LLMHTTPError`（含 HTTP 状态与响应体摘要）。
+  2. **去重**：`judge.py::_post` 与 `openai_compat.py::_chat` 原是两份重复
+     的 OpenAI-only POST，现都委托 `llmhttp.chat`；judge 的 JSON 正则提取、
+     votes 众数、fallback 回退，agent 的 `AgentError` 包装语义不变。
+  3. 配置面：智能体 JSON 新增 `"api": "openai"|"anthropic"`（缺省 openai，
+     旧配置零改动）与可选 `"max_tokens"`；`api_key_env` 缺省随 api
+     （OPENAI_API_KEY / ANTHROPIC_API_KEY）；`--judge` 增加 anthropic 档，
+     端点/key 缺省随格式。新示例 `agents/anthropic-compat.example.json`。
+  4. OpenClaw 层：compose 两组 env 补 `OPENAI_BASE_URL`/`OPENAI_MODEL`
+     透传；`.env.example` 补注释项；`OPENCLAW_REAL_INSTANCE.md` 运行步骤
+     改为配方 A（anthropic，原样）+ 配方 B（openai）并列；局限 #2 补
+     解锁条件（设 OPENAI_API_KEY 且端点支持 /v1/embeddings 即恢复语义检索）。
+- **诚实标注**：配方 B 中 openclaw 的 `models.providers.openai.api` 取值
+  **未在容器实测**（anthropic 实测值为 anthropic-messages，openai 对应值
+  需容器内 `openclaw models list`/官方文档确认），文档已显式标注待回填。
+- **测试插曲（复现 N+22 根因）**：首轮单测整体卡死——测试直接传
+  `opener=None`，宿主死代理（172.29.48.1:7890，见 N+22 后收尾清点 #4）
+  吞掉了发往 127.0.0.1 的请求。按生产同款改为 `opener_for()` 后即刻通过。
+  这恰好再次验证 httputil 存在的必要性，也提醒：**任何回环调用必须绕代理**。
+- **证据（全绿）**：新 `tests/test_llmhttp.py` 10 用例（双格式的路径/鉴权头/
+  请求体/解析/错误包装 + 工厂路由全链路 + 旧配置缺省行为），本地 fake 端点
+  （http.server，回环绕代理）覆盖；全量 `unittest discover` **117/117 OK**
+  （N+25 基线 107 + 新增 10），零回归；无新增第三方依赖。
+- **下一步**：配方 B 的 api 取值容器内实测回填；真切换被测后端时按口径
+  纪律重跑三次稳定性；n19-stage1 在途分支另行并入（--strict 与本改造无关）。
+
+## 2026-09-05 · 轮次 N+27：开发者配置指南沉淀（面向开源受众）
+
+- **为什么**：N+26 的双格式能力只散在 README 两行与 OPENCLAW_REAL_INSTANCE.md
+  里，"换厂商要改哪几个文件、key 放哪、哪些路径实测过"没有一处汇总。
+  用户明确本仓库将开源、受众是外部开发者，配置说明必须是仓库内的正式
+  文档而非会话输出。
+- **做了什么**：新增 `docs/CONFIGURATION.md`（三配置点速查表、两种 wire
+  format 的 base_url 约定、被测智能体/judge/OpenClaw 三层各自的换厂商
+  操作、常见厂商 base_url 速查、口径纪律、密钥安全）；README「接入你的
+  智能体」与 judge 说明两处挂链接。纯文档轮次，零代码改动。
+- **诚实标注**：厂商速查表注明实测边界——只有 DeepSeek anthropic 兼容
+  端点（配方 A）与本地 fake 同构端点实测过，其余为厂商公开文档值，
+  失效欢迎提 PR（开源协作约定）。
+- **验证**：README 引用的 docs/CONFIGURATION.md 与示例文件均已入库
+  （message 可由本 diff 验证）；无代码路径，单测不适用（N+26 基线 117/117）。
+
+## 2026-09-05 · 轮次 N+28：embedding 自定义配置路径（用户决策延伸）
+
+- **决策来源**：用户延伸 N+26 的配置化原则——"embedding 也应可配置自己的
+  模型"。先厘清分层事实再动手：**membench 本体不依赖 embedding**（参考
+  智能体的记忆检索是确定性关键词实现，属评测口径的一部分，引入向量检索
+  会破坏基线可比性，不做）；embedding 只存在于 OpenClaw 容器的
+  memory-core，且实测固定通过 openai provider 调 `/v1/embeddings`。
+- **做了什么**（纯文档轮次，零代码）：
+  1. `OPENCLAW_REAL_INSTANCE.md` 配方 B 新增附节「embedding 自定义」：
+     端点级可配置（openai provider 的 baseUrl 指向任意 /v1/embeddings
+     兼容端点）为实测可推定路径；**模型名的指定键如实标注待实测**，给出
+     三个候选键与验证方法（config list grep embed + memory sync 日志），
+     并留网关层模型名重写的兜底方案；
+  2. 局限 #2 的"解锁条件"升级为"解锁与自定义"；
+  3. `CONFIGURATION.md` §3 补「关于 embedding」：谁在用 embedding、
+     membench 为何不用（口径说明），防止开发者找不存在的开关；
+  4. `.env.example` OPENAI 组注释点明该组同时是 embedding 来源。
+- **诚实标注**：embedding 模型名的真实配置键未在容器实测（与配方 B 的
+  api 取值同属待回填项），文档未臆造键名。
+- **下一步**：与配方 B api 取值一并容器内实测回填（含 openclaw 镜像版本号）。
+
+## 2026-09-06 · 轮次 N+29：judge 跨格式错配修复 + judge 健康度留痕 + 配置未知字段告警
+
+- **决策来源**：multi-provider 分支架构评审（本轮）结论——P1/P2 为必做项，
+  ③ 严格校验为高 ROI 小改；"上层 Provider 抽象"经评估**不做**（变体轴已切对、
+  rule of three 未到、契约窄是优点），触发条件写入方案文档备查。
+- **做了什么**（三件，互不耦合）：
+  1. **P1 修复**：`--judge-model` 原固定 `gpt-4o-mini`，`--judge anthropic`
+     不显式给模型会把 OpenAI 模型名发给 Anthropic 端点 → 静默失败回退。
+     默认模型挪入 `JUDGE_LLM_DEFAULTS` 随格式取值（openai=gpt-4o-mini，
+     anthropic=claude-sonnet-4-5），显式指定仍然优先；
+  2. **P2 可观测**：`LLMJudge` 增加调用/失败计数与 `health()` 快照；
+     `run_suite` 新增 `judge_health_fn` 钩子，落盘前把 judge 健康度并入
+     `summary["_judge"]`（共享 judge 按智能体取增量，无失败不串报错）；
+     HTML/Markdown 报告各智能体段落显示"失败 X/Y 次"警示或全成说明，
+     CLI 运行日志同步告警——judge 静默降级自此绝迹；
+  3. **① 配置严格化**：智能体工厂按 kind 维护合法字段表，未知字段告警并
+     忽略（`_` 前缀视为注释放行）；memory 子配置同口径。防"api 拼错成
+     ap1 → 无声回退 openai 缺省"这类评测口径悄然作废的事故。
+- **不做记录**：Provider 类层次抽象（理由见上）；`_split_system` 的
+  user-first 校验待下次触碰 llmhttp 时顺手加；重试/退避待真实稳定性问题
+  出现后在 opener 层解决，不动 `llmhttp.chat` 签名。
+- **验证**：新增 `tests/test_judge_observability.py`（模型默认值 ×3、
+  summary 增量落盘 ×3、报告可见性 ×2）与 `test_agents.py` 配置告警 ×5、
+  `test_radar_judge.py` 计数器 ×2，全套件 117→132 全绿；零新依赖。

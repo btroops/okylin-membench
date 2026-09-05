@@ -193,5 +193,64 @@ class TestOpenAICompat(unittest.TestCase):
         self.assertFalse(any("小明" in c for c in contents))
 
 
+class TestAgentConfigValidation(unittest.TestCase):
+    """N+29：配置未知字段告警——静默忽略会把拼写错误变成无声的缺省回退。"""
+
+    def _cfg(self, **extra):
+        cfg = {"kind": "openai_compat", "name": "t",
+               "base_url": "http://127.0.0.1:9/v1", "model": "m",
+               "memory": {"strategy": "none"}}
+        cfg.update(extra)
+        return cfg
+
+    def test_unknown_top_level_key_warns_but_agent_created(self):
+        import contextlib
+        import io
+        from membench.agents import create_agent_from_config
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            agent = create_agent_from_config(self._cfg(ap1="anthropic"), source="t.json")
+        self.assertIn("ap1", err.getvalue())
+        self.assertIn("api", err.getvalue())  # 提示已知字段，便于对照拼写
+        # 静默回退仍发生，但已被告警暴露：缺省 openai
+        self.assertEqual(agent.api, "openai")
+
+    def test_comment_keys_and_known_keys_do_not_warn(self):
+        import contextlib
+        import io
+        from membench.agents import create_agent_from_config
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            create_agent_from_config(self._cfg(_comment="说明文字", api="anthropic",
+                                               max_tokens=512, timeout=60))
+        self.assertEqual(err.getvalue(), "")
+
+    def test_memory_unknown_key_warns(self):
+        import contextlib
+        import io
+        from membench.agents import create_agent_from_config
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            create_agent_from_config(self._cfg(memory={"strategy": "none",
+                                                       "stratigy": 1}))
+        self.assertIn("stratigy", err.getvalue())
+
+    def test_subproc_unknown_key_warns(self):
+        import contextlib
+        import io
+        from membench.agents import create_agent_from_config
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            create_agent_from_config({"kind": "subproc", "name": "t",
+                                      "cmd": ["x"], "cmdd": ["y"]})
+        self.assertIn("cmdd", err.getvalue())
+
+    def test_unknown_kind_still_errors(self):
+        from membench.agents import create_agent_from_config
+        from membench.agents.base import AgentError
+        with self.assertRaises(AgentError):
+            create_agent_from_config({"kind": "wat", "name": "t"})
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -25,6 +25,19 @@ def _cls(v: float) -> str:
     return "good" if v >= 0.6 else ("mid" if v >= 0.3 else "bad")
 
 
+def _judge_note_md(s: dict) -> str:
+    """summary._judge 健康度的一行文本（markdown/HTML 共用口径）。"""
+    j = s.get("_judge") or {}
+    if not j:
+        return ""
+    who = "LLM judge（%s@%s）" % (j.get("api", "?"), j.get("model", "?"))
+    if j.get("failures"):
+        return ("> ⚠ %s 失败 %d/%d 次，失败探针已回退：%s"
+                % (who, j["failures"], j.get("calls", 0),
+                   j.get("last_error") or "原因见逐用例证据"))
+    return "> %s：%d 次调用全部成功" % (who, j.get("calls", 0))
+
+
 def build_markdown(summaries: List[dict], cases=None) -> str:
     cmp_data = compare_summaries(summaries)
     lines = ["# openKylin 智能体长期记忆评测报告", "",
@@ -107,6 +120,7 @@ def build_markdown(summaries: List[dict], cases=None) -> str:
                 DIMENSION_LABELS[dim], v.get("correct", 0), v.get("miss", 0),
                 v.get("confusion", 0), v.get("improper_persistence", 0),
                 v.get("improper_reuse", 0), d["n_not_evaluable"]))
+        lines.append(_judge_note_md(s))
         lines.append("")
     lines.append("## 稳定性（各维度跨 run 标准差）")
     lines.append("")
@@ -231,6 +245,18 @@ def build_html(summaries: List[dict], out_path: str, cases=None) -> str:
         if s.get("total_findings_sensitive"):
             html.append("<p class='bad'>敏感信息持久化事件：%d 次</p>"
                         % s["total_findings_sensitive"])
+        j = s.get("_judge") or {}
+        if j:
+            if j.get("failures"):
+                html.append("<p class='bad'>⚠ LLM judge（%s@%s）失败 %d/%d 次，"
+                            "失败探针已回退：%s</p>"
+                            % (j.get("api", "?"), j.get("model", "?"),
+                               j["failures"], j.get("calls", 0),
+                               j.get("last_error") or "原因见逐用例证据"))
+            else:
+                html.append("<p class='note'>LLM judge（%s@%s）：%d 次调用全部成功</p>"
+                            % (j.get("api", "?"), j.get("model", "?"),
+                               j.get("calls", 0)))
     html.append("</body></html>")
 
     doc = "\n".join(html)

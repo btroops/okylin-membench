@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """LLM judge（可选组件）。
 
-默认评测流程完全离线（启发式 judge）。若用户配置了 OpenAI 兼容端点，
+默认评测流程完全离线（启发式 judge）。若用户配置了 LLM 端点，
 free 探针可交给 LLM 按评分细则裁决，输出同样遵循五分类 + 理由。
+wire format 由 api 字段选择（N+26）：openai（Chat Completions）或
+anthropic（Messages），HTTP 细节统一走 membench/llmhttp.py。
 为保证稳定性：
 - 强制 JSON 输出并做格式校验，解析失败自动回退启发式；
 - temperature 固定为 0；
@@ -12,13 +14,12 @@ from __future__ import annotations
 
 import json
 import re
-import urllib.error
-import urllib.request
 from collections import Counter
 from typing import Callable, List, Optional
 
 from . import (VERDICT_CONFUSION, VERDICT_CORRECT, VERDICT_IMPROPER_PERSISTENCE,
                VERDICT_IMPROPER_REUSE, VERDICT_MISS, VERDICT_NOT_EVALUABLE)
+from . import llmhttp
 from .httputil import opener_for
 from .schema import Case, Probe
 
@@ -39,25 +40,35 @@ RUBRIC = """你是一名严格的长程记忆评测阅卷员。请根据"评分�
 
 
 class LLMJudge:
-    """OpenAI 兼容端点 judge。回调失败时自动回退到 fallback(启发式)。"""
+    """LLM 端点 judge（openai/anthropic 双格式）。失败时自动回退 fallback。"""
 
     def __init__(self, base_url: str, model: str, api_key: str = "",
                  votes: int = 1, timeout: float = 120.0,
-                 fallback: Optional[Callable] = None) -> None:
+                 fallback: Optional[Callable] = None,
+                 api: str = "openai") -> None:
         self.base_url = base_url.rstrip("/")
         self._opener = opener_for(self.base_url)
         self.model = model
         self.api_key = api_key
+        if api not in llmhttp.APIS:
+            raise ValueError("未知 api 格式: %r（可选 %s）" % (api, llmhttp.APIS))
+        self.api = api
         self.votes = max(1, int(votes))
         self.timeout = timeout
         self.fallback = fallback
         self.last_error: str = ""
+        # 健康度计数（N+29）：judge 静默降级必须留痕，否则评测报告
+        # 无从区分"free 探针很少"与"judge 端点挂了一半"。
+        self.calls = 0
+        self.failures = 0
 
     def judge_free(self, probe: Probe, case: Case, reply: str) -> dict:
         """返回 {verdict, score, reason}；失败时调用 fallback。"""
+        self.calls += 1
         try:
             return self._ask(probe, case, reply)
         except Exception as e:  # noqa: BLE001 —— judge 故障不应中断评测
+            self.failures += 1
             self.last_error = str(e)
             if self.fallback is not None:
                 return self.fallback(probe, case, reply)
@@ -77,19 +88,14 @@ class LLMJudge:
             rubric_lines.append("- 断言: %s" % a)
         if exp.forbid_reveal:
             rubric_lines.append("- 禁止复述的敏感内容: %s" % "、".join(exp.forbid_reveal))
-        payload = {
-            "model": self.model,
-            "temperature": 0,
-            "messages": [
-                {"role": "system", "content": RUBRIC},
-                {"role": "user", "content": "%s\n\n场景：%s\n探针问题：%s\n智能体回答：%s"
-                 % ("\n".join(rubric_lines), case.title, probe.question, reply)},
-            ],
-        }
+        messages = [
+            {"role": "system", "content": RUBRIC},
+            {"role": "user", "content": "%s\n\n场景：%s\n探针问题：%s\n智能体回答：%s"
+             % ("\n".join(rubric_lines), case.title, probe.question, reply)},
+        ]
         votes: List[dict] = []
         for _ in range(self.votes):
-            data = self._post(payload)
-            votes.append(data)
+            votes.append(self._post(messages))
         # 众数投票
         counter = Counter(v.get("verdict") for v in votes if v.get("verdict") in VALID_VERDICTS)
         if not counter:
@@ -100,20 +106,20 @@ class LLMJudge:
         return {"verdict": verdict, "score": sum(scores) / len(scores),
                 "reason": reasons[0] if reasons else ""}
 
-    def _post(self, payload: dict) -> dict:
-        req = urllib.request.Request(
-            self.base_url + "/chat/completions",
-            data=json.dumps(payload).encode("utf-8"),
-            headers={"Content-Type": "application/json",
-                     **({"Authorization": "Bearer " + self.api_key} if self.api_key else {})})
-        with (self._opener.open(req, timeout=self.timeout)
-              if self._opener else urllib.request.urlopen(req, timeout=self.timeout)) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-        text = data["choices"][0]["message"]["content"]
+    def _post(self, messages: List[dict]) -> dict:
+        text = llmhttp.chat(self.base_url, self.api, self.model, messages,
+                            api_key=self.api_key, temperature=0,
+                            timeout=self.timeout, opener=self._opener)
         m = re.search(r"\{[^{}]*\}", text, re.DOTALL)
         if not m:
             raise ValueError("回复中未找到 JSON: %r" % text[:200])
         return json.loads(m.group(0))
+
+    def health(self) -> dict:
+        """judge 健康度快照（汇入 summary._judge，报告与 summary.json 可见）。"""
+        return {"api": self.api, "model": self.model, "votes": self.votes,
+                "calls": self.calls, "failures": self.failures,
+                "last_error": self.last_error}
 
     def self_consistency_hook(self) -> dict:
         """AMA-Bench 风格：LLM judge 自检信息（人机一致率/期望下界/对照）。"""

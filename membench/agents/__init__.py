@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from typing import List
 
 from .base import AgentAdapter, AgentError
@@ -14,6 +15,26 @@ BUILTIN_AGENTS = {
     "naive": NaiveMemoryAgent,
     "smart": SmartMemoryAgent,
 }
+
+# 各 kind 的合法配置字段（N+29）：未知字段一律告警——静默忽略会把拼写错误
+# （如 api→ap1）变成无声的缺省行为回退，评测口径悄然作废。_ 前缀视为注释字段。
+KNOWN_AGENT_KEYS = {
+    "builtin": {"kind", "name", "impl"},
+    "subproc": {"kind", "name", "cmd", "timeout"},
+    "openai_compat": {"kind", "name", "base_url", "model", "api", "api_key_env",
+                      "memory", "system_prompt", "temperature", "timeout",
+                      "max_tokens"},
+}
+
+
+def _warn_unknown_keys(cfg: dict, source: str) -> None:
+    known = KNOWN_AGENT_KEYS.get(str(cfg.get("kind", "")).strip())
+    if known is None:
+        return
+    unknown = sorted(k for k in cfg if k not in known and not k.startswith("_"))
+    if unknown:
+        print("%s: 警告：配置含未识别字段 %s（将被忽略；已知字段 %s）"
+              % (source or "agent", unknown, sorted(known)), file=sys.stderr)
 
 
 def create_agent(spec: str) -> AgentAdapter:
@@ -48,6 +69,7 @@ def _resolve_cmd(cmd: List[str], source: str) -> List[str]:
 
 def create_agent_from_config(cfg: dict, source: str = "") -> AgentAdapter:
     kind = str(cfg.get("kind", "")).strip()
+    _warn_unknown_keys(cfg, source)
     name = str(cfg.get("name", "agent"))
     if kind == "builtin":
         impl = str(cfg.get("impl", ""))
@@ -65,11 +87,18 @@ def create_agent_from_config(cfg: dict, source: str = "") -> AgentAdapter:
         from .subproc import SubprocAgent
         return SubprocAgent(name=name, cmd=cmd, timeout=float(cfg.get("timeout", 60)))
     if kind == "openai_compat":
+        # api 选择 wire format（N+26）：openai=Chat Completions（base_url 含版本段），
+        # anthropic=Messages（base_url 不含版本段）；缺省 openai，旧配置零改动。
+        api = str(cfg.get("api", "") or "openai").strip()
+        if api not in ("openai", "anthropic"):
+            raise AgentError("%s: 未知 api 格式 %r（可选 openai/anthropic）" % (source, api))
+        default_key_env = "ANTHROPIC_API_KEY" if api == "anthropic" else "OPENAI_API_KEY"
         api_key = ""
-        key_env = str(cfg.get("api_key_env", "") or "OPENAI_API_KEY")
+        key_env = str(cfg.get("api_key_env", "") or default_key_env)
         if key_env:
             api_key = os.environ.get(key_env, "")
         from .openai_compat import OpenAICompatAgent
+        max_tokens = cfg.get("max_tokens")
         return OpenAICompatAgent(
             name=name,
             base_url=str(cfg.get("base_url", "http://127.0.0.1:11434/v1")),
@@ -79,5 +108,7 @@ def create_agent_from_config(cfg: dict, source: str = "") -> AgentAdapter:
             system_prompt=str(cfg.get("system_prompt", "你是 openKylin 桌面智能助手。")),
             temperature=float(cfg.get("temperature", 0.2)),
             timeout=float(cfg.get("timeout", 120)),
+            api=api,
+            max_tokens=(int(max_tokens) if max_tokens else None),
         )
     raise AgentError("%s: 未知智能体类型 %r（可选 builtin/subproc/openai_compat）" % (source, kind))

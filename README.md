@@ -71,7 +71,17 @@ results/
 1. **内置参考智能体**：`{"kind": "builtin", "impl": "nomem|naive|smart"}`
 2. **外部程序（stdio-JSONL 协议）**：`{"kind": "subproc", "cmd": ["python3", "your-agent.py"]}`
    协议见 `membench/agents/subproc.py` 注释与 `examples/echo-agent.py` 参考实现。
-3. **OpenAI 兼容 API（含本地 vLLM/Ollama）**：`{"kind": "openai_compat", "base_url": "...", "model": "...", "memory": {"strategy": "none|full_log|store|store_filter"}}`
+3. **LLM API（双格式可选）**：`{"kind": "openai_compat", "api": "openai|anthropic", "base_url": "...", "model": "...", "memory": {"strategy": "none|full_log|store|store_filter"}}`
+   - `"api": "openai"`（缺省）：Chat Completions 格式，base_url 含版本段
+     （vLLM/Ollama/OpenAI 兼容端点），key 缺省读 `OPENAI_API_KEY`；
+   - `"api": "anthropic"`：Messages 格式，**base_url 不含版本段**
+     （如 `https://api.anthropic.com`、DeepSeek 的 `https://api.deepseek.com/anthropic`），
+     可选 `"max_tokens"`（默认 1024），key 缺省读 `ANTHROPIC_API_KEY`；
+     示例见 [agents/anthropic-compat.example.json](agents/anthropic-compat.example.json)。
+   HTTP 细节（system 拆分、消息合并、鉴权头）由 `membench/llmhttp.py` 统一消化。
+
+   **换厂商 / 三处配置点 / 常见厂商 base_url 速查**：
+   [docs/CONFIGURATION.md](docs/CONFIGURATION.md)。
 
 ## 数据集格式
 
@@ -101,8 +111,11 @@ probes:
 ## 评分设计：确定性优先
 
 - `choice` / `slot` / `fs` / `memory` 四类探针**完全确定性判定**，同一输入 100% 复现；
-- `free` 探针默认启发式判定（离线可用），可选 LLM judge（`--judge openai`，
-  强制 JSON 输出 + 多数投票 + 失败回退启发式）；
+- `free` 探针默认启发式判定（离线可用），可选 LLM judge：`--judge openai`
+  或 `--judge anthropic`（两种 wire format，端点、模型与 key 环境变量缺省随
+  格式；强制 JSON 输出 + 多数投票 + 失败回退启发式；judge 调用/失败计数
+  汇入 summary 并在报告可见；配置细节见
+  [docs/CONFIGURATION.md](docs/CONFIGURATION.md)）；
 - 白盒证据：`memory` 探针直接检查智能体导出的记忆库；文件系统快照 diff
   检查行动产物；`sensitive_patterns` 全量扫描敏感信息落盘/落库。
 
