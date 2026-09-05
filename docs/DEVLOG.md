@@ -537,3 +537,27 @@ n/a 因网络抖动）。
 - **下一步**：openKylin 真机 .deb 复跑 + 桌面录屏（需真机，环境外待办）；
   可选：用 N+16 的 1995 例生成能力扩大数据集压低 σ；
   宿主 loopback 故障若持续需 `wsl --shutdown` 重启（环境外操作）。
+
+## 2026-09-05 · 轮次 N+22：测试网络根治——回环请求绕过环境代理
+
+- **背景与根因收敛**：N+21 记录的"宿主 WSL2 回环故障（TCP 握手通、
+  HTTP 数据黑洞）"经对照实验收敛出更精确的根因——**环境代理劫持**。
+  宿主 shell 设有 HTTP_PROXY/HTTPS_PROXY/ALL_PROXY（172.29.48.1:7890）
+  且无 no_proxy；urllib 默认信任代理变量，发往 127.0.0.1 的请求也被交给
+  代理，而该代理自 18:40 前后不可达（裸 socket 直连 127.0.0.1:PORT 两次
+  均成功，urllib 两次都在 connect 代理地址时超时；`/dev/tcp` 探测代理
+  端口 5s 无响应）。全量测试因此 1F+3E、723s（大半是代理超时开销）：
+  TestOpenAICompat 3 ERROR（fake LLM 连不上）+ TestJudgeWiring 1 FAIL
+  （judge 连不上 → 回退 not_evaluable ≠ 期望 miss）。
+- **修复（代码层，与环境解耦）**：新增 `membench/httputil.py`
+  `opener_for(base_url)`——回环地址（127.0.0.1/localhost/::1）返回无代理
+  opener，远端地址返回 None 沿用环境代理；`agents/openai_compat.py` 与
+  `judge.py` 的 HTTP 调用统一接入。
+- **回归覆盖**：新增 `tests/test_httputil.py` 3 用例，行为级验证——
+  环境代理指向不可达地址（TEST-NET-1）时，回环 opener 仍直连成功。
+  （不用 handler 结构断言：build_opener 对空代理表的 ProxyHandler 不进
+  handlers 列表，结构断言不可靠。）
+- **验证**：修复前污染环境 104 用例 / 1F+3E / 723s；修复后同一污染环境
+  **107/107 OK / 4.8s**；no_proxy 环境亦 104/104 OK / 3.2s。N+21 的容器内
+  复跑方案依然有效；宿主回环 TCP 本身正常，`wsl --shutdown` 无需。
+- **测试基线**：104 → 107（+3）。
