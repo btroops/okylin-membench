@@ -743,3 +743,23 @@ n/a 因网络抖动）。
 - **收尾状态**：`multi-provider` 工作台已完成使命，分支与工作台目录
   保留待用户确认后清理 ✋；在途分支：n19-stage1（doctor --strict 等）、
   merge-consolidation（N+24 清账用）。
+
+## 2026-09-06 · 轮次 N+31：工作台清理——三工作台 remove + 分支删除（含 n19-stage1 丢弃）
+
+- **做了什么**（用户授权执行）：
+  1. `git worktree remove`：`okylin-membench.worktrees/` 下
+     multi-provider、merge-consolidation、n19-stage1 三个工作台
+     （remove 前逐一核实 status 清零）；
+  2. 删分支：multi-provider (30aa337)、merge-consolidation (0b4ae9d)
+     均已并入 master，`git branch -d` 干净落地；**n19-stage1 (6dd5822)
+     未并入**，按用户明确决策 `git branch -D` 丢弃，且**不打 archive
+     tag、不保留在 graph**（偏离本仓库"tag 保底"先例，系用户明确指示）。
+- **丢弃内容留档**：n19-stage1 未并入的 4 个提交——doctor `--strict`
+  模式（5 项产品化体检）、`build_release.sh`（tarball 事实覆盖率门）、
+  release tarball 强制收录、`verify_deliverables` 交付物自检脚本
+  （4600135..6dd5822）。这些工程化能力若日后仍需要，须重新立项；
+  顶端 SHA 6dd5822 记录于此可考古（本地 reflog 过期前亦可恢复）。
+- **验证**：`git worktree list` 仅剩主检出；`git branch` 剩
+  master / docs-test-count-fix / evidence-driven / feat/openclaw-real-instance；
+  worktrees 目录仅存不入库快照 README 与 HANDOFF-merge 留档；
+  master status 清零，单测 132/132。
