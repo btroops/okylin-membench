@@ -598,3 +598,29 @@ n/a 因网络抖动）。
 - openclaw-real 数字一律引用三次均值 ± σ（`examples/sample_results/
   openclaw-stability/README.md`），单次跑分不得用于答辩对比；
 - 内置参考智能体为确定性实现，单次即可（跨 run σ=0 测试锁定）。
+
+## 2026-09-05 · 轮次 N+24：分支清账合并——feat 并入 + pitch cherry-pick + 旁支 tag 归档
+
+- **做了什么**：在 merge-consolidation 工作台完成清账（任务书
+  `okylin-membench.worktrees/HANDOFF-merge.md`）：
+  1. `git merge feat/openclaw-real-instance`（00a95e4，N+15~N+22 后全量）
+     → 合并提交 9ce97b6；
+  2. `git cherry-pick ca5bed4`（pitch-correction 唯一 docs 提交，
+     EVIDENCE_CHAIN/RELATED_WORK 论文级措辞）→ 干净落地 58cbf9c；
+  3. 旁支归档：`archive/membench-evaluator`（9763a0a）、
+     `archive/pitch-correction`（ca5bed4）两个 tag。
+- **偏离任务书预期的一处**：merge 预期零冲突，实际 README.md 一处冲突
+  （任务书漏算了 feat 对 README 开头的改动与 N+23 新增规范入口落在同一
+  段）。两边意图可叠加、非二选一，按"叠加"解决：N+23 的 AGENTS/WORKFLOW
+  指引 + feat 的"核心范式"小节与"九维指标"改名同时保留。其余文件全部
+  自动合并。
+- **顺带核实**：master 侧 README.md 末尾曾残留一段含 OpenRouter API key
+  的 curl 粘贴事故，feat 已删、随本次合并从工作树消失；key 在 N+23 及
+  之前的 git 历史仍可见（本地仓库、无远程），如该 key 真实有效建议作废。
+- **验证（全绿）**：status 干净；`membench.cli validate` 35 用例 9/9 维度；
+  `doctor` 0 失败 0 告警（本轮未复现宿主代理警告）；单测 107/107 OK
+  （基线与 N+22 持平）；`git branch --no-merged` 剩 membench-evaluator /
+  pitch-correction（均以 tag 归档，属任务书预告的正常状态）与在途的
+  n19-stage1。
+- **未做（待用户确认）**：删 membench-evaluator / pitch-correction 分支
+  ✋、drop `stash@{0}`（relation WIP 备份）✋、master 快进 ✋。
