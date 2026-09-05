@@ -723,3 +723,23 @@ n/a 因网络抖动）。
 - **验证**：新增 `tests/test_judge_observability.py`（模型默认值 ×3、
   summary 增量落盘 ×3、报告可见性 ×2）与 `test_agents.py` 配置告警 ×5、
   `test_radar_judge.py` 计数器 ×2，全套件 117→132 全绿；零新依赖。
+
+## 2026-09-06 · 轮次 N+30：multi-provider 线并入 master（N+26~N+29 全量）
+
+- **做了什么**：主检出 `git merge multi-provider --no-ff` → 合并提交
+  c2b9edb，零冲突自动合并。并入内容：
+  1. N+26 双格式改造：`membench/llmhttp.py`（OpenAI/Anthropic 双 wire
+     format 统一适配）+ agent `api` 字段 + `--judge` 三档 + OpenClaw
+     配方 A/B 与文档（PLAN_MULTI_PROVIDER / CONFIGURATION）；
+  2. N+27/N+28 配置指南与 embedding 配置路径文档；
+  3. N+29 架构评审落地三件：judge 默认模型随 `--judge` 格式取值（P1）、
+     judge 调用/失败计数入 `summary["_judge"]` 与报告/日志（P2）、
+     智能体配置未知字段告警（③）。
+- **架构评审结论留档**：不做上层 Provider 类层次抽象（变体轴已切对、
+  rule of three 未到、`chat()->str` 契约窄是优点）；触发条件（第三种
+  wire format / 流式或工具调用需求）见 PLAN_MULTI_PROVIDER 与 N+29 留痕。
+- **验证（全绿）**：status 干净；`validate` 35 用例 9/9 维度；`doctor`
+  0 失败 0 告警；单测 132/132 OK（N+25 基线 117 + N+29 新增 15）。
+- **收尾状态**：`multi-provider` 工作台已完成使命，分支与工作台目录
+  保留待用户确认后清理 ✋；在途分支：n19-stage1（doctor --strict 等）、
+  merge-consolidation（N+24 清账用）。
