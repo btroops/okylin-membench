@@ -1,0 +1,85 @@
+# OpenClaw 真实实例容器编排 —— 用于 membench 2A「证据驱动」验证
+#
+# 镜像 / 端口 / 目录约定依据官方文档：
+#   https://docs.openclaw.ai/install/docker  (2026)
+#
+# 架构：
+#   openclaw-gateway  常驻守护进程，端口 18789，健康检查 /healthz
+#   openclaw-cli      每次调用时由 shim 通过 `docker compose exec` 拉起，
+#                    以 network_mode=service:openclaw-gateway 共享网关网络，
+#                    从而能经 127.0.0.1:18789 与网关通信
+#
+# 记忆文件落在 workspace 卷（MEMORY.md / USER.md / DREAMS.md），
+# 挂载到宿主机 ./openclaw-workspace，供 openclaw_shim.py 直接读取为 memory_dump。
+#
+# 启动：
+#   cd docker/openclaw
+#   cp .env.example .env   # 填入 LLM 后端密钥（gating item，见 docs/OPENCLAW_REAL_INSTANCE.md）
+#   docker compose up -d openclaw-gateway
+#   # 首次需对网关做 onboarding 并选定模型（见 .env.example 与文档）：
+#   docker compose run --rm openclaw-cli models set <provider>/<model>
+#   docker compose ps
+
+services:
+  openclaw-gateway:
+    image: ${OPENCLAW_IMAGE:-ghcr.io/openclaw/openclaw:latest}
+    container_name: openclaw-gateway
+    # 以调用方 uid/gid 运行：使挂载卷内文件属主与宿主机评测用户一致。
+    # 否则容器(node,1000)创建的文件对评测用户(如 1001)只读，
+    # shim 的跨用例记忆隔离 reset（还原 USER.md/清日记）会静默失败。
+    user: "${OPENCLAW_UID:-1000}:${OPENCLAW_GID:-1000}"
+    restart: unless-stopped
+    ports:
+      - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
+    environment:
+      # 非 root 自定义 uid 在容器内无 passwd 条目，HOME 会解析为 /，
+      # 导致 OpenClaw 试图创建 /.openclaw —— 显式指定
+      HOME: /home/node
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-membench-dev-token}
+      OPENCLAW_GATEWAY_PORT: "18789"
+      OPENCLAW_CONFIG_DIR: /home/node/.openclaw
+      OPENCLAW_WORKSPACE_DIR: /home/node/.openclaw/workspace
+      # ---- LLM 后端（gating item）：Anthropic 兼容端点 ----
+      # 支持 ANTHROPIC_BASE_URL 指向的兼容服务（如 DeepSeek / 自建网关）
+      ANTHROPIC_AUTH_TOKEN: ${ANTHROPIC_AUTH_TOKEN:-}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: ${ANTHROPIC_DEFAULT_HAIKU_MODEL:-}
+      ANTHROPIC_DEFAULT_SONNET_MODEL: ${ANTHROPIC_DEFAULT_SONNET_MODEL:-}
+      ANTHROPIC_DEFAULT_OPUS_MODEL: ${ANTHROPIC_DEFAULT_OPUS_MODEL:-}
+      # 其它 provider（可选，留空即不启用）
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./openclaw-config:/home/node/.openclaw
+      - ./openclaw-workspace:/home/node/.openclaw/workspace
+      # 镜像内 /home/node/.cache 属主为 node(1000)，自定义 uid 无法写入；
+      # tmpfs 在 restart 后属主不确定，改用属主受控的 bind mount
+      - ./openclaw-cache:/home/node/.cache
+    healthcheck:
+      test: ["CMD", "node", "-e",
+             "fetch('http://127.0.0.1:18789/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  openclaw-cli:
+    image: ${OPENCLAW_IMAGE:-ghcr.io/openclaw/openclaw:latest}
+    container_name: openclaw-cli
+    # 与网关共享网络命名空间，使 127.0.0.1:18789 即网关
+    network_mode: "service:openclaw-gateway"
+    environment:
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN:-membench-dev-token}
+      ANTHROPIC_AUTH_TOKEN: ${ANTHROPIC_AUTH_TOKEN:-}
+      ANTHROPIC_BASE_URL: ${ANTHROPIC_BASE_URL:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
+      ANTHROPIC_DEFAULT_HAIKU_MODEL: ${ANTHROPIC_DEFAULT_HAIKU_MODEL:-}
+      ANTHROPIC_DEFAULT_SONNET_MODEL: ${ANTHROPIC_DEFAULT_SONNET_MODEL:-}
+      ANTHROPIC_DEFAULT_OPUS_MODEL: ${ANTHROPIC_DEFAULT_OPUS_MODEL:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    volumes:
+      - ./openclaw-config:/home/node/.openclaw
+      - ./openclaw-workspace:/home/node/.openclaw/workspace
+    # cli 容器平时不运行；由 shim 通过 `docker compose exec openclaw-cli ...` 拉起
+    entrypoint: ["sleep", "infinity"]
+    profiles: ["cli"]

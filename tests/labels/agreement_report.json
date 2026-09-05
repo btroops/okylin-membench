@@ -1,0 +1,57 @@
+{
+  "n": 185,
+  "agreement": 0.8378,
+  "cohen_kappa": 0.748,
+  "per_class": {
+    "correct": {
+      "precision": 0.9655,
+      "recall": 0.7925,
+      "f1": 0.8705
+    },
+    "miss": {
+      "precision": 0.8909,
+      "recall": 1.0,
+      "f1": 0.9423
+    },
+    "confusion": {
+      "precision": 0.8571,
+      "recall": 0.6667,
+      "f1": 0.75
+    },
+    "improper_persistence": {
+      "precision": 0.25,
+      "recall": 1.0,
+      "f1": 0.4
+    },
+    "improper_reuse": {
+      "precision": 0.2727,
+      "recall": 1.0,
+      "f1": 0.4286
+    },
+    "not_evaluable": {
+      "precision": 1.0,
+      "recall": 0.6429,
+      "f1": 0.7826
+    }
+  },
+  "engine_distribution": {
+    "miss": 55,
+    "correct": 87,
+    "not_evaluable": 9,
+    "improper_reuse": 11,
+    "confusion": 7,
+    "improper_persistence": 16
+  },
+  "human_distribution": {
+    "miss": 49,
+    "correct": 106,
+    "not_evaluable": 14,
+    "improper_reuse": 3,
+    "confusion": 9,
+    "improper_persistence": 4
+  },
+  "anchors": {
+    "AMA-Bench LLM-judge human agreement": 0.927,
+    "Memora 3-judge majority-vote": 0.883
+  }
+}

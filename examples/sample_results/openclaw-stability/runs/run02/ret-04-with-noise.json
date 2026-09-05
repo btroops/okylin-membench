@@ -1,0 +1,106 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-04-with-noise",
+  "dimension": "retention",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 花生",
+      "reply": "查了下你的档案:你对**花生过敏**,这是硬约束。以下零食推荐都避开花生,按稳妥程度排:\n\n**最稳妥(基本零风险)**\n- 新鲜水果(苹果、香蕉、蓝莓、葡萄)——天然无加工,不用担心交叉污染\n- 原味酸奶 / 希腊酸奶(选成分简单的)\n- 芝士条或奶酪块\n- 水煮蛋、无调味坚果以外的原味肉干(如纯牛肉干,先看配料)\n\n**比较稳妥(需瞄一眼配料表)**\n- 原味海苔——选只写\"紫菜/海苔+盐\"的\n- 米饼、米棒、原味苏打饼干\n- 原味爆米花(自己在家爆的最保险)\n- 黑巧克力(注意避开\"含坚果/榛子\"款,优先单一口味的)\n\n**给你的特别提醒** ⚠️\n1. 别买**混合坚果**(腰果杏仁混合装里经常混花生,或共用生产线)\n2. 避开配料表或包装上写\"**可能含有花生**\"\"**本品生产线也加工花生类制品**\"的产品——对严重过敏来说这类也算风险\n3. 有些\"能量棒/曲奇/花生酱风味\"零食暗藏花生,买前一定翻到背面看配料\n\n如果你告诉我口味偏好(甜口/咸口)或健康目标(低糖、高蛋白之类),我可以再收窄到一两个具体推荐。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的过敏源是花生。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 ✅ 已写入你的档案:**花生过敏**会作为硬性约束——以后涉及食物、食谱、餐厅推荐或任何可食用/外用产品的建议时,我会主动避开花生并提醒交叉污染风险(比如共用生产线、花生油、Satay 酱这类隐形来源)。\n\n如果之后还想补充其他过敏源,直接告诉我即可。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "噪声与临时信息",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天午餐随便点了点外卖。"
+          },
+          {
+            "role": "assistant",
+            "content": "哈哈,随便点也好,省心。点了啥好吃的?还是说就是糊弄一口的碳水套餐?😄"
+          },
+          {
+            "role": "user",
+            "content": "刚才那个验证码短信我已经删了。"
+          },
+          {
+            "role": "assistant",
+            "content": "删了就删了吧,一次性验证码用完就没用了,留着反而是安全隐患。 👍\n\n不过我这边没有在等什么验证码——你是准备登录什么账号吗?如果需要重新收一条,跟我说一声就行。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我推荐一个安全的零食，注意我的禁忌。"
+          },
+          {
+            "role": "assistant",
+            "content": "查了下你的档案:你对**花生过敏**,这是硬约束。以下零食推荐都避开花生,按稳妥程度排:\n\n**最稳妥(基本零风险)**\n- 新鲜水果(苹果、香蕉、蓝莓、葡萄)——天然无加工,不用担心交叉污染\n- 原味酸奶 / 希腊酸奶(选成分简单的)\n- 芝士条或奶酪块\n- 水煮蛋、无调味坚果以外的原味肉干(如纯牛肉干,先看配料)\n\n**比较稳妥(需瞄一眼配料表)**\n- 原味海苔——选只写\"紫菜/海苔+盐\"的\n- 米饼、米棒、原味苏打饼干\n- 原味爆米花(自己在家爆的最保险)\n- 黑巧克力(注意避开\"含坚果/榛子\"款,优先单一口味的)\n\n**给你的特别提醒** ⚠️\n1. 别买**混合坚果**(腰果杏仁混合装里经常混花生,或共用生产线)\n2. 避开配料表或包装上写\"**可能含有花生**\"\"**本品生产线也加工花生类制品**\"的产品——对严重过敏来说这类也算风险\n3. 有些\"能量棒/曲奇/花生酱风味\"零食暗藏花生,买前一定翻到背面看配料\n\n如果你告诉我口味偏好(甜口/咸口)或健康目标(低糖、高蛋白之类),我可以再收窄到一两个具体推荐。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always treat peanut allergy as a hard constraint: never recommend or prepare foods, recipes, restaurant picks, or products containing peanuts (and be cautious with cross-contamination); flag peanut presence proactively whenever suggesting anything edible.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always treat peanut allergy as a hard constraint: never recommend or prepare foods, recipes, restaurant picks, or products containing peanuts (and be cautious with cross-contamination); flag peanut presence proactively whenever suggesting anything edible.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602723.8413234,
+  "duration_sec": 32.04585266113281
+}

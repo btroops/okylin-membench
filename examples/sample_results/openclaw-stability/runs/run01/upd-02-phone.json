@@ -1,0 +1,122 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-02-phone",
+  "dimension": "dynamic_update",
+  "run_index": 1,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 13900002222",
+      "reply": "你的手机号是 **13900002222**（记录于今天 USER.md，作为当前联系方式）。\n\n（补充：语义搜索因缺少 embedding 配置退化为关键词模式，但直接读 USER.md 已确认该号码。）",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s2"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "事实「13800001111」已按生命周期失效且未驻留（缺席判据通过）",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的手机号是 13800001111。"
+          },
+          {
+            "role": "assistant",
+            "content": "收到。不过想先确认一下——你发这个手机号是想让我做什么？比如：\n\n- **存到个人资料里**（USER.md，作为你的联系方式，方便以后给你发短信/WhatsApp/Signal 之类）\n- **用来绑定某个渠道或账号**\n- 其他用途\n\n没有上下文的话我不会乱存。告诉我用途,我再处理。如果是存联系方式,我建议存成 `+86 138 0000 1111` 这种格式,方便以后直接调用。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我换手机号了，现在是 13900002222。"
+          },
+          {
+            "role": "assistant",
+            "content": "好的，已记下你的新手机号 **13900002222**。之前没有存过旧号码，所以不存在需要迁移的旧记录——从现在起我会用这个号码作为你的联系方式。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的手机号是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的手机号是 **13900002222**（记录于今天 USER.md，作为当前联系方式）。\n\n（补充：语义搜索因缺少 embedding 配置退化为关键词模式，但直接读 USER.md 已确认该号码。）"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use phone number 13900002222 as the user's current contact number (changed 2026-09-05; no previous number was on file).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- User reported they changed phone number. New number: 13900002222. No old number was previously recorded in memory. Recorded in USER.md as active directive."
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use phone number 13900002222 as the user's current contact number (changed 2026-09-05; no previous number was on file).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- User reported they changed phone number. New number: 13900002222. No old number was previously recorded in memory. Recorded in USER.md as active directive."
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788599710.4210625,
+  "duration_sec": 25.01756477355957
+}

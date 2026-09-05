@@ -279,6 +279,7 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
             "verdict": jd.get("verdict"), "score": jd.get("score"),
             "reason": jd.get("reason", ""), "reply": reply,
             "hits": [], "misses": [], "weight": probe.weight, "judge": "llm",
+            "relation": probe.relation,
             "evidence_sessions": probe.evidence_sessions,
             "retrieval_trace": trace, "role": probe_role(probe),
         }
@@ -287,6 +288,7 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
     row = asdict(pr)
     row["judge"] = "deterministic"
     row["evidence_sessions"] = probe.evidence_sessions
+    # ProbeResult.relation already covers this; nothing to add here
     row["retrieval_trace"] = trace
     row["role"] = probe_role(probe)
     return row

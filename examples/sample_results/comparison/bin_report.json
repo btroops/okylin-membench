@@ -6,22 +6,28 @@
     "5+ sessions"
   ],
   "by_agent": {
-    "nomem": {
-      "1-1 sessions": 42.3,
-      "2-2 sessions": 21.9,
-      "3-4 sessions": 33.3,
+    "smart": {
+      "1-1 sessions": 100.0,
+      "2-2 sessions": 87.7,
+      "3-4 sessions": 100.0,
       "5+ sessions": null
     },
     "naive": {
       "1-1 sessions": 19.2,
-      "2-2 sessions": 42.2,
+      "2-2 sessions": 42.5,
       "3-4 sessions": 11.1,
       "5+ sessions": null
     },
-    "smart": {
-      "1-1 sessions": 100.0,
-      "2-2 sessions": 100.0,
-      "3-4 sessions": 100.0,
+    "nomem": {
+      "1-1 sessions": 42.3,
+      "2-2 sessions": 20.2,
+      "3-4 sessions": 33.3,
+      "5+ sessions": null
+    },
+    "openclaw-real": {
+      "1-1 sessions": 55.1,
+      "2-2 sessions": 69.3,
+      "3-4 sessions": 72.2,
       "5+ sessions": null
     }
   }

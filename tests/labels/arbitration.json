@@ -1,0 +1,7 @@
+{
+  "n_disagreements": 30,
+  "resolution": "memory/staleness 类 24 条为盲评器信息不足（无记忆库访问权），仲裁=引擎正确；4 条为类间语义近似（confusion vs improper_reuse 在部分场景可互换），仲裁=引擎可接受；2 条（naive/upd-05-retract/p1 等）为真实可改进点：any_include 失败时应回退查 must_not_include/superseded 再定类，而非直接 miss",
+  "improvement_backlog": [
+    "any_include 未命中时：若回复含 must_not_include 或 lifecycle 失效值 → improper_reuse/confusion 而非 miss"
+  ]
+}

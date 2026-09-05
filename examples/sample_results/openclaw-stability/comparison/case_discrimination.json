@@ -1,0 +1,82 @@
+[
+  {
+    "case_id": "upd-01-address",
+    "difficulty": "easy",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 50.0
+    }
+  },
+  {
+    "case_id": "upd-02-phone",
+    "difficulty": "easy",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 33.33
+    }
+  },
+  {
+    "case_id": "upd-03-editor",
+    "difficulty": "easy",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 33.33
+    }
+  },
+  {
+    "case_id": "upd-04-memory-store",
+    "difficulty": "hard",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 66.67
+    }
+  },
+  {
+    "case_id": "upd-05-retract",
+    "difficulty": "hard",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 100.0
+    }
+  },
+  {
+    "case_id": "reuse-01-install",
+    "difficulty": "medium",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 33.33
+    }
+  },
+  {
+    "case_id": "reuse-02-commit-rule",
+    "difficulty": "hard",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 0.0
+    }
+  },
+  {
+    "case_id": "reuse-03-weekly-template",
+    "difficulty": "medium",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 100.0
+    }
+  },
+  {
+    "case_id": "reuse-04-cache-clean",
+    "difficulty": "medium",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 0.0
+    }
+  },
+  {
+    "case_id": "tem-01-events",
+    "difficulty": "medium",
+    "discrimination": 0.0,
+    "scores": {
+      "openclaw-real": 50.0
+    }
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "bnd-05-abstain-pet",
+  "dimension": "boundary_refusal",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "boundary_refusal",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "正确拒答（命中措辞「不知道」）：该信息从未在对话中出现过",
+      "reply": "我查了记忆文件和会话记录，没有找到关于鹦鹉的任何记录——所以我不知道你的鹦鹉叫什么名字。\n\n如果你之前告诉过我，可能是存到了我没法读取的地方；或者这是我们第一次聊到这个话题。告诉我它的名字，我会记下来，以后就不会忘了。🦜",
+      "hits": [
+        "不知道"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天天气不错，帮我看看日历。"
+          },
+          {
+            "role": "assistant",
+            "content": "看了一下，目前我这边**没有任何日历数据源**——检查了工作区记忆、系统配置和可用工具：\n\n- 没有连接 Google Calendar / Outlook / iCloud 等日历账号\n- 没有日历插件或日程文件（`memory/`、`MEMORY.md` 都是空的，还没有记录过你的日程）\n\n所以现在是看不到你的日历内容的，我不会瞎编一个日程给你。\n\n要把日历接上的话，可以：\n\n1. **告诉我你的日历来源**（比如 Google Calendar），我可以帮你配置集成（需要你授权连接）；\n2. 或者你手上有没有日程文件/截图/链接？发给我，我帮你整理今天的安排；\n3. 之后你常安排的日程（比如固定会议、提醒），也可以先告诉我，我记进长期记忆里。\n\n另外既然提到天气不错——你大概在哪个城市？如果今天打算出门，我可以帮你查一下当地的实时天气和未来几小时预报，看看适不适合安排户外活动。😊"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "中午吃了个三明治。"
+          },
+          {
+            "role": "assistant",
+            "content": "三明治不错，方便又顶饱。什么馅儿的？鸡肉还是火腿的，还是有别的讲究？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的鹦鹉叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了记忆文件和会话记录，没有找到关于鹦鹉的任何记录——所以我不知道你的鹦鹉叫什么名字。\n\n如果你之前告诉过我，可能是存到了我没法读取的地方；或者这是我们第一次聊到这个话题。告诉我它的名字，我会记下来，以后就不会忘了。🦜"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600539.1450493,
+  "duration_sec": 26.892388820648193
+}

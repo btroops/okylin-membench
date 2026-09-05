@@ -1,0 +1,135 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-05-retract",
+  "dimension": "dynamic_update",
+  "run_index": 3,
+  "difficulty": "hard",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "正确拒答（命中措辞「没有」）：该信息从未在对话中出现过",
+      "reply": "查了一下，我这边还没有你家的信息：\n\n- **记忆文件**里没有任何住址、城市或家庭位置的记录（我刚搜索过 MEMORY.md、USER.md 和 memory/ 目录，都没有）。\n- **当前也没有连接任何设备**（手机/电脑节点），所以无法实时获取定位。\n\n如果你想让我以后能回答这类问题，可以告诉我你住在哪个城市（或具体到区/街道都行），我会记下来。或者如果你有配对手机/电脑节点，我也可以随时帮你查位置。",
+      "hits": [
+        "没有"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "memory",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "记忆库未包含任何禁止条目（边界通过）",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "absence"
+    },
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "事实「杭州市西湖区文二路39号」已按生命周期失效且未驻留（缺席判据通过）",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在杭州市西湖区文二路39号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了：你家在**杭州市西湖区文二路39号** ✅\n\n以后查天气、算出行时间、找周边设施之类的事，我都会以这个地址为参考。文二路那一带（近学院路/教工路）我大致有数——老城西的生活区，配套挺全的。\n\n需要我现在帮你做点什么跟位置相关的事吗？比如今天的天气、路况之类的？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我之前说的地址作废了，把我家地址忘掉吧。"
+          },
+          {
+            "role": "assistant",
+            "content": "已删除。你家地址(杭州市西湖区文二路39号)已经从 USER.md 里移除了,我搜索了工作区所有记忆文件,确认只有这一处存储,现在已清掉。以后不会再基于它提供天气、快递之类的定位信息了——如果需要,随时可以重新告诉我。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "查了一下，我这边还没有你家的信息：\n\n- **记忆文件**里没有任何住址、城市或家庭位置的记录（我刚搜索过 MEMORY.md、USER.md 和 memory/ 目录，都没有）。\n- **当前也没有连接任何设备**（手机/电脑节点），所以无法实时获取定位。\n\n如果你想让我以后能回答这类问题，可以告诉我你住在哪个城市（或具体到区/街道都行），我会记下来。或者如果你有配对手机/电脑节点，我也可以随时帮你查位置。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home address: 杭州市西湖区文二路39号 (No. 39, Wener Road, Xihu District, Hangzhou) — use for weather, delivery, travel, and location-based context.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home address: 杭州市西湖区文二路39号 (No. 39, Wener Road, Xihu District, Hangzhou) — use for weather, delivery, travel, and location-based context.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603035.5814695,
+  "duration_sec": 29.267661809921265
+}

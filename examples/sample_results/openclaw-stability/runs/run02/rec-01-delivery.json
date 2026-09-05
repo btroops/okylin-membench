@@ -1,0 +1,100 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-01-delivery",
+  "dimension": "recall",
+  "run_index": 2,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 北京市海淀区中关村大街1号",
+      "reply": "寄到家里的话，收货地址填我记录里存的那个就行：\n\n**北京市海淀区中关村大街1号**（No. 1 Zhongguancun Avenue, Haidian District, Beijing, China）\n\n不过注意，快递单上还需要**收件人姓名**和**手机号**——这两个我这边没存。填地址的时候自己补上就行，如果你愿意的话，也可以告诉我收件人和电话，我帮你记下来，下次直接给你完整的一行。\n\n要我帮你查一下寄件到北京的运费/时效，还是需要别的（比如具体哪个快递能送到）？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "已记下 📍 你家在**北京市海淀区中关村大街1号**，我把它存进了长期档案，以后查天气、交通、外卖配送或本地信息时就直接按这个定位来，不用你重复说。\n\n顺带提一句：这是中关村核心区的位置（靠近中关村地铁站一带），早晚高峰出行规划我可以帮你留意。有什么要我现在用这个地址做的吗？比如今天的天气、限行提示之类的？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我订一杯咖啡。"
+          },
+          {
+            "role": "assistant",
+            "content": "我还不能直接帮你下单——目前没有接入任何外卖/咖啡平台的账号或支付方式,而且下单涉及花你的钱,需要你确认。\n\n告诉我下面几件事,我看看怎么帮你搞定:\n\n1. **喝什么**:拿铁/美式/澳白?热的还是冰的?大杯小杯?甜度/浓度偏好?\n2. **哪家店**:瑞幸、星巴克、Manner,还是附近某个具体咖啡馆?\n3. **送到哪里**:按你档案里的中关村大街1号地址送吗?\n4. **怎么下单**:如果你那边方便,我可以帮你把订单内容准备好、链接整理好你自己点;或者如果你有想让我对接的方式(比如某个应用),也可以说。\n\n另外提醒一句:现在北京时间是周六傍晚 18:06,如果是要外卖,大多数咖啡馆这个点还在营业。\n\n你想怎么来?"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我有个快递要寄回家，收货地址填哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "寄到家里的话，收货地址填我记录里存的那个就行：\n\n**北京市海淀区中关村大街1号**（No. 1 Zhongguancun Avenue, Haidian District, Beijing, China）\n\n不过注意，快递单上还需要**收件人姓名**和**手机号**——这两个我这边没存。填地址的时候自己补上就行，如果你愿意的话，也可以告诉我收件人和电话，我帮你记下来，下次直接给你完整的一行。\n\n要我帮你查一下寄件到北京的运费/时效，还是需要别的（比如具体哪个快递能送到）？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n- Home address: 北京市海淀区中关村大街1号 (No. 1 Zhongguancun Avenue, Haidian District, Beijing). Use this for location-based needs like weather, traffic, delivery, or local recommendations; assume UTC+8 (China Standard Time) unless stated otherwise.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n- Home address: 北京市海淀区中关村大街1号 (No. 1 Zhongguancun Avenue, Haidian District, Beijing). Use this for location-based needs like weather, traffic, delivery, or local recommendations; assume UTC+8 (China Standard Time) unless stated otherwise.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602802.4964845,
+  "duration_sec": 33.24386668205261
+}

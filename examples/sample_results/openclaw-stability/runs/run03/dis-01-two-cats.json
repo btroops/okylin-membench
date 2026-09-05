@@ -1,0 +1,116 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "dis-01-two-cats",
+  "dimension": "distractor_discrimination",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「汤圆」（记忆混淆/未更新）",
+      "reply": "你的大猫叫**团子**（Tuánzi），小猫叫汤圆（Tāngyuán）。🐱\n\nSource: USER.md#22",
+      "hits": [
+        "汤圆"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「团子」（记忆混淆/未更新）",
+      "reply": "你的小猫叫**汤圆**（Tāngyuán）🐱 —— 大猫团子（Tuánzi）是哥哥/姐姐，小猫汤圆是小的那只。\n\nSource: USER.md",
+      "hits": [
+        "团子"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我养了一只大猫叫团子，还有一只小猫叫汤圆。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 🐱 团子是大猫，汤圆是小猫——名字都很有食欲系风格，一听就是一家子（团子+汤圆，圆滚滚组合）。\n\n以后聊天提到它们我就知道是谁了。俩猫平时相处得怎么样，是相亲相爱还是汤圆单方面挨团子\"镇压\"？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的大猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的大猫叫**团子**（Tuánzi），小猫叫汤圆（Tāngyuán）。🐱\n\nSource: USER.md#22"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的小猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的小猫叫**汤圆**（Tāngyuán）🐱 —— 大猫团子（Tuánzi）是哥哥/姐姐，小猫汤圆是小的那只。\n\nSource: USER.md"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Remember the user's cats: 团子 (Tuánzi) is the big cat, 汤圆 (Tāngyuán) is the small cat.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Remember the user's cats: 团子 (Tuánzi) is the big cat, 汤圆 (Tāngyuán) is the small cat.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603504.5564158,
+  "duration_sec": 24.116121530532837
+}

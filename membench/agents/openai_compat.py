@@ -28,6 +28,7 @@ import urllib.error
 import urllib.request
 from typing import Dict, List, Optional
 
+from ..httputil import opener_for
 from .base import AgentAdapter, AgentError
 from .builtin import SECRET_RE
 
@@ -75,6 +76,7 @@ class OpenAICompatAgent(AgentAdapter):
                  temperature: float = 0.2, timeout: float = 120.0) -> None:
         self.name = name
         self.base_url = base_url.rstrip("/")
+        self._opener = opener_for(self.base_url)
         self.model = model
         self.api_key = api_key
         self.system_prompt = system_prompt
@@ -146,7 +148,8 @@ class OpenAICompatAgent(AgentAdapter):
             headers={"Content-Type": "application/json",
                      **({"Authorization": "Bearer " + self.api_key} if self.api_key else {})})
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+            open_fn = self._opener.open if self._opener else urllib.request.urlopen
+            with open_fn(req, timeout=self.timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
         except urllib.error.URLError as e:
             raise AgentError("[%s] 请求失败: %s" % (self.name, e)) from e

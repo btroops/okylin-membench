@@ -1,0 +1,103 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-04-schedule",
+  "dimension": "recall",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 下周三、项目评审会",
+      "reply": "我查了一圈,目前确实没有任何关于你这周安排的信息。我检查了:\n\n- **记忆文件**(MEMORY.md / USER.md / 每日笔记)— 都还是空的,还没有记录过你的日程\n- **定时任务** — 只有系统心跳和技能审查,没有日程类提醒\n- **周报文件**(reports/2026-W36-周报.md)— 存在但只是个空模板,「本周完成」「下周计划」都没填\n- **日历** — 当前环境没有接入任何日历(Google Calendar / Outlook 等)\n\n所以老实说:**我不知道你本周有什么安排** 😅\n\n两个办法:\n\n1. **你直接告诉我**,我帮你记下来,并且可以设置提醒(比如\"周五下午 3 点提醒我开会\"),以后每周都能帮你梳理。\n2. **接入日历** — 如果你用 Google Calendar 或 Outlook,我可以帮你配置同步,之后就能直接回答\"这周有什么安排\"这类问题了。\n\n你想怎么弄?或者现在先把这周的事情告诉我,我记到笔记里?",
+      "hits": [],
+      "misses": [
+        "下周三",
+        "项目评审会"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "下周三我有个项目评审会。"
+          },
+          {
+            "role": "assistant",
+            "content": "收到。今天是 9 月 5 日（周六），那下周三就是 **9 月 9 日**，还有 4 天准备时间。\n\n我能帮你做几件事，看你需要哪些：\n\n1. **提前提醒** — 设一个周初（比如周一早上）的提醒，留出时间做最后准备\n2. **材料准备** — 帮你梳理评审 PPT/文档大纲，或者整理项目进展、风险、数据\n3. **演练** — 预演评委可能会问的问题，帮你把答辩逻辑捋顺\n4. **检查清单** — 评审前该备好的东西（演示环境、备份、决策点等）\n\n不过我现在对你这个项目还不了解 —— 这是哪个项目？评审的规模和形式（内部评审还是客户/外部专家）大概怎样？告诉我这些，我就能帮你做点实在的。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我放点音乐。"
+          },
+          {
+            "role": "assistant",
+            "content": "我没法真的在你这边播放出声——目前没有连接任何带扬声器的设备(手机/电脑节点都是空的),我也不能往这个聊天里直接推音频。\n\n几个可行方案,看你想要哪种:\n\n1. **给我个设备**:如果你在手机/电脑上装了 OpenClaw 节点并配对,我可以让它打开音乐网站播放。\n2. **我给你链接**:告诉我想听什么风格(比如轻音乐/lofi/古典/华语),我找好可直接播放的链接发你,你自己点开。\n3. **本机浏览器**:如果这台机器(网关)有扬声器,我可以用浏览器打开流媒体页面播放。\n\n你想走哪条?或者说下想听什么,我先按方案 2 给你准备?"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我这周有什么重要安排来着？"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了一圈,目前确实没有任何关于你这周安排的信息。我检查了:\n\n- **记忆文件**(MEMORY.md / USER.md / 每日笔记)— 都还是空的,还没有记录过你的日程\n- **定时任务** — 只有系统心跳和技能审查,没有日程类提醒\n- **周报文件**(reports/2026-W36-周报.md)— 存在但只是个空模板,「本周完成」「下周计划」都没填\n- **日历** — 当前环境没有接入任何日历(Google Calendar / Outlook 等)\n\n所以老实说:**我不知道你本周有什么安排** 😅\n\n两个办法:\n\n1. **你直接告诉我**,我帮你记下来,并且可以设置提醒(比如\"周五下午 3 点提醒我开会\"),以后每周都能帮你梳理。\n2. **接入日历** — 如果你用 Google Calendar 或 Outlook,我可以帮你配置同步,之后就能直接回答\"这周有什么安排\"这类问题了。\n\n你想怎么弄?或者现在先把这周的事情告诉我,我记到笔记里?"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602904.8941364,
+  "duration_sec": 38.171589612960815
+}

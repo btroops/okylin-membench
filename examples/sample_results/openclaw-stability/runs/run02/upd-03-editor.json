@@ -1,0 +1,126 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-03-editor",
+  "dimension": "dynamic_update",
+  "run_index": 2,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "事实「vim」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
+      "reply": "",
+      "hits": [
+        "vim"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    },
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "主答案包含全部必需信息（答案锚定通过；干扰项仅出现在解释性部分: 「vim」）",
+      "reply": "你的默认编辑器是 **emacs**。\n\n今天（2026-09-05）你从 vim 切换到了 emacs——USER.md 里旧的 vim 条目已标记为 superseded，emacs 条目为 active（Source: USER.md#L26）。",
+      "hits": [
+        "emacs"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s2"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.5,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我用 vim 作为默认编辑器。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了：你的默认编辑器是 vim。以后涉及编辑器选择（比如让你改配置、写 commit message 之类）我都会默认用 vim。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我改用 emacs 了，以后默认编辑器换成 emacs。"
+          },
+          {
+            "role": "assistant",
+            "content": "好的，已记住：默认编辑器从 vim 换成 emacs。以后涉及编辑器选择的地方都会默认用 emacs（vim 那条已标记为 superseded，只是留档记录）。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的默认编辑器是什么？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的默认编辑器是 **emacs**。\n\n今天（2026-09-05）你从 vim 切换到了 emacs——USER.md 里旧的 vim 条目已标记为 superseded，emacs 条目为 active（Source: USER.md#L26）。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Always use vim as the default editor; when a task or config refers to an editor, default to vim.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always use emacs as the default editor; when a task or config refers to an editor, default to emacs.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户改用 emacs 作为默认编辑器（替代 vim）。已更新 USER.md：旧 vim 条目标记 superseded，新增 active 的 emacs 条目。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always use vim as the default editor; when a task or config refers to an editor, default to vim.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Always use vim as the default editor; when a task or config refers to an editor, default to vim.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always use emacs as the default editor; when a task or config refers to an editor, default to emacs.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户改用 emacs 作为默认编辑器（替代 vim）。已更新 USER.md：旧 vim 条目标记 superseded，新增 active 的 emacs 条目。"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always use vim as the default editor; when a task or config refers to an editor, default to vim.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601077.239283,
+  "duration_sec": 28.029712438583374
+}

@@ -19,6 +19,7 @@ from typing import Callable, List, Optional
 
 from . import (VERDICT_CONFUSION, VERDICT_CORRECT, VERDICT_IMPROPER_PERSISTENCE,
                VERDICT_IMPROPER_REUSE, VERDICT_MISS, VERDICT_NOT_EVALUABLE)
+from .httputil import opener_for
 from .schema import Case, Probe
 
 VALID_VERDICTS = {VERDICT_CORRECT, VERDICT_MISS, VERDICT_CONFUSION,
@@ -44,6 +45,7 @@ class LLMJudge:
                  votes: int = 1, timeout: float = 120.0,
                  fallback: Optional[Callable] = None) -> None:
         self.base_url = base_url.rstrip("/")
+        self._opener = opener_for(self.base_url)
         self.model = model
         self.api_key = api_key
         self.votes = max(1, int(votes))
@@ -104,7 +106,8 @@ class LLMJudge:
             data=json.dumps(payload).encode("utf-8"),
             headers={"Content-Type": "application/json",
                      **({"Authorization": "Bearer " + self.api_key} if self.api_key else {})})
-        with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+        with (self._opener.open(req, timeout=self.timeout)
+              if self._opener else urllib.request.urlopen(req, timeout=self.timeout)) as resp:
             data = json.loads(resp.read().decode("utf-8"))
         text = data["choices"][0]["message"]["content"]
         m = re.search(r"\{[^{}]*\}", text, re.DOTALL)

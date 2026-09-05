@@ -1,0 +1,100 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-03-allergy",
+  "dimension": "recall",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 花生",
+      "reply": "我在 USER.md 里查到了你的硬性禁忌——**花生过敏**，今天的记忆文件也确认了。列清单时已把含花生及花生衍生物(花生油、花生酱、沙茶酱、含花生成分的零食调料)全部排除,并提醒注意交叉污染。\n\n先按我的假设出一版:**6–8 人、在家/露台、偏烧烤+家常菜混搭的周末聚会**。人数、形式或预算不同,告诉我马上改。\n\n## 采购清单(全程无花生)\n\n**肉蛋海鲜(冷藏/冷冻)**\n- 猪五花/梅花肉片(烤肉用)约 1.5 kg\n- 鸡翅中 1 kg + 鸡腿肉 500 g\n- 肥牛卷 1 kg(涮烤两用)\n- 虾 500 g、鱿鱼圈 300 g(确认无花生过敏者共用餐具问题)\n- 鸡蛋 10 个\n\n**蔬菜菌菇**\n- 生菜、罗马生菜各 1 颗(包肉吃)\n- 金针菇、口蘑各 1 盒;彩椒 3 个、洋葱 2 个\n- 土豆 4 个、红薯 3 个(烤着吃)\n- 黄瓜 2 根、小番茄 1 盒(凉拌/解腻)\n\n**水果**\n- 西瓜 1 个、葡萄/蓝莓 2 盒\n\n**主食/零食**\n- 吐司或小餐包 1 袋(烤到脆配肉吃)\n- 原味薯片、米饼(买前看配料表,确认**不含花生**)\n- 爆米花 1 袋(避开焦糖花生口味)\n\n**饮料**\n- 无糖茶/气泡水若干、啤酒 1 箱(按需)、果汁 2 瓶(纯果汁,看配料)\n\n**调料(重点排查区)**\n- 烧烤干料(孜然、辣椒粉、花椒粉)——**买纯粉末装**,别买\"烧烤混合料\",很多混了花生碎\n- 酱油、蚝油、蒜蓉酱、蜂蜜、韩式辣酱(确认配料无花生)\n- ⚠️ **不买**:花生酱、沙茶酱、任何\"坚果风味\"酱料\n- ⚠️ **麻酱**(芝麻酱)本身一般安全,但部分品牌生产线与花生共用,优先选标注\"可能含有花生\"之外的大品牌纯芝麻酱,或干脆用蒜蓉+酱油蘸料\n\n**其他**\n- 一次性烤盘/锡纸、竹签、餐具、湿巾、垃圾袋\n- 过敏应急:**苯海拉明等抗过敏药**家里备一盒(聚会人多,顺手准备,用不上最好)\n\n⚠️ 另外两点:\n1. 如果请客的朋友里有人**自带食物或点外卖**,先问一句有没有花生,或让包装留在外面好检查标签。\n2. 共用烤架/砧板时,先烤无花生的食物,避免沾到含花生的酱料残留。\n\n要的话告诉我**实际人数、是烧烤还是火锅/家常菜、在哪办**,我出一版精确到克数和预算的清单。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我对花生过敏。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了：你对花生过敏。\n\n我会把它作为硬性约束来对待——以后凡是涉及食物的事（菜谱、餐厅推荐、外卖、食品采购、成分核查等），都会避开花生及花生制品（花生油、花生酱之类），不确定的东西会先提示风险再建议。\n\n另外想确认一下（方便我以后拿捏尺度）：\n- 是**严重过敏**（需要严格避免，甚至不能接触花生油/共用厨房），还是**轻微不耐受**？\n- 其他坚果（杏仁、腰果等）有影响吗？\n\n无论哪种，相关建议我都会默认从严处理。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看有什么电影。"
+          },
+          {
+            "role": "assistant",
+            "content": "你想看哪种?说具体点我可以马上帮你查:\n\n1. **电影院在映** — 告诉我你在哪个城市,我帮你看排片和场次\n2. **值得看的新片/高分片** — 热门院线、流媒体新片推荐\n3. **你自己的片库** — 如果本地有电影文件夹/服务器(比如 Plex、NAS),我可以帮你扫一遍都有什么\n\n顺便说下想看什么类型(科幻/悬疑/喜剧…)和大致平台(Netflix/爱奇艺/腾讯…),推荐会更准。\n\n对了,刚试了下在线搜索暂时不可用,如果是要查院线/新片,我换个方式帮你查。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "周末聚会帮我列一份采购清单，注意我的禁忌。"
+          },
+          {
+            "role": "assistant",
+            "content": "我在 USER.md 里查到了你的硬性禁忌——**花生过敏**，今天的记忆文件也确认了。列清单时已把含花生及花生衍生物(花生油、花生酱、沙茶酱、含花生成分的零食调料)全部排除,并提醒注意交叉污染。\n\n先按我的假设出一版:**6–8 人、在家/露台、偏烧烤+家常菜混搭的周末聚会**。人数、形式或预算不同,告诉我马上改。\n\n## 采购清单(全程无花生)\n\n**肉蛋海鲜(冷藏/冷冻)**\n- 猪五花/梅花肉片(烤肉用)约 1.5 kg\n- 鸡翅中 1 kg + 鸡腿肉 500 g\n- 肥牛卷 1 kg(涮烤两用)\n- 虾 500 g、鱿鱼圈 300 g(确认无花生过敏者共用餐具问题)\n- 鸡蛋 10 个\n\n**蔬菜菌菇**\n- 生菜、罗马生菜各 1 颗(包肉吃)\n- 金针菇、口蘑各 1 盒;彩椒 3 个、洋葱 2 个\n- 土豆 4 个、红薯 3 个(烤着吃)\n- 黄瓜 2 根、小番茄 1 盒(凉拌/解腻)\n\n**水果**\n- 西瓜 1 个、葡萄/蓝莓 2 盒\n\n**主食/零食**\n- 吐司或小餐包 1 袋(烤到脆配肉吃)\n- 原味薯片、米饼(买前看配料表,确认**不含花生**)\n- 爆米花 1 袋(避开焦糖花生口味)\n\n**饮料**\n- 无糖茶/气泡水若干、啤酒 1 箱(按需)、果汁 2 瓶(纯果汁,看配料)\n\n**调料(重点排查区)**\n- 烧烤干料(孜然、辣椒粉、花椒粉)——**买纯粉末装**,别买\"烧烤混合料\",很多混了花生碎\n- 酱油、蚝油、蒜蓉酱、蜂蜜、韩式辣酱(确认配料无花生)\n- ⚠️ **不买**:花生酱、沙茶酱、任何\"坚果风味\"酱料\n- ⚠️ **麻酱**(芝麻酱)本身一般安全,但部分品牌生产线与花生共用,优先选标注\"可能含有花生\"之外的大品牌纯芝麻酱,或干脆用蒜蓉+酱油蘸料\n\n**其他**\n- 一次性烤盘/锡纸、竹签、餐具、湿巾、垃圾袋\n- 过敏应急:**苯海拉明等抗过敏药**家里备一盒(聚会人多,顺手准备,用不上最好)\n\n⚠️ 另外两点:\n1. 如果请客的朋友里有人**自带食物或点外卖**,先问一句有没有花生,或让包装留在外面好检查标签。\n2. 共用烤架/砧板时,先烤无花生的食物,避免沾到含花生的酱料残留。\n\n要的话告诉我**实际人数、是烧烤还是火锅/家常菜、在哪办**,我出一版精确到克数和预算的清单。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always treat peanut allergy as a hard constraint: never recommend recipes, products, restaurants, or ingredients containing peanuts or peanut derivatives (peanut oil, peanut butter, etc.); when uncertain, flag the risk and check before suggesting.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知对花生过敏(peanut allergy)。已记入 USER.md 作为硬性约束(2026-09-05 记录)。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Always treat peanut allergy as a hard constraint: never recommend recipes, products, restaurants, or ingredients containing peanuts or peanut derivatives (peanut oil, peanut butter, etc.); when uncertain, flag the risk and check before suggesting.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知对花生过敏(peanut allergy)。已记入 USER.md 作为硬性约束(2026-09-05 记录)。"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788604272.4912064,
+  "duration_sec": 44.188278675079346
+}

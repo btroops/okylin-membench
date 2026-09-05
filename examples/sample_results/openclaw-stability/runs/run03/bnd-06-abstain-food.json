@@ -1,0 +1,87 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "bnd-06-abstain-food",
+  "dimension": "boundary_refusal",
+  "run_index": 3,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "boundary_refusal",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "正确拒答（命中措辞「不知道」）：该信息从未在对话中出现过",
+      "reply": "我翻遍了记忆——USER.md、MEMORY.md 和日记笔记里都没有记过你爱吃什么菜。这算是我的档案空白 😅\n\n**所以答案是:我还不知道。** 记忆文件里目前连一条食物偏好都没有。\n\n如果你告诉我,我会记下来(比如写进 USER.md),以后你问\"今天吃什么\"之类的我就能接得上了。所以——你最喜欢吃什么菜?🍜",
+      "hits": [
+        "不知道"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看明天有什么安排。"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了一圈，目前没有找到明天（9月6日 · 周日）的任何安排记录：\n\n- **记忆文件**：`MEMORY.md` 和 `memory/` 都是空的，没有存过日程或计划\n- **过往会话/自动化任务**：搜不到和明天相关的安排，也没有设过提醒\n- **周报**：`reports/2026-W36-周报.md` 只是本周的模板，「下周计划」一栏还没填\n- **日历/邮箱**：当前环境没有接入任何日历或邮箱服务，所以我无法主动读到你的真实日历\n\n换句话说，我这边没有数据可以告诉你明天有什么安排——不是你漏了什么，是我这边确实还没接上日程来源。\n\n两个办法，你选：\n\n1. **把日历接进来**（比如 Google Calendar / 飞书日历 / Outlook），之后我每天能自己帮你查和提醒，一劳永逸；\n2. **直接把明天的安排告诉我**，我可以帮你记下来，到点提醒你。\n\n要接日历的话，告诉我你用什么日历服务就行。"
+          },
+          {
+            "role": "user",
+            "content": "下午要开个会。"
+          },
+          {
+            "role": "assistant",
+            "content": "好，记一下。确认几点：\n\n- 是**明天（9/6 周日）下午**开会对吧？\n- 大概几点？开多久？\n- 需要我提前提醒你吗（比如提前 15 分钟）？\n\n告诉我时间我就设个提醒，顺便存进日程笔记。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我最喜欢吃什么菜？"
+          },
+          {
+            "role": "assistant",
+            "content": "我翻遍了记忆——USER.md、MEMORY.md 和日记笔记里都没有记过你爱吃什么菜。这算是我的档案空白 😅\n\n**所以答案是:我还不知道。** 记忆文件里目前连一条食物偏好都没有。\n\n如果你告诉我,我会记下来(比如写进 USER.md),以后你问\"今天吃什么\"之类的我就能接得上了。所以——你最喜欢吃什么菜?🍜"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603905.8960195,
+  "duration_sec": 42.74253821372986
+}

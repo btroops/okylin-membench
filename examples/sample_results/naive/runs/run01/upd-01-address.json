@@ -36,6 +36,7 @@
       ],
       "misses": [],
       "weight": 1.0,
+      "relation": "",
       "judge": "deterministic",
       "evidence_sessions": [
         "s2"
@@ -123,6 +124,6 @@
     ],
     "fs_added_or_modified": {}
   },
-  "started_at": 1788501181.5363286,
-  "duration_sec": 0.0006077289581298828
+  "started_at": 1788524750.8956482,
+  "duration_sec": 0.0008003711700439453
 }

@@ -1,0 +1,81 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "reuse-04-cache-clean",
+  "dimension": "task_reuse",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "task_reuse",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 sudo apt clean",
+      "reply": "检查完了，结论很明确：**我这边能看到的系统其实一点都不满，几乎没有可清理的缓存。** 给你看实际数据：\n\n| 项目 | 状态 |\n|---|---|\n| 磁盘 | 82G / 1007G 已用（**9%**），还剩 **875G** |\n| 内存 | 11G 总量，可用 **5.4G**，Swap 完全没用 |\n| 缓存 | `~/.cache` 8K、apt 缓存 0、`/tmp` 6.9M、日志 184K |\n| 大文件 | 无 core dump、无堆积日志 |\n\n唯一像\"缓存\"的东西是 OpenClaw 自己的 UI 资源缓存（34M），属于正常运行数据，没必要动。\n\n需要说明的是：我运行在沙箱容器里（这台容器同时也是网关所在，我两侧都查了），能看到的只有这个环境。磁盘上显示的 82G 用量大部分是宿主机上**其他容器/镜像**占的，从容器内部看不到也清不了。\n\n所以想确认一下你说的\"系统有点满\"具体指什么：\n\n1. **Windows 宿主机 C 盘满？** —— 那我这边够不到（没有挂载 `/mnt/c`，也没配对节点）。可以帮你查 WSL2 虚拟磁盘缩容或 Docker 镜像清理的方法。\n2. **看到某个具体告警或占用数字？** —— 贴给我，我帮你定位。\n3. **就是泛指** —— 那好消息是：不用清，空间还很充裕 🙂\n\n你是在哪个界面看到\"满\"的？",
+      "hits": [],
+      "misses": [
+        "sudo apt clean"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "以后清理系统缓存的命令用 sudo apt clean，记下来。"
+          },
+          {
+            "role": "assistant",
+            "content": "已记下 ✅ 以后清理系统缓存统一用 `sudo apt clean`，已写入 USER.md 的长期指令。\n\n顺带一提：`sudo apt clean` 只清 `/var/cache/apt/archives` 里已下载的安装包缓存。如果你指的是更全面的清理（比如 `apt autoremove`、`journalctl` 日志等），随时告诉我，我可以一并补充。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "系统有点满，帮我清理下缓存。"
+          },
+          {
+            "role": "assistant",
+            "content": "检查完了，结论很明确：**我这边能看到的系统其实一点都不满，几乎没有可清理的缓存。** 给你看实际数据：\n\n| 项目 | 状态 |\n|---|---|\n| 磁盘 | 82G / 1007G 已用（**9%**），还剩 **875G** |\n| 内存 | 11G 总量，可用 **5.4G**，Swap 完全没用 |\n| 缓存 | `~/.cache` 8K、apt 缓存 0、`/tmp` 6.9M、日志 184K |\n| 大文件 | 无 core dump、无堆积日志 |\n\n唯一像\"缓存\"的东西是 OpenClaw 自己的 UI 资源缓存（34M），属于正常运行数据，没必要动。\n\n需要说明的是：我运行在沙箱容器里（这台容器同时也是网关所在，我两侧都查了），能看到的只有这个环境。磁盘上显示的 82G 用量大部分是宿主机上**其他容器/镜像**占的，从容器内部看不到也清不了。\n\n所以想确认一下你说的\"系统有点满\"具体指什么：\n\n1. **Windows 宿主机 C 盘满？** —— 那我这边够不到（没有挂载 `/mnt/c`，也没配对节点）。可以帮你查 WSL2 虚拟磁盘缩容或 Docker 镜像清理的方法。\n2. **看到某个具体告警或占用数字？** —— 贴给我，我帮你定位。\n3. **就是泛指** —— 那好消息是：不用清，空间还很充裕 🙂\n\n你是在哪个界面看到\"满\"的？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- When cleaning system caches on this machine, always use `sudo apt clean` as the cleaning command.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- When cleaning system caches on this machine, always use `sudo apt clean` as the cleaning command.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788599983.2814648,
+  "duration_sec": 55.29283928871155
+}

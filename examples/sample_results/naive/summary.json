@@ -1,16 +1,16 @@
 {
   "agent": "naive",
   "runs": 1,
-  "n_cases": 32,
+  "n_cases": 35,
   "dimensions": {
     "retention": {
-      "score": 0.5833,
-      "n_probes": 12,
-      "n_scored": 12,
+      "score": 0.6222,
+      "n_probes": 15,
+      "n_scored": 15,
       "n_not_evaluable": 0,
       "verdicts": {
-        "correct": 7,
-        "miss": 1,
+        "correct": 9,
+        "miss": 2,
         "improper_persistence": 4
       },
       "std_across_runs": 0.0
@@ -28,11 +28,11 @@
     },
     "dynamic_update": {
       "score": 0.0,
-      "n_probes": 10,
-      "n_scored": 10,
+      "n_probes": 13,
+      "n_scored": 13,
       "n_not_evaluable": 0,
       "verdicts": {
-        "improper_reuse": 8,
+        "improper_reuse": 11,
         "confusion": 1,
         "miss": 1
       },
@@ -105,19 +105,20 @@
       "std_across_runs": 0.0
     }
   },
-  "overall": 0.3042,
+  "overall": 0.3085,
   "total_findings_sensitive": 4,
   "memory_ops": {
-    "writes": 62,
+    "writes": 68,
     "deletes": 0
   },
-  "staleness_violations": 4,
-  "fama_mean": 0.2995,
+  "staleness_violations": 5,
+  "fama_mean": 0.3119,
   "difficulty_breakdown": {
     "easy": 42.9,
-    "hard": 6.7,
-    "medium": 31.2
+    "hard": 19.0,
+    "medium": 31.3
   },
+  "relation_breakdown": {},
   "difficulty_dimension": {
     "easy": {
       "dynamic_update": 0.0,
@@ -128,6 +129,7 @@
       "distractor_discrimination": 0.0,
       "dynamic_update": 0.0,
       "multi_session_reasoning": 33.3,
+      "retention": 100.0,
       "task_reuse": 0.0
     },
     "medium": {
@@ -135,7 +137,7 @@
       "causal_reasoning": 75.0,
       "distractor_discrimination": 0.0,
       "recall": 50.0,
-      "retention": 37.5,
+      "retention": 37.0,
       "task_reuse": 66.7,
       "temporal_reasoning": 0.0
     }
@@ -215,6 +217,21 @@
       "case_id": "dis-04-two-ips",
       "difficulty": "hard",
       "score": 0.0
+    },
+    {
+      "case_id": "rel-01-contradictory",
+      "difficulty": "hard",
+      "score": 0.0
+    },
+    {
+      "case_id": "rel-02-nuanced",
+      "difficulty": "hard",
+      "score": 100.0
+    },
+    {
+      "case_id": "rel-03-complementary",
+      "difficulty": "medium",
+      "score": 33.33
     },
     {
       "case_id": "ms-01-chain",
@@ -307,5 +324,5 @@
     "hits": 9,
     "rate": 0.6923
   },
-  "total_duration_sec": 0.0
+  "total_duration_sec": 0.01
 }

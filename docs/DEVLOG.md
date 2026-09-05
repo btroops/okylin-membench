@@ -247,3 +247,354 @@
 - **事故**：dataclass 字段替换只发生一次没补上、normalize_text 未导入、
   tests 中 31→32/0.7→0.55 阈值滞后——逐个被冒烟/测试抓到并修。
 - **测试**：92 通过。
+
+## 2026-09-04 · 轮次 N+15（分支 evidence-driven）：评分可信度实验 + 规模化实验 + 叙事收口
+
+> 本轮响应外部评审建议：停止扫论文，转做"答辩三问"的实验证据与总叙事。
+
+- **实验 ① 评分可信度**（tests/labels/，185 探针 × 3 智能体）：
+  - 独立盲评器（另行实现，不经 scoring.py）：raw agreement **83.8%**、
+    Cohen's κ=0.75（六分类）；
+  - 30 条分歧逐条仲裁：21 条盲评器权限制约（无记忆库/文件访问权）、
+    9 条类间语义近似、**1 条真实改进点 → 当场修复**（any_include
+    未命中时回退查 must_not_include/lifecycle 失效值定类 improper_reuse
+    而非直接 miss；回归测试 2 条锁定）；
+  - 对照锚点：AMA-Bench LLM judge 人机一致 92.7%、Memora 88.3%、
+    我们零方差（test-locked）；
+  - 诚实 caveat 3 条写入报告（第二标注者是规则匹配器非真人等）。
+- **实验 ② 规模化**：gen --variants 15 --seed 2026 → **315 用例**
+  validate 全过（9 维），区分度保持 smart 91.5 / naive 32.3 / nomem 17.5，
+  945 次评测 0.4s。
+- **叙事收口**：docs/EVIDENCE_CHAIN.md（范式主张：记忆质量应从
+  "状态→检索→决策→行动"证据链评测，而非最终回答；三层架构图；
+  五种失败模式 × 证据指纹表——其中"该忘未忘/不该记却记"在终态 QA
+  下不可见是存在理由的最强论据）；docs/RELATED_WORK.md 重写为
+  评委三问直接答案 + 逐项 gap analysis（六项原创/继承分账标注）+
+  四层引用骨架。
+- **测试**：92→94。
+
+## 2026-09-05 · 轮次 N+17：从“gitignore 残留”反推盲点
+
+外部审计指出现存 `.gitignore` 仍有
+
+```
+# 独立评测脚本产物（另一个 agent 写）
+tests/labels/
+```
+
+两行——这暴露了 N+15 提交 8cd6c5a 的**真实盲点**：
+
+- 我当时在 commit message 里写“实验数据已落盘”，但
+  `tests/labels/` 实际从 694b5b8 起就被这行规则屏蔽，
+  `git add -A` 静默跳过——产物压根没进 8cd6c5a；
+- 我后来 07b5f7f / b983a74 / 3020245 才移除 ignore 并强加入库；
+- 也就是说 8cd6c5a 的 message 与实际入库**不一致**，
+  我之前 N+15 整轮的“实验产物完整”声明并不成立。
+
+**这条经验对后续工作更普适**：涉及“产出/产物”类的 commit，message
+必须能由 `git show --stat` 单独验证——只说“做了 X”是不够的，必须能在
+diff 里看到 X 的痕迹；否则 message 与 reality 漂移，下一次审计时
+只能靠文件时间戳反向破案。
+
+清理：8cd6c5a 已在 N+15c（3020245）从历史中由三个准确 commit
+替代；本轮对 .gitignore 残留做最终确认 + DEVLOG 留痕。
+
+## 2026-09-09 · 轮次 N+18：OpenClaw 真实实例接入（Docker，2A 🔶→✅）
+
+- **做了什么**：新增 `docker/openclaw/`（compose/.env.example/干净记忆快照）
+  与 `agents/openclaw_shim.py`（subproc 协议适配器）+ `agents/openclaw.agent.json`
+  + `docs/OPENCLAW_REAL_INSTANCE.md`。membench 经 shim 驱动容器内真实
+  OpenClaw（官方镜像 openclaw/openclaw:latest，Gateway:18789，memory-core +
+  Dreaming 插件实测在线），LLM 后端为 Anthropic 兼容端点（DeepSeek，
+  `models.providers.anthropic.{baseUrl,api=anthropic-messages,models[]}` +
+  paste-api-key 鉴权）。
+- **为什么**：回应"2A 从逻辑层跑通升级为真实软件实例跑通"的评审可信度
+  诉求；OpenClaw 记忆为磁盘文件（USER.md/memory/日记），与 membench 的
+  memory_dump 白盒通道天然对接，无需侵入。
+- **实测证据**：
+  - ret-01-name-editor / ret-02-address 双用例 score=1.00（retention=100），
+    探针裁决 correct（"你叫小明（Xiao Ming）。"/"B. vim"）；
+  - 证据含真实 transcript、memory_dump（USER.md 含
+    `<!-- observed: 2026-09-05 | status: active -->` 条目）、memory_evolution；
+  - 跨用例污染检查：ret-02 全文无 ret-01 的「小明/vim」→ 隔离生效。
+- **三条关键实测教训**（都已写进 OPENCLAW_REAL_INSTANCE.md 障碍表）：
+  1. OpenClaw 记忆权威存储是 state SQLite + 滚动会话历史，Markdown 只是
+     投影——只清文件会被绕过（模型答"早就记住了"）；必须每 episode 用
+     独立 `--session-key` + 文件层还原双管齐下；
+  2. 交互式智能体会以 `ask_user` 工具收尾等用户输入，单发 CLI 调用因此
+     300s 挂死——`tools.deny=["ask_user"]` 后模型改为纯文字收尾；
+  3. 容器以评测用户 uid 运行才能让 shim 的文件级 reset 生效（否则
+     chown 不匹配导致 PermissionError 被静默吞掉，污染照旧）。
+- **诚实记录的局限**：memory-core 语义检索因缺 OpenAI embedding key 降级
+  为关键词匹配（sync failed 日志持续）；验证环境是 Docker 近似环境，
+  openKylin 真机部分仍属交付物 c/e 待办。
+- **测试**：shim 通过 py_compile 与协议回路自检（session_start/memory_dump/
+  session_end 仅产出一行 memory 消息）；e2e 以真实评测代替单测覆盖。
+- **下一步**：接入更多维度用例做真实对比；清理孤儿会话；openKylin 真机
+  复跑。
+
+## 2026-09-05 · 轮次 N+19：测量有效性升级 + 答案锚定（answer anchoring）
+
+N+18 把管线跑通了（ret-01/ret-02 双用例 100%），但本轮揭出**两层更深的问题**
+——不修 N+18 提交里声称的 retention=100% 也不能作为评测证据。
+
+### 一、问题 A：探针的上下文泄漏（测量学）
+
+N+18 shim 把一个 episode 的所有 session（s1/s2/probe）放进**同一个** OpenClaw
+滚动会话键 `agent:main:mb-<uuid>`。探针会话里 s1 的剧本原文仍在上下文，
+模型答对**可能只是因为上下文窗口里还有 s1**，而非读了 USER.md。
+
+证据（探针回复原文）：
+
+```
+[probe:p1] 你叫小明（Xiaoming）——这是今天记下的称呼偏好，我会一直这么叫你。
+            （注：记忆索引目前有点问题——缺 OpenAI 的 API key…）
+```
+
+主答案正确，但口吻「记下的偏好"是"N+18 滚动会话里看到的原文，"读 USER.md"
+只补在括号里。
+
+### 三、设计 + 实现
+
+**shim 升级**（`agents/openclaw_shim.py`）：
+- 收到 harness 的 `session_start{session_id}` 时轮换 OpenClaw 会话键：
+  `agent:main:mb-<uuid>:<session_id>`。session_id 含 s1/s2/probe:pN，
+  各自会话无剧本原文。
+- `retrieval_trace_request` 调真实的 `openclaw memory search --json`，
+  解析 JSON 输出（容错 stdout 混入日志行）；失败/空结果优雅降级为空列表。
+- episode 层会话键前缀仍保留（多重保险）。
+
+**答案锚定（answer anchoring）**（`membench/scoring.py`）：
+- 量化发现：openclaw-full 35 用例重评分时，**10 条 confusion/improper_reuse
+  裁决中 10 条主答案正确**——模型答对了事实后再另起一段引用记忆原文（含
+  干扰项），确定性评分的全文 must_not_include 扫描被系统性误伤。
+- 内置参考智能体短句模板从没暴露过这面，故而不影响基线。
+- 修复：must_not_include 检查时，若主答案段（首个空行前的连续正文）已
+  包含全部 must_include，且主答案段内不含 must_not_include 项，则豁免
+  confusion/improper_reuse 裁决判为 correct。**前提**：
+  - 必须有 must_include（纯 absence 探针不豁免）；
+  - 敏感模式（case.sensitive_patterns）命中不受豁免；
+  - 必须 normalize_text **之前** 切分（后者会移除换行/空格）。
+- 实测：4/10 误伤探针被正确豁免（dis-01 p1 / tem-01 p1 / upd-01 p1 /
+  upd-02 p1），其余 6 条是真实混淆（dis-02 p1 答了家庭地址而非公司、
+  tem-01 p2 主答案段枚举所有事件等）。
+
+### 二、问题 B：评分系统的误伤（必须修，不能仅写文档）
+
+解决：见上「答案锚定」段。
+
+### 四、判别实验（gate test）
+
+N+18 commit 时声明的「同步落盘、读即最新」是更早的人工观察，未做实证
+测量。本轮用三个独立实验把根因落实：
+
+| 实验 | 假设 | 实测 |
+|---|---|---|
+| G1 跨会话召回 | 新会话键能否仅凭文件记忆召回 | ✅ `gate1b` 会话（无对话历史）答出「小明 + vim」，并标注"我是直接读的 USER.md" |
+| G2 空白对照 | reset 后新会话应无幻觉 | ✅ 干净 workspace 下新会话如实答「USER.md 是空的」 |
+| G3 retrieval_trace 可行性 | `memory search` 输出格式 | ⚠️ 仅返回 JSON 但 results 总为空——向量索引缺 OpenAI embedding key |
+
+### 五、实测数据
+
+| 智能体 | 总分 | retention | recall | dynamic_update | distractor | boundary | reuse | temporal | multi-session | causal |
+|---|---|---|---|---|---|---|---|---|---|---|
+| smart（规则） | 96.6 | 77 | 100 | 92 | 100 | 100 | 100 | 100 | 100 | 100 |
+| **openclaw-real** | **72.5** | **100** | **100** | 55 | 33 | 86 | 100 | 50 | 100 | 0 |
+| naive（全量） | 30.9 | 62 | 50 | 0 | 0 | 7 | 50 | 0 | 33 | 75 |
+| nomem | 18.9 | 17 | 0 | 54 | 0 | 100 | 0 | 0 | 0 | 0 |
+
+openclaw 在 retention / recall / task_reuse / multi_session 四个维度与 smart
+持平甚至更强（**retention 100 vs smart 77** — 真实智能体的文件级长期记忆
+比规则实现的全量回放更「知道什么是用户档案」）。弱项符合真实智能体预期：
+distractor 33（同类区分需要 prompt 显式控制）、temporal 50（时序枚举常误
+中干扰项）、dynamic_update 55（更新意图识别）、causal 0（推理但脚本用
+n/a 因网络抖动）。
+
+答案锚定修复对 smart/naive/nomem **零影响**（基线逐维逐分完全一致）——
+锚定只在「主答案段外提及干扰项」时触发，模板短句从未暴露该模式。
+这验证了改动不污染既有评分基线。
+
+### 六、测试
+
+- `tests/test_scoring.py`：新增 `TestAnswerAnchoring`（5 用例）：
+  - `test_anchor_passes_explanatory_mention` 主答案正确+干扰项仅在解释段→correct
+  - `test_anchor_requires_full_must_include_in_zone` 主答案段没给全→不豁免
+  - `test_anchor_not_applied_when_bad_in_answer_zone` 干扰项在主答案段→真混淆
+  - `test_anchor_not_applied_without_must_include` 纯 absence 探针→不适用
+  - `test_sensitive_value_not_anchored_away` 敏感值→improper_persistence 不豁免
+- `tests/test_openclaw_shim.py`（N+19 新增）：6 用例覆盖
+  - episode 前缀唯一性
+  - session_start 轮换正确性
+  - 探针会话键不含剧本原文
+  - retrieval_trace 解析容错（混日志输出、空结果、无 JSON 优雅降级）
+- 全测试套件 104 通过（原 94 + N+19 新增 10）。
+
+### 七、诚实记录的局限
+
+- **向量记忆降级未变**：memory-core 语义检索仍需 OpenAI embedding key；
+  本环境缺该 key，retrieval_trace 始终为空。已如实记录。
+- **网络抖动**：cau-01 因 Docker daemon 与网关的偶发连接错误（rc=1）、
+  而非模型能力问题被判 n/a；rerun 该用例可恢复。
+- **docker 组身份**：shim 调用 `docker compose exec` 需要宿主机评测用户
+  在 docker 组里，否则 PermissionError。本机由 `sg docker` 包装解决。
+- **openKylin 真机部分**仍属交付物 c/e 待办。
+
+### 八、下一步
+
+- 清理孤儿会话（state SQLite 中累积的 mb-* 会话键），大规模跑批前必要；
+- 跑一次 `--runs 3` 看 openclaw 稳定性 std（参考 N+15 跨运行 σ=0 的基线）；
+- 把 openclaw-real 跑分固化为 examples/sample_results/ 的标准参考物；
+- openKylin 真机 .deb 复跑 + 桌面录屏。
+
+## 2026-09-05 · 轮次 N+20：孤儿会话清理工具化 + openclaw 三次全量稳定性实测
+
+- **做了什么**：
+  1. `scripts/openclaw_cleanup_sessions.py`——直删 agent 会话库
+     （`agents/main/agent/openclaw-agent.sqlite`）中 `session_key LIKE '%:mb-%'`
+     的全部行（session_nodes / participants / windows / transcript_events /
+     trajectory_runtime_events / transcript_event_identities /
+     session_transcript_* 等 16 张关联表，按 session_id→session_key 两级外键
+     顺序删除 + wal_checkpoint）。宿主机 python 的 sqlite 过旧（不识别
+     STRICT 表），故在容器内以其自带 python3 执行，流程为
+     停网关 → 备份 → 删除 → 起网关。
+  2. 实测两轮：首轮 148 孤儿 / 7,694 行，复跑 `--runs 3` 后再清
+     308 孤儿 / 14,797 行，均回到基线 20 个会话；网关 healthy、agent
+     调用正常。清理脚本幂等，可反复执行。
+  3. `--runs 3` 全量 35 用例 × 3 次真实 LLM 评测（78 分钟）落盘
+     `results/openclaw-stability/`。
+- **稳定性数据（三次均值 ± 跨 run σ）**：
+
+  | 维度 | 均值 | σ | 探针数 |
+  |---|---|---|---|
+  | retention | 94.9 | 7.3 | 39 |
+  | recall | 75.0 | 0.0 | 12 |
+  | dynamic_update | 61.5 | 6.3 | 39 |
+  | distractor_discrimination | 25.0 | **20.4** | 24 |
+  | boundary_refusal | 83.9 | 5.5 | 40 |
+  | task_reuse | 33.3 | 11.8 | 12 |
+  | temporal_reasoning | 50.0 | **40.8** | 6 |
+  | multi_session_reasoning | 66.7 | 0.0 | 3 |
+  | causal_reasoning | 0.0 | 0.0 | 6 |
+
+  FAMA=64.3；单 run 用例级均分 61.4 / 63.2 / 67.1（N+21 更正口径：
+  每用例 score 均值×100，run02 为 34/35——bnd-01 连接错误无分被剔除）。
+- **两点诚实结论**：
+  1. **单次跑分会被幸运/不幸采样放大**：N+19 重评分得到的单 run 画像
+     （如 task_reuse=100、multi_session=100）在三次均值下回落到 33 / 67
+     ——std 列正是为答辩时抵御"跑一次挑好结果"质疑而设，今后 openclaw
+     数字一律报三次均值 ± σ；
+  2. **σ 与样本量强相关**：temporal σ=40.8 但只有 6 探针、multi_session
+     σ=0.0 也只有 3 探针——探针少的维度方差估计不可信，扩大数据集
+     （N+16 已具备 1995 例生成能力）是压低 σ 的正路，而非调 judge。
+- **测试**：本轮无评分逻辑改动，104 测试基线不变；清理脚本以两轮实测
+  代替单测（幂等性由"回到基线 20"直接验证）。
+- **下一步**：把 stability 结果固化为参考物；openKylin 真机复跑。
+
+## 2026-09-05 · 轮次 N+21：openclaw 三次稳定性固化为标准参考物
+
+- **为什么**：`results/` 在 .gitignore 里（定位为可再生产物），但三次
+  真实 LLM 全量评测花了 78 分钟、且"单 run 不得作口径"的结论必须有一份
+  可追溯证据背书——原始落盘必须进入版本库。
+- **做了什么**：把 `results/openclaw-stability/` 全量固化到被 git 跟踪的
+  `examples/sample_results/openclaw-stability/`（112 文件 / 1.5M）：
+  - `summary.json`：三次聚合（九维 score / std_across_runs / 裁决分布、
+    总分 54.5、FAMA 64.3、per_case、难度分层、记忆操作计数）；
+  - `runs/run01..03/`：105 个逐用例证据 JSON（每探针 verdict/score/
+    reason/reply/hits + transcript/memory_dump/fs 证据）——σ 可逐条复算；
+  - `comparison/`：单智能体报告四件套（comparison.md / report.html /
+    evidence.html / summaries.json + bin/判别度 JSON）。
+- **参考物 README**（该目录内）写明：来源与口径（日期/智能体/命令/耗时/
+  清理轮次/敏感扫描 0）、九维均值 ± σ 表、四条诚实结论（单 run 幸运采样
+  含 upd-04-memory-store 三次 1.0/0.0/1.0 的具体实例、causal 三次一致
+  失败非抖动、σ 受探针样本量限制、检索定位率 0.0 是 embedding key 缺失
+  的环境局限）、复现命令（含容器内执行清理脚本的准确调用）。
+- **口径更正**：61.4/63.2/67.1 实为**用例级**均分（每用例 score 均值
+  ×100；run02 为 34/35），N+20 误标为"探针均分"，DELIVERABLES/DEVLOG
+  已同步更正；全探针口径复算为 61.5/63.7/68.4，参考物 README 注明口径
+  以免歧义。入库前对全部 JSON 做了密钥/敏感串扫描（干净）。
+- **外层 comparison/ 升级为四智能体对比**（并行会话产出，合并入库）：
+  `examples/sample_results/comparison/` 由"三内置对比"重建为
+  smart/naive/nomem/openclaw-real 四智能体版——report.html（雷达/热力表，
+  openclaw 列为 3 次均值口径）、**evidence.html 内嵌四智能体全部证据**
+  （3×35 + 105 = 210 份逐用例 JSON，可按智能体/用例/裁决筛选）、
+  bin_report/case_discrimination 同步。数据来源：builtins←
+  results/controls-rerun（N+19 答案锚定后评分），openclaw←本参考物。
+  证据一致性已验证：openclaw-stability 的 summary/runs 与四智能体报告
+  引用逐字节一致。
+- **上层 README**：`examples/sample_results/README.md` 重写——内容表
+  （openclaw-stability 行 + 四智能体 comparison 行）、**「四智能体口径」节**
+  （smart 96.6 单次确定性 / openclaw-real 54.5 三次均值 ± σ / 单次跑分
+  不得用于答辩对比）、证据导读（naive 双包 + openclaw 真实软件行为属性）、
+  复现命令（内置一条命令；openclaw 78 分钟/3 runs + 清理脚本）、35 用例
+  数修正（旧文误写 24）。
+- **测试**：无 membench/tests 代码改动（相对 N+20 全绿提交 git diff 为空）。
+  提交时宿主 WSL2 回环网络故障（TCP 握手通、HTTP 数据黑洞——gateway
+  healthz、unittest mock server、最小回环实验同一症状，18:40 后出现），
+  unittest 改在容器内复跑：`docker run --rm -v <repo>:/work -v
+  /usr/lib/python3/dist-packages:/hostsite:ro -e PYTHONPATH=/hostsite
+  openclaw/openclaw:latest python3 -m unittest discover -s tests`
+  → **Ran 104 tests / OK**。容器网络栈独立于宿主回环，结论有效。
+- **下一步**：openKylin 真机 .deb 复跑 + 桌面录屏（需真机，环境外待办）；
+  可选：用 N+16 的 1995 例生成能力扩大数据集压低 σ；
+  宿主 loopback 故障若持续需 `wsl --shutdown` 重启（环境外操作）。
+
+## 2026-09-05 · 轮次 N+22：测试网络根治——回环请求绕过环境代理
+
+- **背景与根因收敛**：N+21 记录的"宿主 WSL2 回环故障（TCP 握手通、
+  HTTP 数据黑洞）"经对照实验收敛出更精确的根因——**环境代理劫持**。
+  宿主 shell 设有 HTTP_PROXY/HTTPS_PROXY/ALL_PROXY（172.29.48.1:7890）
+  且无 no_proxy；urllib 默认信任代理变量，发往 127.0.0.1 的请求也被交给
+  代理，而该代理自 18:40 前后不可达（裸 socket 直连 127.0.0.1:PORT 两次
+  均成功，urllib 两次都在 connect 代理地址时超时；`/dev/tcp` 探测代理
+  端口 5s 无响应）。全量测试因此 1F+3E、723s（大半是代理超时开销）：
+  TestOpenAICompat 3 ERROR（fake LLM 连不上）+ TestJudgeWiring 1 FAIL
+  （judge 连不上 → 回退 not_evaluable ≠ 期望 miss）。
+- **修复（代码层，与环境解耦）**：新增 `membench/httputil.py`
+  `opener_for(base_url)`——回环地址（127.0.0.1/localhost/::1）返回无代理
+  opener，远端地址返回 None 沿用环境代理；`agents/openai_compat.py` 与
+  `judge.py` 的 HTTP 调用统一接入。
+- **回归覆盖**：新增 `tests/test_httputil.py` 3 用例，行为级验证——
+  环境代理指向不可达地址（TEST-NET-1）时，回环 opener 仍直连成功。
+  （不用 handler 结构断言：build_opener 对空代理表的 ProxyHandler 不进
+  handlers 列表，结构断言不可靠。）
+- **验证**：修复前污染环境 104 用例 / 1F+3E / 723s；修复后同一污染环境
+  **107/107 OK / 4.8s**；no_proxy 环境亦 104/104 OK / 3.2s。N+21 的容器内
+  复跑方案依然有效；宿主回环 TCP 本身正常，`wsl --shutdown` 无需。
+- **测试基线**：104 → 107（+3）。
+
+## 2026-09-05 · 收尾清点（N+22 后）：未完成事项留档
+
+本轮工作（N+18~N+22：真实实例接入 → 测量有效性 → 稳定性 → 参考物固化
+→ 测试网络根治）告一段落。**未完成事项全部集中于此**，按责任方标注：
+
+**参赛者待办（需真机/人工，环境外）**
+1. openKylin 真机 `.deb` 复跑 + `membench doctor`/`demo` 留档输出
+   （交付物 c，见 DELIVERABLES「参赛者剩余待办」#1）；
+2. 第二款真实智能体接入（本地 LLM 走 `agents/openai-compat.example.json`，
+   与 openclaw-real 四智能体对比出终版雷达；DELIVERABLES 待办 #2 剩余部分）;
+3. 演示视频录制（`docs/DEMO_SCRIPT.md` 五分镜 + `scripts/rehearse.sh` 彩排，
+   DELIVERABLES 待办 #3）。
+
+**用户环境待办（本机 shell 配置，产品代码已解耦不受影响）**
+4. 宿主代理变量修复：`HTTP_PROXY/HTTPS_PROXY/ALL_PROXY=172.29.48.1:7890`
+   自 18:40 前后不可达且无 `no_proxy`——N+22 已让 membench 的回环调用
+   绕过代理（产品不受影响），但 **git fetch/push、docker pull、curl 等
+   其它工具仍会受害**：要么恢复该代理服务，要么补
+   `export no_proxy=127.0.0.1,localhost` 并修正代理地址；
+5. `wsl --shutdown` 重启不再必要（N+22 已证实回环 TCP 本身正常）。
+
+**可选工程项（无阻塞）**
+6. 数据集扩容压低 σ：temporal σ=40.8 仅 6 探针、multi_session σ=0.0 仅
+   3 探针——方差估计受样本量限制；N+16 的 1995 例生成能力现成
+   （详见 DEVLOG N+20 诚实结论 #3）；
+7. 容器内测试复跑命令固化（N+21 记录的 docker run 一行命令）可选项：
+   接入 `membench doctor` 子命令或 CI 步骤，作为宿主网络异常时的兜底
+   测试通道；
+8. 大规模跑批前执行 `scripts/openclaw_cleanup_sessions.py` 清理 mb-*
+   孤儿会话（幂等，复现步骤见 `examples/sample_results/openclaw-stability/
+   README.md`）。
+
+**口径纪律（长期有效）**
+- openclaw-real 数字一律引用三次均值 ± σ（`examples/sample_results/
+  openclaw-stability/README.md`），单次跑分不得用于答辩对比；
+- 内置参考智能体为确定性实现，单次即可（跨 run σ=0 测试锁定）。

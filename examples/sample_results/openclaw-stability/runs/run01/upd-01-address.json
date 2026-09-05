@@ -1,0 +1,124 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-01-address",
+  "dimension": "dynamic_update",
+  "run_index": 1,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "事实「北京市海淀区中关村大街1号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
+      "reply": "",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    },
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 上海市浦东新区世纪大道100号",
+      "reply": "你现在家在**上海市浦东新区世纪大道100号**(No.100 Century Avenue, Pudong New Area, Shanghai)。\n\n根据今天的记录,你刚从北京海淀区中关村大街1号搬过去,我已经把默认地址更新成上海这个了——之后天气、通勤、外卖这类本地查询都会默认用这个地址。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s2"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.5,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 📍 以后聊天气、出行、周边信息这些,我就默认以 **北京市海淀区中关村大街1号** 为参考位置。\n\n有什么需要帮忙的,随时说。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "一周后",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我搬到上海市浦东新区世纪大道100号了。"
+          },
+          {
+            "role": "assistant",
+            "content": "收到，已经记下了 🏠\n\n- **新地址**:上海市浦东新区世纪大道100号（默认位置已更新，之后的天气、通勤、外卖、本地查询都会默认用这里）\n- 之前的中关村地址已标记为旧住址\n\n搬家到世纪大道挺方便的——陆家嘴、八佰伴商圈都近。要不要我顺便查一下那边的天气或者附近有什么值得逛的？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我现在家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "你现在家在**上海市浦东新区世纪大道100号**(No.100 Century Avenue, Pudong New Area, Shanghai)。\n\n根据今天的记录,你刚从北京海淀区中关村大街1号搬过去,我已经把默认地址更新成上海这个了——之后天气、通勤、外卖这类本地查询都会默认用这个地址。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Home (旧): 北京市海淀区中关村大街1号 (Zhongguancun Street No.1, Haidian District, Beijing).\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home: 上海市浦东新区世纪大道100号 (No.100 Century Avenue, Pudong New Area, Shanghai). Use as default location for weather, commute, delivery, and local queries unless the user specifies otherwise.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Speak and reply in Chinese (中文) unless the user writes in another language.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户搬家：从北京(海淀区中关村大街1号)搬到 上海市浦东新区世纪大道100号。已更新 USER.md 中的默认位置(旧条目标记 superseded)。以后天气/通勤/本地查询默认用上海地址。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home: 北京市海淀区中关村大街1号 (Zhongguancun Street No.1, Haidian District, Beijing). Use as default location for weather, commute, delivery, and local queries unless the user specifies otherwise.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Speak and reply in Chinese (中文) unless the user writes in another language.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Home (旧): 北京市海淀区中关村大街1号 (Zhongguancun Street No.1, Haidian District, Beijing).\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home: 上海市浦东新区世纪大道100号 (No.100 Century Avenue, Pudong New Area, Shanghai). Use as default location for weather, commute, delivery, and local queries unless the user specifies otherwise.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Speak and reply in Chinese (中文) unless the user writes in another language.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户搬家：从北京(海淀区中关村大街1号)搬到 上海市浦东新区世纪大道100号。已更新 USER.md 中的默认位置(旧条目标记 superseded)。以后天气/通勤/本地查询默认用上海地址。"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Home: 北京市海淀区中关村大街1号 (Zhongguancun Street No.1, Haidian District, Beijing). Use as default location for weather, commute, delivery, and local queries unless the user specifies otherwise.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Speak and reply in Chinese (中文) unless the user writes in another language.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788599682.3251607,
+  "duration_sec": 28.06223487854004
+}

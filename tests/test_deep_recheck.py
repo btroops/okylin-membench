@@ -185,7 +185,7 @@ class TestCliMatrix(unittest.TestCase):
     def test_builtin_suite_still_valid(self):
         r = self._cli("validate")
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertIn("32 个用例", r.stdout)
+        self.assertIn("35 个用例", r.stdout)
 
 
 if __name__ == "__main__":

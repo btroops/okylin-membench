@@ -1,0 +1,23 @@
+# SubtleMemory 风格：complementary（两条信息互补）
+schema_version: 1
+case_id: rel-03-complementary
+dimension: retention
+title: 互补型关系（complementary）
+description: 两条信息彼此补充：负责"做什么"+负责"怎么"——智能体应能组合回答。
+difficulty: medium
+tags: [subtleMemory, complementary, 关系]
+relation: complementary
+sessions:
+  - session_id: s1
+    turns:
+      - "我负责我们团队的代码审查。"
+  - session_id: s2
+    turns:
+      - "代码审查时我用 Danger + ESLint。"
+probes:
+  - probe_id: p1
+    type: free
+    after_session: s2
+    question: "你在团队里负责什么？怎么做的？"
+    expected:
+      must_include: ["代码审查", "Danger", "ESLint"]

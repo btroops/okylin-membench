@@ -1,0 +1,102 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rel-03-complementary",
+  "dimension": "retention",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 代码审查、Danger、ESLint",
+      "reply": "先说清楚边界：代码审查这个职责是你的——你在 s1 里说的「我负责我们团队的代码审查」，加上 Danger + ESLint 这套工具链，我都记在 USER.md 里了，那是**你的**角色，我不会把它揽到自己头上。\n\n我在这个团队里的定位是给你打下手、做自动化辅助的那个，具体分几块：\n\n**1. 帮你审 diff/PR（人工那部分）**\n你丢给我分支、commit 范围或直接贴代码，我从正确性、边界条件、安全隐患、可维护性几个角度过一遍，按严重级别（blocker / 建议 / 小事）给意见。你保留最终判断权——我不替你做决定，只把该看的地方都给你翻出来。\n\n**2. 盯你关心的特定问题**\n比如并发安全、资源泄漏、SQL 注入、日志泄露敏感信息、错误处理缺失这类容易漏的点，你说一次重点，我以后每次都带着这个滤镜过。\n\n**3. 把审查标准沉淀下来**\n你们团队如果有 review checklist（命名、测试要求、commit message 格式），我帮你写成文档固化，之后每次审查都按同一套标准跑，不靠灵感。\n\n**4. 自动化那半边（配你的 Danger + ESLint）**\n这块和你现有工具链对接：\n- 搭 `Dangerfile`，把 ESLint 结果接进去（`danger-plugin-eslint` 这类），**只对改动行报错**，不淹没整个 PR\n- 配 CI 步骤（GitHub Actions / GitLab CI）\n- 写自定义规则：禁止大 PR、强制 changelog、拦 WIP 标题等\n\n**怎么做的**——靠两样东西：一是这个工作区（我能读仓库、看 git 历史和 diff，活干完记录归档）；二是长期记忆，把你的角色、工具链、团队规范存下来，下次开新会话不用你重复交代。\n\n<details><summary>一个诚实的提醒</summary>\n\n工作区目前是全新的：还没有你仓库的路径或远端、没存团队规范文件，s1 里我问你的技术栈/审查流程/规范文件也还没收到答复。所以上面的能力是「已就位、待接线」状态，不是「已经在你的 repo 里跑」——把仓库路径或第一个 PR 丢给我，就能真正开工了。\n</details>",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我负责我们团队的代码审查。"
+          },
+          {
+            "role": "assistant",
+            "content": "明白，你负责团队的代码审查。我这个工作区目前还没有存下关于你团队或项目的背景，所以先跟你确认一下，方便之后干活更顺手。\n\n我可以帮你做的典型事情包括：\n\n- **审 diff/PR** — 你给我分支、commit 范围或直接贴代码，我从正确性、边界条件、安全隐患、可维护性几个角度过一遍，给出带严重级别的意见\n- **盯特定问题** — 比如并发安全、资源泄漏、SQL 注入、日志泄露敏感信息、错误处理缺失这类你关心的点\n- **把审查标准沉淀下来** — 如果你有团队的 review checklist（比如命名规范、测试要求、提交信息格式），可以写成文档，之后我每次都按这个标准来\n- **跟仓库打通** — 如果需要，可以帮你拉代码、看 git 历史、找改动上下文\n\n几个问题帮我定位一下：\n\n1. 你们主要用什么语言/技术栈？仓库在这个工作区里能访问到吗（本地路径或 git 远端）？\n2. 审查走什么流程——GitHub/GitLab PR？还是本地看 diff？\n3. 有没有现成的团队规范文件可以给我看？\n\n你也可以直接扔第一个任务过来，边干边了解。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "代码审查时我用 Danger + ESLint。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 👌 你走 PR 自动检查用 **Danger + ESLint** 这套组合——Danger 跑规则和评论、ESLint 管代码质量，在 CI 里配合挺顺的。\n\n需要的话我可以帮你：\n- 搭一份 `Dangerfile`，把 ESLint 结果接进去（`danger eslint` 或 `danger-plugin-eslint`），只对改动行报错\n- 配 CI 步骤（GitHub Actions / GitLab CI 都行）\n- 写自定义规则，比如禁止大 PR、强制加 changelog、检查 WIP 标题等\n\n有具体仓库或想先做哪块，直接说。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "你在团队里负责什么？怎么做的？"
+          },
+          {
+            "role": "assistant",
+            "content": "先说清楚边界：代码审查这个职责是你的——你在 s1 里说的「我负责我们团队的代码审查」，加上 Danger + ESLint 这套工具链，我都记在 USER.md 里了，那是**你的**角色，我不会把它揽到自己头上。\n\n我在这个团队里的定位是给你打下手、做自动化辅助的那个，具体分几块：\n\n**1. 帮你审 diff/PR（人工那部分）**\n你丢给我分支、commit 范围或直接贴代码，我从正确性、边界条件、安全隐患、可维护性几个角度过一遍，按严重级别（blocker / 建议 / 小事）给意见。你保留最终判断权——我不替你做决定，只把该看的地方都给你翻出来。\n\n**2. 盯你关心的特定问题**\n比如并发安全、资源泄漏、SQL 注入、日志泄露敏感信息、错误处理缺失这类容易漏的点，你说一次重点，我以后每次都带着这个滤镜过。\n\n**3. 把审查标准沉淀下来**\n你们团队如果有 review checklist（命名、测试要求、commit message 格式），我帮你写成文档固化，之后每次审查都按同一套标准跑，不靠灵感。\n\n**4. 自动化那半边（配你的 Danger + ESLint）**\n这块和你现有工具链对接：\n- 搭 `Dangerfile`，把 ESLint 结果接进去（`danger-plugin-eslint` 这类），**只对改动行报错**，不淹没整个 PR\n- 配 CI 步骤（GitHub Actions / GitLab CI）\n- 写自定义规则：禁止大 PR、强制 changelog、拦 WIP 标题等\n\n**怎么做的**——靠两样东西：一是这个工作区（我能读仓库、看 git 历史和 diff，活干完记录归档）；二是长期记忆，把你的角色、工具链、团队规范存下来，下次开新会话不用你重复交代。\n\n<details><summary>一个诚实的提醒</summary>\n\n工作区目前是全新的：还没有你仓库的路径或远端、没存团队规范文件，s1 里我问你的技术栈/审查流程/规范文件也还没收到答复。所以上面的能力是「已就位、待接线」状态，不是「已经在你的 repo 里跑」——把仓库路径或第一个 PR 丢给我，就能真正开工了。\n</details>"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Code review (PR 自动化检查) 使用 Danger (JS/TS) + ESLint 这套工具链。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Code review (PR 自动化检查) 使用 Danger (JS/TS) + ESLint 这套工具链。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601767.9624448,
+  "duration_sec": 65.89414668083191
+}

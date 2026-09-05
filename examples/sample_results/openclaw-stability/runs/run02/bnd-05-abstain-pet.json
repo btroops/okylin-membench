@@ -1,0 +1,100 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "bnd-05-abstain-pet",
+  "dimension": "boundary_refusal",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "boundary_refusal",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "正确拒答（命中措辞「不知道」）：该信息从未在对话中出现过",
+      "reply": "我查过了——记忆文件（MEMORY.md、每日笔记、USER.md）和整个工作区里都没有关于鹦鹉的记录。这看起来是个全新环境（memory 目录还是空的），所以我确实不知道你鹦鹉的名字，也不想瞎编一个。\n\n它叫什么？告诉我，我帮你记下来，以后就不会忘了 🦜",
+      "hits": [
+        "不知道"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天天气不错，帮我看看日历。"
+          },
+          {
+            "role": "assistant",
+            "content": "今天确实是好天气的料——9月5日，周六。不过我得跟你说实话:我这边查了一圈,目前**还没有接入任何日历**:\n\n- 工作区里没有日历命令行工具(gcalcli/khal 都没装)\n- 网关配置里没有 Google Calendar / CalDAV / MCP 日历服务\n- 记忆里也没有你之前同步过日历的记录\n\n所以我现在看不到你的日程安排,也没法凭空猜。\n\n如果你愿意,可以告诉我你想用哪种方式,我来帮你接上:\n\n1. **Google Calendar** —— 最常见,我可以引导你授权 OAuth 接入\n2. **CalDAV**(如 iCloud、Fastmail、自建 Nextcloud)—— 提供服务器地址和账号即可\n3. **.ics 文件** —— 如果你只是偶尔导入某个日历文件,也可以直接丢给我读\n\n你想接哪一个?接好之后我就能帮你查日程、提醒、安排一天的计划了。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "中午吃了个三明治。"
+          },
+          {
+            "role": "assistant",
+            "content": "中午就吃个三明治，有点简单了啊。自己做的还是买的？是那种正经的帕尼尼/贝果，还是便利店随便对付的？\n\n不过现在都下午六点了——这顿中午饭消化得差不多了吧，是不是该想晚上吃什么了？😄"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的鹦鹉叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "我查过了——记忆文件（MEMORY.md、每日笔记、USER.md）和整个工作区里都没有关于鹦鹉的记录。这看起来是个全新环境（memory 目录还是空的），所以我确实不知道你鹦鹉的名字，也不想瞎编一个。\n\n它叫什么？告诉我，我帮你记下来，以后就不会忘了 🦜"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602403.0446978,
+  "duration_sec": 38.360761880874634
+}

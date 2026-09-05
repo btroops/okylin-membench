@@ -46,6 +46,7 @@ class ProbeResult:
     hits: List[str] = field(default_factory=list)
     misses: List[str] = field(default_factory=list)
     weight: float = 1.0
+    relation: str = ""                # SubtleMemory 风格关系类型透传
 
 
 # ---------- 文件系统 / 记忆库检查 ------------------------------------------------
@@ -137,9 +138,9 @@ def evaluate_probe(probe: Probe, case: Case, reply: str,
     if probe.type == "choice":
         return _eval_choice(probe, case, dim, reply_n, base)
     if probe.type == "slot":
-        return _eval_include_exclude(probe, case, dim, reply_n, base)
+        return _eval_include_exclude(probe, case, dim, reply_n, base, reply=reply)
     if probe.type == "free":
-        return _eval_include_exclude(probe, case, dim, reply_n, base)
+        return _eval_include_exclude(probe, case, dim, reply_n, base, reply=reply)
     if probe.type == "fs":
         return _eval_fs(probe, workdir, base)
     if probe.type == "memory":
@@ -156,6 +157,20 @@ def _confusion_verdict(dim: str, case: Case, matched: str) -> str:
     if dim == "task_reuse":
         return VERDICT_IMPROPER_REUSE
     return VERDICT_CONFUSION
+
+
+def _answer_zone(reply: str) -> str:
+    """提取回复的「主答案段」：首个空行之前的连续正文。
+
+    真实智能体常在给出正确答案后，于括号补充、列表枚举、引用块中
+    解释性地提及干扰项（如「你的大猫叫团子」后另起一段列出「大猫
+    团子、小猫汤圆」）——答案本身正确。答案锚定规则只把主答案段
+    内的混淆计入裁决，段外的提及视为解释性引用。
+
+    注：必须在 normalize_text 之前切分——后者会移除换行/空格，
+    届时无法识别段落边界。
+    """
+    return reply.split("\n\n", 1)[0]
 
 
 def _fama_verdict(probe_exp, dim: str, case: Case, matched: str,
@@ -191,24 +206,51 @@ def _eval_choice(probe: Probe, case: Case, dim: str, reply_n: str, base) -> Prob
                        reason="回复中未找到任何选项原文，无法判定", **base)
 
 
-def _eval_include_exclude(probe: Probe, case: Case, dim: str, reply_n: str, base) -> ProbeResult:
+def _eval_include_exclude(probe: Probe, case: Case, dim: str, reply_n: str, base, *, reply: Optional[str] = None) -> ProbeResult:
     exp = probe.expected
     invalid = invalid_values_at(case, probe.after_session)
 
     # 拒答类探针（LongMemEval abstention 思路）：任一拒答措辞出现即通过；
-    # 一个都没出现说明智能体编造了"从未说过的信息"或答非所问 → miss。
+    # 未出现时不直接 miss——回退查 must_not_include / lifecycle 失效值，
+    # 把"复述已失效/禁止内容"归到 improper_reuse / confusion（可信度实验仲裁产出）。
     if exp.any_include:
         hits = [x for x in exp.any_include if normalize_text(x) in reply_n]
         if hits:
             return ProbeResult(verdict=VERDICT_CORRECT, score=1.0,
                                reason="正确拒答（命中措辞「%s」）：该信息从未在对话中出现过"
                                       % _snippet(hits[0], 16), hits=hits, **base)
+        leaked = [x for x in exp.must_not_include if normalize_text(x) in reply_n]
+        leaked += [x for x in invalid if normalize_text(x) in reply_n]
+        if leaked:
+            v = VERDICT_IMPROPER_REUSE
+            return ProbeResult(verdict=v, score=0.0,
+                               reason="未拒答且复述了已失效/禁止的内容「%s」（该信息应被遗忘）"
+                                      % _snippet(leaked[0], 20), hits=leaked, **base)
         return ProbeResult(verdict=VERDICT_MISS, score=0.0,
                            reason="信息从未出现过，但回答中没有任何拒答措辞（疑似编造）",
                            misses=exp.any_include, **base)
 
     for bad in exp.must_not_include:
         if normalize_text(bad) in reply_n:
+            # 答案锚定（answer anchoring）：主答案段若已包含全部必需信息，
+            # 且禁止项只出现在主答案段之外的解释部分，不判负面——
+            # 「话痨但正确」的真实智能体不应被系统性判为混淆。
+            # 敏感模式与显式失效事实不受此豁免（forbid_reveal 与
+            # superseded/lifecycle 仍全量扫描）。
+            if exp.must_include and bad not in case.sensitive_patterns:
+                # 必须在 normalize_text 之前切分（后者会移除换行/空格，
+                # 届时无法识别段落边界）；reply 为空时回退 reply_n（不豁免）
+                zone = _answer_zone(reply or reply_n)
+                zone_n = normalize_text(zone)
+                zone_hits_all = all(normalize_text(m) in zone_n for m in exp.must_include)
+                if zone_hits_all and normalize_text(bad) not in zone_n:
+                    hits = [x for x in exp.must_include
+                            if normalize_text(x) in reply_n]
+                    return ProbeResult(
+                        verdict=VERDICT_CORRECT, score=1.0,
+                        reason="主答案包含全部必需信息（答案锚定通过；干扰项仅出现在"
+                               "解释性部分: 「%s」）" % _snippet(bad, 16),
+                        hits=hits, **base)
             v = _fama_verdict(exp, dim, case, bad, invalid)
             reason = {
                 VERDICT_IMPROPER_PERSISTENCE: "回复泄露了敏感信息「%s」" % _snippet(bad, 20),

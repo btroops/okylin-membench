@@ -1,0 +1,112 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "dis-02-two-addresses",
+  "dimension": "distractor_discrimination",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "主答案包含全部必需信息（答案锚定通过；干扰项仅出现在解释性部分: 「望京SOHO」）",
+      "reply": "你家在 **北京市海淀区中关村大街1号**。\n\n（USER.md 里还记了你的公司地址：北京市朝阳区望京SOHO-T1，需要查通勤路线之类的可以一起说。）",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "主答案包含全部必需信息（答案锚定通过；干扰项仅出现在解释性部分: 「中关村大街1号」）",
+      "reply": "你的公司地址是:**北京市朝阳区望京SOHO-T1**(工作日出行、会议规划默认按这个地址来)。\n\n(家庭住址是北京市海淀区中关村大街1号,需要查通勤的话两者我都记着。)",
+      "hits": [
+        "望京SOHO-T1"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号，公司地址在北京市朝阳区望京SOHO-T1。"
+          },
+          {
+            "role": "assistant",
+            "content": "已记好:\n\n- 🏠 **家**:海淀区中关村大街1号\n- 🏢 **公司**:朝阳区望京SOHO-T1\n\n以后要查两地通勤耗时、规划路线、算距离,或者涉及寄送地址时,直接说一声就行。需要的话我也可以顺手估一下通勤路线(比如地铁/驾车方案)。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "你家在 **北京市海淀区中关村大街1号**。\n\n（USER.md 里还记了你的公司地址：北京市朝阳区望京SOHO-T1，需要查通勤路线之类的可以一起说。）"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "公司地址在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的公司地址是:**北京市朝阳区望京SOHO-T1**(工作日出行、会议规划默认按这个地址来)。\n\n(家庭住址是北京市海淀区中关村大街1号,需要查通勤的话两者我都记着。)"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址:北京市海淀区中关村大街1号(查询通勤/出行/快递默认以此为准)。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 公司地址:北京市朝阳区望京SOHO-T1(工作日出行/会议规划默认以此为准)。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家庭住址:北京市海淀区中关村大街1号(查询通勤/出行/快递默认以此为准)。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 公司地址:北京市朝阳区望京SOHO-T1(工作日出行/会议规划默认以此为准)。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601587.830108,
+  "duration_sec": 28.263035535812378
+}

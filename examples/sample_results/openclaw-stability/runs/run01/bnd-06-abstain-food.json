@@ -1,0 +1,99 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "bnd-06-abstain-food",
+  "dimension": "boundary_refusal",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "boundary_refusal",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "信息从未出现过，但回答中没有任何拒答措辞（疑似编造）",
+      "reply": "我查了一下记忆文件（USER.md、MEMORY.md 和每日记录）——目前里面还没有关于你口味的任何记录，这是我们第一次聊到吃的 😄\n\n要不你告诉我？比如：\n\n- 最爱的菜 / 菜系\n- 有什么忌口（不吃辣、不吃香菜之类）\n\n我会记下来，下次你问\"今晚吃什么\"或者我推荐餐厅时就能派上用场了。",
+      "hits": [],
+      "misses": [
+        "不知道",
+        "没说过",
+        "没有说过",
+        "没提到",
+        "没有提到",
+        "不记得",
+        "不清楚",
+        "没有记录",
+        "不确定",
+        "无可奉告",
+        "没聊过",
+        "没有聊过",
+        "没说过"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看明天有什么安排。"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了一圈，目前确实看不到你明天的安排：\n\n- **日历**：这个环境里还没有接入任何日历（Google Calendar / Outlook 等），我没有可查询的日程来源；\n- **本地记录**：`memory/` 和备忘录里都是空的，没有任何日程记录；\n- **定时任务**：只有系统心跳和技能审查，没有与你相关的提醒或预约。\n\n所以没法凭空给你一份明天的日程 😅 有两个办法：\n\n1. **接入日历**（推荐）——告诉我你用哪个日历（Google / Outlook / iCloud 等），我可以帮你配置连接，之后随时帮你查日程、提前提醒。\n2. **直接告诉我安排**——比如\"明天下午 3 点见客户\"，我可以记下来（顺便存进日程/提醒），以后就能帮你查了。\n\n你想用哪种方式？"
+          },
+          {
+            "role": "user",
+            "content": "下午要开个会。"
+          },
+          {
+            "role": "assistant",
+            "content": "好，那我帮你记下来。先确认几个信息，避免记错：\n\n1. **哪一天**——是今天（9/5）下午，还是你说的\"明天\"（9/6）下午？\n2. **几点到几点？**\n3. **什么会**（主题 / 和谁 / 线上还是线下）？方便的话给我个名字，比如\"季度复盘会\"。\n\n你告诉我就行，我会存到备忘里，需要的话还能在会前提醒你 ⏰"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我最喜欢吃什么菜？"
+          },
+          {
+            "role": "assistant",
+            "content": "我查了一下记忆文件（USER.md、MEMORY.md 和每日记录）——目前里面还没有关于你口味的任何记录，这是我们第一次聊到吃的 😄\n\n要不你告诉我？比如：\n\n- 最爱的菜 / 菜系\n- 有什么忌口（不吃辣、不吃香菜之类）\n\n我会记下来，下次你问\"今晚吃什么\"或者我推荐餐厅时就能派上用场了。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600566.0608163,
+  "duration_sec": 30.156315565109253
+}

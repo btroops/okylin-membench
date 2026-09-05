@@ -1,0 +1,82 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "reuse-01-install",
+  "dimension": "task_reuse",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "task_reuse",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 sudo apt install cmatrix",
+      "reply": "✅ cmatrix 装好了(2.0-6 版)。\n\n这个环境没有 root/sudo 权限,装不了系统级包,所以我用免 root 方式搞定:\n\n**安装方式**\n- 从 Debian 官方源下载 `cmatrix_2.0-6_amd64.deb`,用 `dpkg-deb -x` 解压到工作区,不需要 root\n- 系统缺 `libncurses.so.6`(只有 wide 版),从 ncurses 源补了下到 `.local/lib/`\n- 已实测运行正常(带雨滴特效渲染,超时自动退出验证通过)\n\n**怎么用**\n\n```\n/home/node/.openclaw/workspace/bin/cmatrix\n```\n\n常用玩法:\n- `cmatrix -r` — 彩虹色\n- `cmatrix -b` — 加粗字符\n- `cmatrix -C red` — 指定颜色(green/red/blue/yellow/cyan/white 等)\n- `cmatrix -a` — 异步滚动\n- 按 `q` 退出\n\n如果想让命令更顺手,可以在你的 shell 配置里加 `export PATH=\"$PATH:/home/node/.openclaw/workspace/bin\"`。",
+      "hits": [],
+      "misses": [
+        "sudo apt install cmatrix"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我安装 htop，命令是 sudo apt install htop。"
+          },
+          {
+            "role": "assistant",
+            "content": "装不了 —— 这个环境里没有安装路径:\n\n- **sudo**:不存在(`sudo: not found`)\n- **su root**:认证失败\n- **提权 exec**:被网关策略禁用(`tools.elevated.enabled` 未开启)\n\n所以我无法在这里以 root 身份运行 `apt install`。两个办法:\n\n1. **你在自己的终端里跑**(最直接):`sudo apt install htop` — 在正常有 sudo 的机器上这命令没问题。\n2. **启用沙箱提权**:在网关配置里开启 `tools.elevated.enabled`(以及 `allowFrom.webchat`),之后我就能直接帮你装。\n\n要我帮你走第 2 条(需要改配置,需你批准),还是你自己装就行?"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我安装 cmatrix。"
+          },
+          {
+            "role": "assistant",
+            "content": "✅ cmatrix 装好了(2.0-6 版)。\n\n这个环境没有 root/sudo 权限,装不了系统级包,所以我用免 root 方式搞定:\n\n**安装方式**\n- 从 Debian 官方源下载 `cmatrix_2.0-6_amd64.deb`,用 `dpkg-deb -x` 解压到工作区,不需要 root\n- 系统缺 `libncurses.so.6`(只有 wide 版),从 ncurses 源补了下到 `.local/lib/`\n- 已实测运行正常(带雨滴特效渲染,超时自动退出验证通过)\n\n**怎么用**\n\n```\n/home/node/.openclaw/workspace/bin/cmatrix\n```\n\n常用玩法:\n- `cmatrix -r` — 彩虹色\n- `cmatrix -b` — 加粗字符\n- `cmatrix -C red` — 指定颜色(green/red/blue/yellow/cyan/white 等)\n- `cmatrix -a` — 异步滚动\n- 按 `q` 退出\n\n如果想让命令更顺手,可以在你的 shell 配置里加 `export PATH=\"$PATH:/home/node/.openclaw/workspace/bin\"`。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 安装 cmatrix(Debian 12 容器,uid 1001,无 root/sudo,无 apt 权限):\n  - 从 deb.debian.org 下载 `cmatrix_2.0-6_amd64.deb` + `libncurses6_6.4-4_amd64.deb`,dpkg-deb -x 解压到工作区 `.local/`。\n  - 二进制在 `.local/share/cmatrix-pkg/extract/usr/bin/cmatrix`;库 `libncurses.so.6` 在 `.local/lib/`(系统只有 libncursesw,缺非 wide 版)。\n  - 启动脚本 `bin/cmatrix` 自动设 `LD_LIBRARY_PATH`,已验证可运行。\n  - 环境要点:主目录 /home/node 对 uid 1001 不可写,只有工作区可写;免 root 装包走\"下载 deb + dpkg-deb -x + 本地库/wrapper\"套路。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788599840.0698898,
+  "duration_sec": 69.56841921806335
+}

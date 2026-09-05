@@ -1,0 +1,124 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-01-address",
+  "dimension": "dynamic_update",
+  "run_index": 3,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "staleness_scan",
+      "probe_type": "scan",
+      "dimension": "dynamic_update",
+      "role": "absence",
+      "verdict": "improper_reuse",
+      "score": 0.0,
+      "reason": "事实「北京市海淀区中关村大街1号」已在 s2 失效，但记忆库仍保留（该遗忘的没遗忘）",
+      "reply": "",
+      "hits": [
+        "北京市海淀区中关村大街1号"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null
+    },
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "dynamic_update",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 上海市浦东新区世纪大道100号",
+      "reply": "你现在家在**上海市浦东新区世纪大道100号**——记录显示你 2026-09-05（今天）刚搬的家，北京海淀区中关村大街1号的旧地址已作废。\n\nSource: `USER.md`、`memory/2026-09-05.md`\n\n以后做天气、出行、外卖、快递、路线等本地查询时，我会默认按这个新地址来。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s2"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.5,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了 ✅ 你家地址：**北京市海淀区中关村大街1号**（中关村核心区，挨着海淀黄庄/中关村站一带）。\n\n以后查天气、通勤路线、周边店铺、外卖配送范围这类事，我会默认以这个地址为准。如果以后搬家了，跟我说一声更新就行。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "一周后",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我搬到上海市浦东新区世纪大道100号了。"
+          },
+          {
+            "role": "assistant",
+            "content": "记好了 ✅ 常住地址已更新为 **上海市浦东新区世纪大道100号**（世纪大道100号，环球金融中心那一带），北京旧地址已标记作废。以后天气、出行、外卖、快递、路线这类本地查询都会默认用新地址。\n\n搬家辛苦～如果方便的话告诉我一句大概住的是哪栋楼/几层，之后外卖和快递定位能更准。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我现在家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "你现在家在**上海市浦东新区世纪大道100号**——记录显示你 2026-09-05（今天）刚搬的家，北京海淀区中关村大街1号的旧地址已作废。\n\nSource: `USER.md`、`memory/2026-09-05.md`\n\n以后做天气、出行、外卖、快递、路线等本地查询时，我会默认按这个新地址来。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- 用户家住址：北京市海淀区中关村大街1号（做天气、出行、外卖、快递、路线等本地相关查询时默认使用此地址）。已于 2026-09-05 搬家，见下方新地址。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户家住址：上海市浦东新区世纪大道100号（做天气、出行、外卖、快递、路线等本地相关查询时默认使用此地址；北京旧地址已作废）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户搬家：从北京海淀区中关村大街1号 → 上海市浦东新区世纪大道100号。已更新 USER.md 常住地址（旧地址标记 superseded）。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户家住址：北京市海淀区中关村大街1号（做天气、出行、外卖、快递、路线等本地相关查询时默认使用此地址）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- 用户家住址：北京市海淀区中关村大街1号（做天气、出行、外卖、快递、路线等本地相关查询时默认使用此地址）。已于 2026-09-05 搬家，见下方新地址。\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户家住址：上海市浦东新区世纪大道100号（做天气、出行、外卖、快递、路线等本地相关查询时默认使用此地址；北京旧地址已作废）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户搬家：从北京海淀区中关村大街1号 → 上海市浦东新区世纪大道100号。已更新 USER.md 常住地址（旧地址标记 superseded）。"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户家住址：北京市海淀区中关村大街1号（做天气、出行、外卖、快递、路线等本地相关查询时默认使用此地址）。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602943.0898404,
+  "duration_sec": 28.631521940231323
+}

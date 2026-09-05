@@ -1,0 +1,88 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "upd-04-memory-store",
+  "dimension": "dynamic_update",
+  "run_index": 2,
+  "difficulty": "hard",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "memory",
+      "dimension": "dynamic_update",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "记忆库中仍保留着应被覆盖/删除的旧信息「13511112222」",
+      "reply": "",
+      "hits": [
+        "13511112222"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "absence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的紧急联系人电话是 13511112222。"
+          },
+          {
+            "role": "assistant",
+            "content": "已记下：紧急联系人电话 **13511112222**。以后遇到需要联系你或你紧急联系人的情况，我会按这个号码处理。需要我顺便备注联系人的姓名或其他信息吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "紧急联系人换成我阿姨了，电话是 13533334444。"
+          },
+          {
+            "role": "assistant",
+            "content": "已更新：紧急联系人改为你阿姨，电话 13533334444（旧的 13511112222 已标记作废）。以后遇到紧急情况需要替你联系家人时，我会打这个号码。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- The user's emergency contact is their aunt (阿姨), phone 13533334444; use this when an urgent situation requires contacting someone on the user's behalf.\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Use 13511112222 as the emergency contact phone number when an urgent situation requires contacting someone on the user's behalf.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use 13511112222 as the emergency contact phone number when an urgent situation requires contacting someone on the user's behalf.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- The user's emergency contact is their aunt (阿姨), phone 13533334444; use this when an urgent situation requires contacting someone on the user's behalf.\n\n<!-- observed: 2026-09-05 | status: superseded -->\n\n- Use 13511112222 as the emergency contact phone number when an urgent situation requires contacting someone on the user's behalf.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Use 13511112222 as the emergency contact phone number when an urgent situation requires contacting someone on the user's behalf.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ]
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601105.2963035,
+  "duration_sec": 18.11479687690735
+}

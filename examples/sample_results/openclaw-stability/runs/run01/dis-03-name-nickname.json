@@ -1,0 +1,112 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "dis-03-name-nickname",
+  "dimension": "distractor_discrimination",
+  "run_index": 1,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「张伟」（记忆混淆/未更新）",
+      "reply": "你的昵称是 **Aiden**（中文名：张伟 / Zhang Wei）。",
+      "hits": [
+        "张伟"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "confusion",
+      "score": 0.0,
+      "reason": "回答包含了不应出现的内容「Aiden」（记忆混淆/未更新）",
+      "reply": "根据记录,你的名字是 **Aiden**,中文名 **张伟 (Zhang Wei)**。",
+      "hits": [
+        "Aiden"
+      ],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫张伟，常用昵称是 Aiden。"
+          },
+          {
+            "role": "assistant",
+            "content": "你好，Aiden！已经记下了——张伟，常用昵称 Aiden。😊\n\n有什么我可以帮你的吗？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的昵称是什么？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的昵称是 **Aiden**（中文名：张伟 / Zhang Wei）。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的真实姓名是什么？"
+          },
+          {
+            "role": "assistant",
+            "content": "根据记录,你的名字是 **Aiden**,中文名 **张伟 (Zhang Wei)**。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Address the user as Aiden (中文名: 张伟 / Zhang Wei).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Address the user as Aiden (中文名: 张伟 / Zhang Wei).\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788600229.225311,
+  "duration_sec": 21.962157726287842
+}

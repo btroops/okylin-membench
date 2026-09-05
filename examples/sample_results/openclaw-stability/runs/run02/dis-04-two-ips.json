@@ -1,0 +1,114 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "dis-04-two-ips",
+  "dimension": "distractor_discrimination",
+  "run_index": 2,
+  "difficulty": "hard",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 203.0.113.10",
+      "reply": "你的外网 IP 是 **222.212.184.166**。",
+      "hits": [],
+      "misses": [
+        "203.0.113.10"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "回答未包含任何必需信息 192.168.1.10",
+      "reply": "我只能看到我自己所在的沙箱/容器的内网地址，看不到你这台机器的真实局域网 IP——我跑在一个隔离的容器里（`172.19.0.2`，属于 WSL2 的 NAT 网段），它跟你家里的局域网完全不是一回事。\n\n要查你自己机器的内网 IP，在你自己的终端里跑：\n\n- **Windows**：`ipconfig`，找“以太网适配器 / WLAN”下的 IPv4 地址（通常是 `192.168.x.x` 或 `10.x.x.x`）\n- **macOS / Linux**：`ip addr` 或 `ifconfig`，找 `en0`/`eth0`/`wlan0` 的 `inet` 地址\n\n如果你的环境是 WSL2（这台主机看起来是），宿主机 Windows 上的 IP 才是你局域网里的地址。方便的话把结果发我，我帮你确认。",
+      "hits": [],
+      "misses": [
+        "192.168.1.10"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的外网 IP 是 203.0.113.10，内网 IP 是 192.168.1.10。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了:\n\n- **外网 IP:** 203.0.113.10\n- **内网 IP:** 192.168.1.10\n\n一个小提醒:203.0.113.x 是 RFC 5737 保留的文档测试网段(TEST-NET-3),不是真实可路由的公网地址——如果你是要用它做端口映射、远程访问之类的实际配置,这个地址不会通。如果你的真实公网 IP 是动态的,通常要靠 DDNS 或内网穿透。\n\n你告诉我这两个地址是想做什么?比如配远程访问家里设备、端口转发、搭服务,我可以接着帮你弄。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的外网 IP 是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的外网 IP 是 **222.212.184.166**。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的内网 IP 是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "我只能看到我自己所在的沙箱/容器的内网地址，看不到你这台机器的真实局域网 IP——我跑在一个隔离的容器里（`172.19.0.2`，属于 WSL2 的 NAT 网段），它跟你家里的局域网完全不是一回事。\n\n要查你自己机器的内网 IP，在你自己的终端里跑：\n\n- **Windows**：`ipconfig`，找“以太网适配器 / WLAN”下的 IPv4 地址（通常是 `192.168.x.x` 或 `10.x.x.x`）\n- **macOS / Linux**：`ip addr` 或 `ifconfig`，找 `en0`/`eth0`/`wlan0` 的 `inet` 地址\n\n如果你的环境是 WSL2（这台主机看起来是），宿主机 Windows 上的 IP 才是你局域网里的地址。方便的话把结果发我，我帮你确认。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知网络信息:外网 IP 203.0.113.10,内网 IP 192.168.1.10(可能用于后续配置/端口转发等任务)。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户告知网络信息:外网 IP 203.0.113.10,内网 IP 192.168.1.10(可能用于后续配置/端口转发等任务)。"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788601641.541406,
+  "duration_sec": 31.623216152191162
+}

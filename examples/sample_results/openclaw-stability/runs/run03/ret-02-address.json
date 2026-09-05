@@ -1,0 +1,113 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-02-address",
+  "dimension": "retention",
+  "run_index": 3,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 北京市海淀区中关村大街1号",
+      "reply": "你的家在**北京市海淀区中关村大街1号**(记录于 USER.md,2026-09-05 设定,涉及天气、通勤、位置等场景默认以此为准)。\n\n说明一下:语义搜索目前降级为仅关键词模式(未配置 embedding 提供方),结果可能不全,但我是直接查证过 USER.md 的,这条记录确定无误。如果这个地址需要更新,告诉我即可。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "memory",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "记忆库包含全部期望条目",
+      "reply": "",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在北京市海淀区中关村大街1号。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了:你家在北京市海淀区中关村大街1号 ✅ 已存到我的用户档案里,以后查天气、算通勤、提醒出门这类事都会默认用这个位置。\n\n有什么需要我基于这个地址做的吗?比如今天天气、通勤路况之类?"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "隔了一个 session 的无关对话",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看今天有什么新闻。"
+          },
+          {
+            "role": "assistant",
+            "content": "看了新浪新闻和澎湃新闻的今日首页（2026年9月5日 周六），给你挑几条要点：\n\n**科技/财经**\n- OpenAI 宣布 GPT-6 Astra 全量开放，据称多项测试得分 99.9%，被称\"AGI 来临\"（新浪科技）\n- AI Token 价格创下新低，国内模型厂商\"把价格打下来了\"\n- 美股存储、光通信板块大涨，黄金、白银下挫，美联储加息预期出现变化\n- 国内基金发行爆发，多只产品\"一日结募\"，市场在押注什么受关注\n- 紫金矿业半年报被曝多处基础文字错误（如\"人民币政府\"\"新熊源\"）\n\n**时政/监管**\n- 证监会与香港证监会协力查处跨国\"内幕交易\"大案，有合规券商被卷入舆论\n- 证券基金与第三方平台合作红线再划清，六类高风险情形须董事会审议\n- 兰州榆中通报\"莴笋收购环节染色\"事件，立案查处 6 家企业\n- 教育部：将继续坚守师德师风第一标准\n\n**社会**\n- 海南海口一装修餐厅起火致 6 死 3 伤（前两日通报）\n- 武汉东西湖区成立联合调查组（针对此前事件）\n- 冒充班主任诈骗 10 名家长，警方已立案，学校回应\n\n**体育/其他**\n- 传大众汽车拟从足球俱乐部撤资，拜仁慕尼黑或受影响\n- 爱知·名古屋亚运会部分项目门票销售遇冷（澎湃）\n- 何勇（摇滚音乐人）去世，乐评人回忆其生前近况\n\n⚠️ 说明：搜索引擎暂时不可用，以上是我直接从新浪/澎湃首页抓取的标题摘要，未经逐条核实。想深入了解哪条，我可以打开原文帮你读详情。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我家在哪里？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的家在**北京市海淀区中关村大街1号**(记录于 USER.md,2026-09-05 设定,涉及天气、通勤、位置等场景默认以此为准)。\n\n说明一下:语义搜索目前降级为仅关键词模式(未配置 embedding 提供方),结果可能不全,但我是直接查证过 USER.md 的,这条记录确定无误。如果这个地址需要更新,告诉我即可。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家在北京市海淀区中关村大街1号;涉及天气、通勤、位置等场景默认以此为准。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 家在北京市海淀区中关村大街1号;涉及天气、通勤、位置等场景默认以此为准。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603993.5914788,
+  "duration_sec": 67.71545386314392
+}

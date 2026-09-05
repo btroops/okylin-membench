@@ -1,0 +1,98 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-03-allergy",
+  "dimension": "recall",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 花生",
+      "reply": "已经查过你的档案——**花生/花生制品过敏**这条禁忌我会全程避开，采购清单按此定制。先给一版通用清单（假设 6–8 人、家常聚餐+零食饮料），你告诉我人数和形式（烧烤/火锅/家常菜？有没有孩子？）我再出精确版。\n\n## 🛒 采购清单（无花生版）\n\n**🥩 肉禽海鲜**（按 6–8 人量）\n- [ ] 鸡翅中 1kg、鸡腿肉 500g\n- [ ] 五花肉片/梅花肉 500g\n- [ ] 肥牛卷 500g（如果吃火锅）\n- [ ] 鲜虾 500g、鲈鱼或巴沙鱼 1 条\n- [ ] 鸡蛋 1 盒\n\n**🥬 蔬菜水果**\n- [ ] 生菜、黄瓜、番茄、西兰花、金针菇、土豆、洋葱\n- [ ] 玉米 4–5 根（烧烤/煮都合适）\n- [ ] 水果：西瓜 1 个 + 葡萄/蓝莓 1–2 盒\n\n**🍚 主食**\n- [ ] 大米 2kg（或按人数买现成米饭）\n- [ ] 吐司/法棍 1 条（配餐）\n- [ ] 面条或米粉一包（备用加菜）\n\n**🍿 零食饮料**\n- [ ] 原味薯片（**避开**烧烤味/坚果夹心款，看配料表）\n- [ ] 苏打饼干、海苔（原味）\n- [ ] 果冻、棉花糖、纯巧克力（**买前确认无\"可能含花生\"标注**）\n- [ ] 果汁 2L ×2、气泡水、乌龙茶/柠檬茶\n- [ ] 冰块一袋\n\n**🧂 调料（重点排查区）**\n- [ ] 生抽、蚝油、料酒、白糖\n- [ ] 食用油（买 **玉米油/葵花籽油**，别买花生油）\n- [ ] 烧烤/火锅蘸料：**强烈建议买粉料自制**（孜然粉+辣椒粉+盐+糖），或买前逐字看配料表\n- [ ] 沙拉酱选原味蛋黄酱款\n\n**🧻 其他**\n- [ ] 一次性餐具、纸杯、厨房纸、垃圾袋\n\n---\n\n## ⚠️ 花生禁忌注意事项（买的时候对照）\n\n1. **绝对不买**：花生米、酒鬼花生、鱼皮花生、花生酱、花生油、沙嗲/沙茶酱、五仁月饼等含花生糕点。\n2. **必须看配料表的\"隐藏来源\"**：火锅蘸料、拌饭酱、咖喱酱、部分辣椒油、泰式酱料、能量棒/麦片、部分饼干巧克力——很多含花生碎或\"可能含花生\"交叉污染标注。\n3. **避开散装/无标签食品**（烘焙房糕点、散称坚果混合区），无法确认就不买。\n4. 生鲜区买肉后与坚果柜台保持距离，避免带壳花生碎屑混入购物车。\n\n人数、形式（火锅还是烧烤差别很大）、要不要酒水？告诉我我就把清单精调成最终版，还能顺手帮你按超市分区排好顺序。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我对花生过敏。"
+          },
+          {
+            "role": "assistant",
+            "content": "已记入档案 ✅ 之后凡是涉及食物推荐、菜谱或配料的内容，我都会自动避开花生及花生制品。如果还有别的过敏原（比如坚果、海鲜、乳制品），也可以一起告诉我。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我看看有什么电影。"
+          },
+          {
+            "role": "assistant",
+            "content": "刚帮你查了一圈,先说明一下:我这边暂时拿不到国内影院(豆瓣/猫眼被拦了),下面是目前**全球院线在映/新上映**的片单(TMDB 数据,国内排期可能有出入):\n\n**大片新片**\n- 🕷️ **Spider-Man: Brand New Day** — 7月底上映的蜘蛛侠新作,还在热映\n- ⚔️ **The Odyssey** — 克里斯托弗·诺兰的古希腊史诗大片,8月中上映\n- 🔫 **Mutiny**(9/4)— 杰森·斯坦森的动作新片\n- 📉 **Fall 2: Deadpoint**(9/4)— 《坠落》续集,高空惊悚\n- 🐾 **PAW Patrol: The Dino Movie** — 小朋友会喜欢的恐龙冒险\n\n**经典重映(近期也有场次)**\n- Kill Bill: The Whole Bloody Affair(昆汀完整版,9/4)\n- WALL·E、《肖申克的救赎》、Flow(去年奥斯卡最佳动画)\n\n要我帮你进一步挑的话,告诉我:\n1. 你是想看**影院上映**还是**在家看(流媒体)**?\n2. 在哪个城市?(方便我帮你查本地影院排片)\n3. 有没有偏好的类型?比如动作、悬疑、喜剧……\n\n或者你也可以直接说\"随便推荐一部\",我按口碑帮你选 😄"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "周末聚会帮我列一份采购清单，注意我的禁忌。"
+          },
+          {
+            "role": "assistant",
+            "content": "已经查过你的档案——**花生/花生制品过敏**这条禁忌我会全程避开，采购清单按此定制。先给一版通用清单（假设 6–8 人、家常聚餐+零食饮料），你告诉我人数和形式（烧烤/火锅/家常菜？有没有孩子？）我再出精确版。\n\n## 🛒 采购清单（无花生版）\n\n**🥩 肉禽海鲜**（按 6–8 人量）\n- [ ] 鸡翅中 1kg、鸡腿肉 500g\n- [ ] 五花肉片/梅花肉 500g\n- [ ] 肥牛卷 500g（如果吃火锅）\n- [ ] 鲜虾 500g、鲈鱼或巴沙鱼 1 条\n- [ ] 鸡蛋 1 盒\n\n**🥬 蔬菜水果**\n- [ ] 生菜、黄瓜、番茄、西兰花、金针菇、土豆、洋葱\n- [ ] 玉米 4–5 根（烧烤/煮都合适）\n- [ ] 水果：西瓜 1 个 + 葡萄/蓝莓 1–2 盒\n\n**🍚 主食**\n- [ ] 大米 2kg（或按人数买现成米饭）\n- [ ] 吐司/法棍 1 条（配餐）\n- [ ] 面条或米粉一包（备用加菜）\n\n**🍿 零食饮料**\n- [ ] 原味薯片（**避开**烧烤味/坚果夹心款，看配料表）\n- [ ] 苏打饼干、海苔（原味）\n- [ ] 果冻、棉花糖、纯巧克力（**买前确认无\"可能含花生\"标注**）\n- [ ] 果汁 2L ×2、气泡水、乌龙茶/柠檬茶\n- [ ] 冰块一袋\n\n**🧂 调料（重点排查区）**\n- [ ] 生抽、蚝油、料酒、白糖\n- [ ] 食用油（买 **玉米油/葵花籽油**，别买花生油）\n- [ ] 烧烤/火锅蘸料：**强烈建议买粉料自制**（孜然粉+辣椒粉+盐+糖），或买前逐字看配料表\n- [ ] 沙拉酱选原味蛋黄酱款\n\n**🧻 其他**\n- [ ] 一次性餐具、纸杯、厨房纸、垃圾袋\n\n---\n\n## ⚠️ 花生禁忌注意事项（买的时候对照）\n\n1. **绝对不买**：花生米、酒鬼花生、鱼皮花生、花生酱、花生油、沙嗲/沙茶酱、五仁月饼等含花生糕点。\n2. **必须看配料表的\"隐藏来源\"**：火锅蘸料、拌饭酱、咖喱酱、部分辣椒油、泰式酱料、能量棒/麦片、部分饼干巧克力——很多含花生碎或\"可能含花生\"交叉污染标注。\n3. **避开散装/无标签食品**（烘焙房糕点、散称坚果混合区），无法确认就不买。\n4. 生鲜区买肉后与坚果柜台保持距离，避免带壳花生碎屑混入购物车。\n\n人数、形式（火锅还是烧烤差别很大）、要不要酒水？告诉我我就把清单精调成最终版，还能顺手帮你按超市分区排好顺序。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Never recommend, serve, or suggest foods/drinks containing peanuts or peanut derivatives (user has a peanut allergy); check ingredients and warn about hidden peanut sources when relevant.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Never recommend, serve, or suggest foods/drinks containing peanuts or peanut derivatives (user has a peanut allergy); check ingredients and warn about hidden peanut sources when relevant.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602853.9367523,
+  "duration_sec": 50.93250608444214
+}

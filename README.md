@@ -8,7 +8,13 @@ OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测工具。
 > 协作/工作台规范（多人或多 agent 换手必读）：[AGENTS.md](AGENTS.md)
 > 与 [docs/WORKFLOW.md](docs/WORKFLOW.md)。
 
-## 六维指标
+## 核心范式
+
+> **证据链驱动的记忆评测**：不只看最终回答，而是从「记忆状态演变 → 检索来源 → 行动产物」的完整证据链评分，
+> 能区分"没记住 / 记住没用 / 记错 / 该忘未忘 / 不该记却记"五种失败模式——后两种在终态 QA 范式下完全不可见。
+> 详见 [docs/EVIDENCE_CHAIN.md](docs/EVIDENCE_CHAIN.md)。
+
+## 九维指标
 
 | 维度 | 考察点 | 对标 |
 |---|---|---|
@@ -111,20 +117,9 @@ membench demo
 ## 运行测试
 
 ```bash
-python3 -m unittest discover -s tests   # 90 个单元/端到端测试（31 用例 + 21 模板 / 9 维度；含证据查看器、难度×维度热力表、doctor 自检）
+python3 -m unittest discover -s tests   # 94 个单元/端到端测试（35 用例 + 21 模板 / 9 维度；含评分可信度实验、证据查看器、doctor 自检）
 ```
 
 ## 许可证
 
 GPL-2.0-or-later
-
-curl -N https://openrouter.ai/api/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer REDACTED" \
-  -d '{
-  "model": "minimax/minimax-m3:free",
-  "stream": true,
-  "messages": [
-    {"role": "user", "content": "Hello"}
-  ]
-}'

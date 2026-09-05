@@ -1,0 +1,149 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "ret-03-multi-fact",
+  "dimension": "retention",
+  "run_index": 2,
+  "difficulty": "medium",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 雪球",
+      "reply": "你的猫叫**雪球**（Snowball）❄️\n\nSource: USER.md#L22",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "retention",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 13800001111",
+      "reply": "你的手机号是 **13800001111**（中国移动），记录在你的用户档案里。需要我用它做什么吗？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [
+        "s1"
+      ],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我养了一只猫叫雪球。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 🐱 雪球 (Snowball) — 我会把这位家庭成员记在心里。\n\n以后聊到猫的事、或者你有想分享的雪球日常,都可以随时跟我说。它是什么品种、多大啦?"
+          },
+          {
+            "role": "user",
+            "content": "我的电话是 13800001111。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了你的电话号码 13800001111。放心,我不会主动用它联系你,只会在你明确同意的情况下(比如帮你发消息、绑定某些需要手机号的服务)才使用。\n\n还有什么要告诉我的吗?"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "帮我打开浏览器看看天气。"
+          },
+          {
+            "role": "assistant",
+            "content": "天气需要知道你在哪儿才能查——告诉我城市名（比如北京、上海，或者拼音/英文都行），我马上帮你看。"
+          },
+          {
+            "role": "user",
+            "content": "顺便提醒我明天早上九点开会。"
+          },
+          {
+            "role": "assistant",
+            "content": "开会提醒已经设好了 ✅\n\n- **提醒时间**:明天(9月6日)早上 9:00——我按北京时间(UTC+8,你手机号是国内的)设的,触发了会在这里提醒你。如果你不在国内时区,跟我说一声我改。\n\n天气的话我还不知道你在哪个城市,告诉我是哪个城市(比如北京、上海),我马上帮你看。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的猫叫什么名字？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的猫叫**雪球**（Snowball）❄️\n\nSource: USER.md#L22"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的电话是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "你的手机号是 **13800001111**（中国移动），记录在你的用户档案里。需要我用它做什么吗？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Know the user has a cat named 雪球 (Snowball); greet or check in on 雪球 naturally when context fits.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- User's phone number is 13800001111 (China mobile). Use it only for user-approved contact via messaging channels.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- Know the user has a cat named 雪球 (Snowball); greet or check in on 雪球 naturally when context fits.\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- User's phone number is 13800001111 (China mobile). Use it only for user-approved contact via messaging channels.\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788602668.086029,
+  "duration_sec": 55.730886936187744
+}

@@ -1,0 +1,102 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "reuse-02-commit-rule",
+  "dimension": "task_reuse",
+  "run_index": 3,
+  "difficulty": "hard",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "fs",
+      "dimension": "task_reuse",
+      "verdict": "miss",
+      "score": 0.0,
+      "reason": "期望存在的文件未产生: commit-msg.txt",
+      "reply": "",
+      "hits": [],
+      "misses": [
+        "commit-msg.txt"
+      ],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": null,
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 0.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "记住我们的提交信息规范：提交信息必须以 KYLIN- 开头加三位数字。"
+          },
+          {
+            "role": "assistant",
+            "content": "记住了 ✅ 提交信息规范：**必须以 `KYLIN-` 开头加三位数字**（如 `KYLIN-123`）。\n\n这条规则已经写在工作区的 `AGENTS.md` → Conventions 里，每次会话启动都会自动加载，所以它本来就在生效中。我刚也在今日记录 `memory/2026-09-05.md` 里留了一条确认备忘。\n\n以后我做的任何 git 提交都会遵守这个格式。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "/write commit-msg.txt 按照我之前教你的提交信息规范，生成一条修复登录崩溃的提交信息"
+          },
+          {
+            "role": "assistant",
+            "content": "⚠️ Memory Search failed"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": ""
+          },
+          {
+            "role": "assistant",
+            "content": ""
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提醒提交信息规范：必须以 `KYLIN-` 开头加三位数字（如 `KYLIN-123`）。该规范已写入 `AGENTS.md` Conventions 一节，无需改动；本日记录以作确认。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n# 2026-09-05\n\n- 用户提醒提交信息规范：必须以 `KYLIN-` 开头加三位数字（如 `KYLIN-123`）。该规范已写入 `AGENTS.md` Conventions 一节，无需改动；本日记录以作确认。"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 2,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603254.2510989,
+  "duration_sec": 29.59419560432434
+}

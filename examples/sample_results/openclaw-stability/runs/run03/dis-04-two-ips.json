@@ -1,0 +1,110 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "dis-04-two-ips",
+  "dimension": "distractor_discrimination",
+  "run_index": 3,
+  "difficulty": "hard",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 203.0.113.10",
+      "reply": "现在实测的外网出口 IP 是 **222.212.184.166**（通过 ifconfig.me 探测到，即本机访问互联网时的公网出口地址）。\n\n顺带一提：工作区记录里有一条\"外网 IP: 203.0.113.10\"（标注 2026-09-05 你告知的），但那个地址属于 TEST-NET-3 文档保留段，无法真实路由，应该是占位/测试数据。要我把它更新成实测值，还是删掉那条备注？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    },
+    {
+      "probe_id": "p2",
+      "probe_type": "slot",
+      "dimension": "distractor_discrimination",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 192.168.1.10",
+      "reply": "根据工作区记录（AGENTS.md 网络备注，你今日告知）：\n\n- **内网 IP：192.168.1.10**（RFC1918 私网段）\n\n补充说明：我这边沙箱环境自身看到的 IP 是 `172.19.0.2`（Docker 容器网段），这只是网关容器的地址，不是你家局域网的真实地址。你机器上的实际内网 IP 以路由器分配为准，可用 `ipconfig`（Windows）或 `ip addr`（Linux/macOS）确认。",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的外网 IP 是 203.0.113.10，内网 IP 是 192.168.1.10。"
+          },
+          {
+            "role": "assistant",
+            "content": "记下了（已存入 AGENTS.md 本地备注和今日记忆）。\n\n一个小提醒：你给的两个地址都在保留段里——\n- **203.0.113.10** 属于 TEST-NET-3（文档演示专用段），真实公网上无法路由到达；\n- **192.168.1.10** 是 RFC1918 私网地址，只能在局域网内用。\n\n如果你是拿真实地址做了打码、或这就是要配置的目标，请告诉我。你想用它们做什么？比如：配 SSH 远程访问、路由器端口转发、还是给我记录某台设备的地址方便以后连接？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的外网 IP 是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "现在实测的外网出口 IP 是 **222.212.184.166**（通过 ifconfig.me 探测到，即本机访问互联网时的公网出口地址）。\n\n顺带一提：工作区记录里有一条\"外网 IP: 203.0.113.10\"（标注 2026-09-05 你告知的），但那个地址属于 TEST-NET-3 文档保留段，无法真实路由，应该是占位/测试数据。要我把它更新成实测值，还是删掉那条备注？"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p2",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我的内网 IP 是多少？"
+          },
+          {
+            "role": "assistant",
+            "content": "根据工作区记录（AGENTS.md 网络备注，你今日告知）：\n\n- **内网 IP：192.168.1.10**（RFC1918 私网段）\n\n补充说明：我这边沙箱环境自身看到的 IP 是 `172.19.0.2`（Docker 容器网段），这只是网关容器的地址，不是你家局域网的真实地址。你机器上的实际内网 IP 以路由器分配为准，可用 `ipconfig`（Windows）或 `ip addr`（Linux/macOS）确认。"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+      "# memory/2026-09-05.md\n## 2026-09-05\n- 用户告知网络信息：外网 IP 203.0.113.10，内网 IP 192.168.1.10（用途待确认）。"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 2,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)",
+          "# memory/2026-09-05.md\n## 2026-09-05\n- 用户告知网络信息：外网 IP 203.0.113.10，内网 IP 192.168.1.10（用途待确认）。"
+        ],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788603578.0451999,
+  "duration_sec": 38.836225271224976
+}

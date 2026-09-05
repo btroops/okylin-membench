@@ -1,0 +1,98 @@
+{
+  "agent": "openclaw-real",
+  "case_id": "rec-02-greeting",
+  "dimension": "recall",
+  "run_index": 3,
+  "difficulty": "easy",
+  "rows": [
+    {
+      "probe_id": "p1",
+      "probe_type": "free",
+      "dimension": "recall",
+      "verdict": "correct",
+      "score": 1.0,
+      "reason": "回答包含全部必需信息: 小明",
+      "reply": "你好，小明！很高兴见到你 😊 有什么我可以帮你的吗？",
+      "hits": [],
+      "misses": [],
+      "weight": 1.0,
+      "relation": "",
+      "judge": "deterministic",
+      "evidence_sessions": [],
+      "retrieval_trace": [],
+      "role": "presence"
+    }
+  ],
+  "findings": [],
+  "score": 1.0,
+  "evidence": {
+    "transcript": [
+      {
+        "session_id": "s1",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "我叫小明。"
+          },
+          {
+            "role": "assistant",
+            "content": "你好，小明！👋 很高兴认识你。\n\n我是你的个人助理。有什么想聊的、想做的，或者需要帮忙查资料、写东西、安排日程,随时开口就行。"
+          }
+        ]
+      },
+      {
+        "session_id": "s2",
+        "note": "",
+        "date": "",
+        "turns": [
+          {
+            "role": "user",
+            "content": "今天有点累。"
+          },
+          {
+            "role": "assistant",
+            "content": "辛苦了 😌 周六了还累着,大概是攒了一周的疲惫吧。要是有什么能甩给我做的——整理东西、查资料、回邮件之类的杂活——直接说,我来接手,你歇着就行。\n\n今天先少操点心,喝点水,能躺就躺会儿。"
+          }
+        ]
+      },
+      {
+        "session_id": "probe:p1",
+        "note": "探针",
+        "turns": [
+          {
+            "role": "user",
+            "content": "请用我的名字跟我打个招呼。"
+          },
+          {
+            "role": "assistant",
+            "content": "你好，小明！很高兴见到你 😊 有什么我可以帮你的吗？"
+          }
+        ]
+      }
+    ],
+    "memory_dump": [
+      "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户的称呼是「小明」，使用中文交流时直接称呼即可。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+    ],
+    "memory_evolution": [
+      {
+        "after_session": "s1",
+        "n_items": 1,
+        "added": [
+          "# USER.md\n# USER.md - User Model\n\nStore stable user preferences and profile facts as directives that can guide future sessions.\n\nUse one directive per entry:\n\n```md\n<!-- observed: YYYY-MM-DD | status: active -->\n\n- Prefer concise progress updates during implementation work.\n```\n\n- Begin each directive with an imperative such as `Always`, `Never`, or `Prefer`.\n- Record the observation date and either `active` or `superseded` on the metadata line.\n- When a preference changes, mark the old entry `superseded` and rewrite the active directive in place. Never append a contradictory active directive.\n- Keep stable communication style, relationships, and active-project context here. Put durable non-profile facts and decisions in `MEMORY.md`.\n\n## Directives\n\n<!-- observed: 2026-09-05 | status: active -->\n\n- 用户的称呼是「小明」，使用中文交流时直接称呼即可。\n\n## Related\n\n- [Agent workspace](/concepts/agent-workspace)"
+        ],
+        "removed": []
+      },
+      {
+        "after_session": "s2",
+        "n_items": 1,
+        "added": [],
+        "removed": []
+      }
+    ],
+    "fs_added_or_modified": {}
+  },
+  "started_at": 1788604249.4930117,
+  "duration_sec": 22.974928617477417
+}
