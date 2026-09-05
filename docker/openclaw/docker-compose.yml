@@ -49,6 +49,9 @@ services:
       ANTHROPIC_DEFAULT_OPUS_MODEL: ${ANTHROPIC_DEFAULT_OPUS_MODEL:-}
       # 其它 provider（可选，留空即不启用）
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      # OpenAI 兼容端点（配方 B，N+26）：网关与模型名，与 ANTHROPIC_* 组按需二选一
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
     volumes:
       - ./openclaw-config:/home/node/.openclaw
       - ./openclaw-workspace:/home/node/.openclaw/workspace
@@ -77,6 +80,8 @@ services:
       ANTHROPIC_DEFAULT_SONNET_MODEL: ${ANTHROPIC_DEFAULT_SONNET_MODEL:-}
       ANTHROPIC_DEFAULT_OPUS_MODEL: ${ANTHROPIC_DEFAULT_OPUS_MODEL:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-}
     volumes:
       - ./openclaw-config:/home/node/.openclaw
       - ./openclaw-workspace:/home/node/.openclaw/workspace
