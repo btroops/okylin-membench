@@ -32,6 +32,7 @@ membench/llmhttp.py 消化：system 拆顶层、消息合并、max_tokens 默认
 """
 from __future__ import annotations
 
+import sys
 from typing import Dict, List, Optional
 
 from .. import llmhttp
@@ -40,6 +41,8 @@ from .base import AgentAdapter, AgentError
 from .builtin import SECRET_RE
 
 MEMORY_STRATEGIES = ("none", "full_log", "store", "store_filter")
+# memory 子配置的合法字段（N+29，与工厂的未知字段告警同口径）
+KNOWN_MEMORY_KEYS = {"strategy", "top_k"}
 
 
 class _MemoryStore:
@@ -95,6 +98,11 @@ class OpenAICompatAgent(AgentAdapter):
         self.temperature = temperature
         self.timeout = timeout
         mem_cfg = memory or {}
+        unknown_mem = sorted(k for k in mem_cfg
+                             if k not in KNOWN_MEMORY_KEYS and not k.startswith("_"))
+        if unknown_mem:
+            print("%s: 警告：memory 配置含未识别字段 %s（将被忽略；已知字段 %s）"
+                  % (name, unknown_mem, sorted(KNOWN_MEMORY_KEYS)), file=sys.stderr)
         strategy = str(mem_cfg.get("strategy", "store"))
         if strategy not in MEMORY_STRATEGIES:
             raise AgentError("未知记忆策略: %s（可选 %s）" % (strategy, MEMORY_STRATEGIES))

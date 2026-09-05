@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import sys
 from typing import List
 
 from .base import AgentAdapter, AgentError
@@ -14,6 +15,26 @@ BUILTIN_AGENTS = {
     "naive": NaiveMemoryAgent,
     "smart": SmartMemoryAgent,
 }
+
+# 各 kind 的合法配置字段（N+29）：未知字段一律告警——静默忽略会把拼写错误
+# （如 api→ap1）变成无声的缺省行为回退，评测口径悄然作废。_ 前缀视为注释字段。
+KNOWN_AGENT_KEYS = {
+    "builtin": {"kind", "name", "impl"},
+    "subproc": {"kind", "name", "cmd", "timeout"},
+    "openai_compat": {"kind", "name", "base_url", "model", "api", "api_key_env",
+                      "memory", "system_prompt", "temperature", "timeout",
+                      "max_tokens"},
+}
+
+
+def _warn_unknown_keys(cfg: dict, source: str) -> None:
+    known = KNOWN_AGENT_KEYS.get(str(cfg.get("kind", "")).strip())
+    if known is None:
+        return
+    unknown = sorted(k for k in cfg if k not in known and not k.startswith("_"))
+    if unknown:
+        print("%s: 警告：配置含未识别字段 %s（将被忽略；已知字段 %s）"
+              % (source or "agent", unknown, sorted(known)), file=sys.stderr)
 
 
 def create_agent(spec: str) -> AgentAdapter:
@@ -48,6 +69,7 @@ def _resolve_cmd(cmd: List[str], source: str) -> List[str]:
 
 def create_agent_from_config(cfg: dict, source: str = "") -> AgentAdapter:
     kind = str(cfg.get("kind", "")).strip()
+    _warn_unknown_keys(cfg, source)
     name = str(cfg.get("name", "agent"))
     if kind == "builtin":
         impl = str(cfg.get("impl", ""))
