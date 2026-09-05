@@ -5,6 +5,9 @@ OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测工具。
 （仅需 `python3>=3.8` 与 `python3-yaml`），一条命令完成"跑剧本 → 采证据 →
 自动评分 → 雷达图报告"。
 
+> 协作/工作台规范（多人或多 agent 换手必读）：[AGENTS.md](AGENTS.md)
+> 与 [docs/WORKFLOW.md](docs/WORKFLOW.md)。
+
 ## 六维指标
 
 | 维度 | 考察点 | 对标 |
