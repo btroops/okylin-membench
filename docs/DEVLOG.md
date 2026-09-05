@@ -624,3 +624,40 @@ n/a 因网络抖动）。
   n19-stage1。
 - **未做（待用户确认）**：删 membench-evaluator / pitch-correction 分支
   ✋、drop `stash@{0}`（relation WIP 备份）✋、master 快进 ✋。
+
+## 2026-09-05 · 轮次 N+26：多 provider 双格式改造——OpenAI / Anthropic 可配置
+
+- **决策来源**：用户拍板"LLM 接入格式应由用户自行配置，openai 与
+  anthropic 并存；现状兼容性太差，工程上不对"。方案三层设计已沉淀
+  `docs/PLAN_MULTI_PROVIDER.md`（背景/设计/验收/不做清单），本文只记执行。
+- **做了什么**（工作台 multi-provider，基于 master 7189e79）：
+  1. `membench/llmhttp.py` 新模块：`chat()` 单一入口覆盖两种 wire format。
+     anthropic 路径：`POST {base}/v1/messages`（base_url 约定不含版本段）、
+     `x-api-key` + `Authorization: Bearer` 双发（官方认前者，DeepSeek 等
+     兼容网关认后者）、system 拆顶层字段、连续同角色合并（协议要求
+     user 开头交替）、`max_tokens` 必填默认 1024、解析 `content[].text`；
+     错误统一归一 `LLMHTTPError`（含 HTTP 状态与响应体摘要）。
+  2. **去重**：`judge.py::_post` 与 `openai_compat.py::_chat` 原是两份重复
+     的 OpenAI-only POST，现都委托 `llmhttp.chat`；judge 的 JSON 正则提取、
+     votes 众数、fallback 回退，agent 的 `AgentError` 包装语义不变。
+  3. 配置面：智能体 JSON 新增 `"api": "openai"|"anthropic"`（缺省 openai，
+     旧配置零改动）与可选 `"max_tokens"`；`api_key_env` 缺省随 api
+     （OPENAI_API_KEY / ANTHROPIC_API_KEY）；`--judge` 增加 anthropic 档，
+     端点/key 缺省随格式。新示例 `agents/anthropic-compat.example.json`。
+  4. OpenClaw 层：compose 两组 env 补 `OPENAI_BASE_URL`/`OPENAI_MODEL`
+     透传；`.env.example` 补注释项；`OPENCLAW_REAL_INSTANCE.md` 运行步骤
+     改为配方 A（anthropic，原样）+ 配方 B（openai）并列；局限 #2 补
+     解锁条件（设 OPENAI_API_KEY 且端点支持 /v1/embeddings 即恢复语义检索）。
+- **诚实标注**：配方 B 中 openclaw 的 `models.providers.openai.api` 取值
+  **未在容器实测**（anthropic 实测值为 anthropic-messages，openai 对应值
+  需容器内 `openclaw models list`/官方文档确认），文档已显式标注待回填。
+- **测试插曲（复现 N+22 根因）**：首轮单测整体卡死——测试直接传
+  `opener=None`，宿主死代理（172.29.48.1:7890，见 N+22 后收尾清点 #4）
+  吞掉了发往 127.0.0.1 的请求。按生产同款改为 `opener_for()` 后即刻通过。
+  这恰好再次验证 httputil 存在的必要性，也提醒：**任何回环调用必须绕代理**。
+- **证据（全绿）**：新 `tests/test_llmhttp.py` 10 用例（双格式的路径/鉴权头/
+  请求体/解析/错误包装 + 工厂路由全链路 + 旧配置缺省行为），本地 fake 端点
+  （http.server，回环绕代理）覆盖；全量 `unittest discover` **117/117 OK**
+  （N+25 基线 107 + 新增 10），零回归；无新增第三方依赖。
+- **下一步**：配方 B 的 api 取值容器内实测回填；真切换被测后端时按口径
+  纪律重跑三次稳定性；n19-stage1 在途分支另行并入（--strict 与本改造无关）。
