@@ -445,3 +445,46 @@ n/a 因网络抖动）。
 - 跑一次 `--runs 3` 看 openclaw 稳定性 std（参考 N+15 跨运行 σ=0 的基线）；
 - 把 openclaw-real 跑分固化为 examples/sample_results/ 的标准参考物；
 - openKylin 真机 .deb 复跑 + 桌面录屏。
+
+## 2026-09-05 · 轮次 N+20：孤儿会话清理工具化 + openclaw 三次全量稳定性实测
+
+- **做了什么**：
+  1. `scripts/openclaw_cleanup_sessions.py`——直删 agent 会话库
+     （`agents/main/agent/openclaw-agent.sqlite`）中 `session_key LIKE '%:mb-%'`
+     的全部行（session_nodes / participants / windows / transcript_events /
+     trajectory_runtime_events / transcript_event_identities /
+     session_transcript_* 等 16 张关联表，按 session_id→session_key 两级外键
+     顺序删除 + wal_checkpoint）。宿主机 python 的 sqlite 过旧（不识别
+     STRICT 表），故在容器内以其自带 python3 执行，流程为
+     停网关 → 备份 → 删除 → 起网关。
+  2. 实测两轮：首轮 148 孤儿 / 7,694 行，复跑 `--runs 3` 后再清
+     308 孤儿 / 14,797 行，均回到基线 20 个会话；网关 healthy、agent
+     调用正常。清理脚本幂等，可反复执行。
+  3. `--runs 3` 全量 35 用例 × 3 次真实 LLM 评测（78 分钟）落盘
+     `results/openclaw-stability/`。
+- **稳定性数据（三次均值 ± 跨 run σ）**：
+
+  | 维度 | 均值 | σ | 探针数 |
+  |---|---|---|---|
+  | retention | 94.9 | 7.3 | 39 |
+  | recall | 75.0 | 0.0 | 12 |
+  | dynamic_update | 61.5 | 6.3 | 39 |
+  | distractor_discrimination | 25.0 | **20.4** | 24 |
+  | boundary_refusal | 83.9 | 5.5 | 40 |
+  | task_reuse | 33.3 | 11.8 | 12 |
+  | temporal_reasoning | 50.0 | **40.8** | 6 |
+  | multi_session_reasoning | 66.7 | 0.0 | 3 |
+  | causal_reasoning | 0.0 | 0.0 | 6 |
+
+  FAMA=64.3；单 run 探针均分 61.4 / 63.2 / 67.1。
+- **两点诚实结论**：
+  1. **单次跑分会被幸运/不幸采样放大**：N+19 重评分得到的单 run 画像
+     （如 task_reuse=100、multi_session=100）在三次均值下回落到 33 / 67
+     ——std 列正是为答辩时抵御"跑一次挑好结果"质疑而设，今后 openclaw
+     数字一律报三次均值 ± σ；
+  2. **σ 与样本量强相关**：temporal σ=40.8 但只有 6 探针、multi_session
+     σ=0.0 也只有 3 探针——探针少的维度方差估计不可信，扩大数据集
+     （N+16 已具备 1995 例生成能力）是压低 σ 的正路，而非调 judge。
+- **测试**：本轮无评分逻辑改动，104 测试基线不变；清理脚本以两轮实测
+  代替单测（幂等性由"回到基线 20"直接验证）。
+- **下一步**：把 stability 结果固化为参考物；openKylin 真机复跑。

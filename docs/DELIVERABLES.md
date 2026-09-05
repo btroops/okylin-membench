@@ -26,17 +26,26 @@
 | 指标完整性 | 10% | 九维得分 + 总分 + **FAMA** + 检索定位率 + 记忆演变轨迹（writes/deletes）+ staleness_violations + 五分类分布 + 难度分层 + 难度×维度热力表 + 记忆负担分档 | `summary.json` 字段与 HTML/MD 报告实测 |
 | 创新性与工程落地 | 10% | 过程级证据（演变轨迹/staleness/定位率——开源基准均无）；零依赖 .deb；doctor；21 模板生成器 | 与 LoCoMo/LongMemEval/BEAM/Memora/AMA-Bench/MemGym 逐列对照（RELATED_WORK.md） |
 
-## 三、实测区分度（四智能体全 35 用例对照，N+19）
+## 三、实测区分度（四智能体全 35 用例对照，N+19/N+20）
 
 ```
 智能体             总分   retention recall dynamic_update distractor boundary reuse temporal multi-session causal
 smart(规则记忆)    96.6   77        100    92             100       100      100   100       100           100
-openclaw-real      72.5   100       100    55             33        86       100   50        100           0     ← 真实智能体
+openclaw-real      54.5†  95        75     62             25        84       33    50        67            0     ← 真实智能体
 naive(全量照记)    30.9   62        50     0              0         7        50    0         33            75
 nomem(无记忆)      18.9   17        0      54             0         100      0     0         0             0
 ```
 
-**openclaw-real 在 retention / recall / task_reuse / multi_session 四维与 smart 持平甚至更强**（retention 100 vs smart 77 —— 真实智能体的文件级长期记忆比规则实现的全量回放更「知道什么是用户档案」）。弱项符合真实智能体预期：distractor 33（同类区分需要 prompt 显式控制）、temporal 50（时序枚举常误中干扰项）、dynamic_update 55（更新意图识别）、causal 0（脚本因网络抖动 n/a）。
+† **openclaw-real 为 3 次全量独立评测（35 用例 × 3，约 78 分钟）的均值**；
+单 run 探针均分 61.4 / 63.2 / 67.1。各维跨 run σ 见 DEVLOG N+20
+（distractor σ=20.4、temporal σ=40.8 但仅 6 探针——方差估计受样本量限制）。
+N+19 的单 run 画像（总分 72.5、reuse/multi_session=100）属于幸运采样，
+不作为口径；单次跑分不得用于答辩对比。
+
+**openclaw-real 三次均值下的诚实画像**：retention 95 与 boundary 84 仍显著
+高于 naive/nomem（文件级长期记忆 + 敏感信息拒存是真实优势）；弱项为
+distractor 25（相似事实区分）、task_reuse 33、causal 0（三次一致失败，
+非网络抖动）、dynamic_update 62（更新意图识别）。
 
 每项失分在证据包中有五分类裁决 + 引用原文的理由；过程级指标
 （writes/deletes、staleness、定位率）与终态裁决互相印证。
