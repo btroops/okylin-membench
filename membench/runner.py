@@ -298,8 +298,13 @@ def _ask_probe(agent: AgentAdapter, probe: Probe, case: Case,
 
 def run_suite(agent: AgentAdapter, cases: List[Case], out_dir: str,
               runs: int = 1, judge_free: Optional[FreeJudge] = None,
-              keep_workdir: bool = False, quiet: bool = False) -> dict:
-    """对单个智能体运行整套用例 N 次，落盘逐用例证据与汇总，返回 summary dict。"""
+              keep_workdir: bool = False, quiet: bool = False,
+              judge_health_fn: Optional[Callable[[], dict]] = None) -> dict:
+    """对单个智能体运行整套用例 N 次，落盘逐用例证据与汇总，返回 summary dict。
+
+    judge_health_fn（可选）：落盘前调用一次，返回值并入 summary["_judge"]——
+    judge 计数在评测期间递增，调用方用闭包快照差值给出"本智能体"的增量。
+    """
     agent_dir = os.path.join(out_dir, _safe_name(agent.name))
     runs_dir = os.path.join(agent_dir, "runs")
     os.makedirs(runs_dir, exist_ok=True)
@@ -321,6 +326,8 @@ def run_suite(agent: AgentAdapter, cases: List[Case], out_dir: str,
 
     from .aggregate import summarize_agent
     summary = summarize_agent(agent.name, all_case_results, runs=runs)
+    if judge_health_fn is not None:
+        summary["_judge"] = judge_health_fn()
     with open(os.path.join(agent_dir, "summary.json"), "w", encoding="utf-8") as f:
         json.dump(summary, f, ensure_ascii=False, indent=2)
     return summary

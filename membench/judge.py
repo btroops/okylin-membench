@@ -57,12 +57,18 @@ class LLMJudge:
         self.timeout = timeout
         self.fallback = fallback
         self.last_error: str = ""
+        # 健康度计数（N+29）：judge 静默降级必须留痕，否则评测报告
+        # 无从区分"free 探针很少"与"judge 端点挂了一半"。
+        self.calls = 0
+        self.failures = 0
 
     def judge_free(self, probe: Probe, case: Case, reply: str) -> dict:
         """返回 {verdict, score, reason}；失败时调用 fallback。"""
+        self.calls += 1
         try:
             return self._ask(probe, case, reply)
         except Exception as e:  # noqa: BLE001 —— judge 故障不应中断评测
+            self.failures += 1
             self.last_error = str(e)
             if self.fallback is not None:
                 return self.fallback(probe, case, reply)
@@ -108,6 +114,12 @@ class LLMJudge:
         if not m:
             raise ValueError("回复中未找到 JSON: %r" % text[:200])
         return json.loads(m.group(0))
+
+    def health(self) -> dict:
+        """judge 健康度快照（汇入 summary._judge，报告与 summary.json 可见）。"""
+        return {"api": self.api, "model": self.model, "votes": self.votes,
+                "calls": self.calls, "failures": self.failures,
+                "last_error": self.last_error}
 
     def self_consistency_hook(self) -> dict:
         """AMA-Bench 风格：LLM judge 自检信息（人机一致率/期望下界/对照）。"""

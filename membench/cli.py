@@ -24,11 +24,14 @@ DEFAULT_CASES = os.path.join(PKG_ROOT, "cases")
 DEFAULT_AGENTS_DIR = os.path.join(PKG_ROOT, "agents")
 
 
-# LLM judge 两种 wire format 的默认端点与 key 环境变量（--judge-base-url /
-# --judge-key-env 未显式给出时按格式取默认；N+26 起支持 anthropic）。
+# LLM judge 两种 wire format 的默认端点、模型与 key 环境变量（--judge-base-url /
+# --judge-model / --judge-key-env 未显式给出时按格式取默认，防止跨格式错配——
+# 例如给 Anthropic 端点发 gpt-4o-mini；N+26 起支持 anthropic，N+29 起模型随格式）。
 JUDGE_LLM_DEFAULTS = {
-    "openai": {"base_url": "https://api.openai.com/v1", "key_env": "OPENAI_API_KEY"},
-    "anthropic": {"base_url": "https://api.anthropic.com", "key_env": "ANTHROPIC_API_KEY"},
+    "openai": {"base_url": "https://api.openai.com/v1", "key_env": "OPENAI_API_KEY",
+               "model": "gpt-4o-mini"},
+    "anthropic": {"base_url": "https://api.anthropic.com", "key_env": "ANTHROPIC_API_KEY",
+                  "model": "claude-sonnet-4-5"},
 }
 
 
@@ -41,7 +44,8 @@ def _judge_from_args(args):
         d = JUDGE_LLM_DEFAULTS[judge_mode]
         api_key = os.environ.get(getattr(args, "judge_key_env", "") or d["key_env"], "")
         return LLMJudge(base_url=getattr(args, "judge_base_url", "") or d["base_url"],
-                        model=args.judge_model, api_key=api_key,
+                        model=getattr(args, "judge_model", "") or d["model"],
+                        api_key=api_key,
                         votes=args.judge_votes, api=judge_mode)
     raise SystemExit("未知 judge: %s（可选 heuristic/openai/anthropic）" % judge_mode)
 
@@ -80,6 +84,18 @@ def cmd_validate(args) -> int:
     return 0
 
 
+def _judge_delta_fn(judge, before: dict):
+    """judge 被多个智能体共享、计数累计；返回按快照差值报告本智能体增量的闭包。"""
+    def _delta() -> dict:
+        d = dict(judge.health())
+        d["calls"] -= before["calls"]
+        d["failures"] -= before["failures"]
+        if not d["failures"]:
+            d["last_error"] = ""
+        return d
+    return _delta
+
+
 def cmd_run(args) -> int:
     from .agents import create_agent, create_agent_from_config
     from .runner import _safe_name, run_suite
@@ -99,16 +115,24 @@ def cmd_run(args) -> int:
     for spec in _expand_agent_specs(args.agent):
         agent = create_agent(spec)
         print("== 运行智能体: %s（%d 用例 × %d 次）" % (agent.name, len(cases), args.runs))
+        judge_health_fn = None
+        if judge is not None:
+            judge_health_fn = _judge_delta_fn(judge, judge.health())
         s = run_suite(agent, cases, out_dir=args.out, runs=args.runs,
                       judge_free=(judge.judge_free if judge is not None else None),
                       keep_workdir=args.keep_workdir,
-                      quiet=args.quiet)
+                      quiet=args.quiet, judge_health_fn=judge_health_fn)
         summaries.append(s)
         agent_dirs.append(os.path.join(args.out, _safe_name(agent.name)))
         print("   总分 %.1f | 六维: %s" % (
             100 * s["overall"],
             " ".join("%s=%.0f" % (d, 100 * s["dimensions"][d]["score"])
                      for d in s["dimensions"])))
+        jd = s.get("_judge") or {}
+        if jd.get("failures"):
+            print("   警告：LLM judge 失败 %d/%d 次，失败探针已回退（%s）"
+                  % (jd["failures"], jd.get("calls", 0),
+                     jd.get("last_error") or "原因见逐用例证据"))
     paths = write_reports(summaries, args.out, cases=cases, agent_dirs=agent_dirs)
     print("报告: %s" % paths["html"])
     return 0
@@ -246,7 +270,8 @@ def main(argv: List[str] = None) -> int:
                    help="free 探针判定：heuristic 离线；openai/anthropic 为 LLM judge 的两种 wire format")
     p.add_argument("--judge-base-url", default="",
                    help="LLM 端点；缺省随 --judge：openai=https://api.openai.com/v1（含版本段），anthropic=https://api.anthropic.com（不含）")
-    p.add_argument("--judge-model", default="gpt-4o-mini")
+    p.add_argument("--judge-model", default="",
+                   help="LLM judge 模型；缺省随 --judge：openai=gpt-4o-mini，anthropic=claude-sonnet-4-5")
     p.add_argument("--judge-key-env", default="",
                    help="API key 的环境变量名；缺省随 --judge：OPENAI_API_KEY / ANTHROPIC_API_KEY")
     p.add_argument("--judge-votes", type=int, default=1)
