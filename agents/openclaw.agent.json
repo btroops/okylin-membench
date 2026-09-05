@@ -1,0 +1,7 @@
+{
+  "name": "openclaw-real",
+  "kind": "subproc",
+  "cmd": ["python3", "agents/openclaw_shim.py"],
+  "timeout": 480,
+  "_comment": "真实 OpenClaw 实例（容器内运行）。需先 docker compose up -d openclaw-gateway 并配置 LLM 后端。shim 把每条 user 转发给 OpenClaw，并读取挂载的 MEMORY.md/USER.md/DREAMS.md 作为 memory_dump 证据。"
+}

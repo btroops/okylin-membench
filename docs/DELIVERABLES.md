@@ -40,5 +40,11 @@ nomem(无记忆)    11.1 | 仅边界 100（什么都不存，天然不越界）
 ## 四、参赛者剩余待办（3 项）
 
 1. **openKylin 真机验证**：`sudo dpkg -i dist/membench_0.1.0-1_all.deb && membench doctor && membench demo`（约 10 分钟，留档输出）；
-2. **接两款真实智能体**：本地 LLM 改 `agents/openai-compat.example.json` 的 base_url/model；OpenClaw 类文件化记忆智能体写 50 行协议 shim；`membench run --agent 批量.json` 对比；
+2. **接两款真实智能体**：~~OpenClaw 类文件化记忆智能体写协议 shim~~
+   ✅ 已完成并实测——`agents/openclaw_shim.py` 驱动容器内真实 OpenClaw 实例
+   （官方 Docker 镜像 + memory-core 插件），ret-01/ret-02 双用例真实评分
+   retention=100 且跨用例隔离生效，全程见 `docs/OPENCLAW_REAL_INSTANCE.md`
+   （含 10 项障碍实测留痕）。剩余：openKylin 真机复跑 + 第二款智能体
+   （本地 LLM 改 `agents/openai-compat.example.json` 的 base_url/model，
+   `membench run --agent 批量.json` 对比）；
 3. **录制演示视频**：按 `docs/DEMO_SCRIPT.md` 五分镜 + `scripts/rehearse.sh` 彩排后正式录（约 15 分钟）。

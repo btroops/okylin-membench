@@ -298,3 +298,37 @@ diff 里看到 X 的痕迹；否则 message 与 reality 漂移，下一次审计
 
 清理：8cd6c5a 已在 N+15c（3020245）从历史中由三个准确 commit
 替代；本轮对 .gitignore 残留做最终确认 + DEVLOG 留痕。
+
+## 2026-09-09 · 轮次 N+18：OpenClaw 真实实例接入（Docker，2A 🔶→✅）
+
+- **做了什么**：新增 `docker/openclaw/`（compose/.env.example/干净记忆快照）
+  与 `agents/openclaw_shim.py`（subproc 协议适配器）+ `agents/openclaw.agent.json`
+  + `docs/OPENCLAW_REAL_INSTANCE.md`。membench 经 shim 驱动容器内真实
+  OpenClaw（官方镜像 openclaw/openclaw:latest，Gateway:18789，memory-core +
+  Dreaming 插件实测在线），LLM 后端为 Anthropic 兼容端点（DeepSeek，
+  `models.providers.anthropic.{baseUrl,api=anthropic-messages,models[]}` +
+  paste-api-key 鉴权）。
+- **为什么**：回应"2A 从逻辑层跑通升级为真实软件实例跑通"的评审可信度
+  诉求；OpenClaw 记忆为磁盘文件（USER.md/memory/日记），与 membench 的
+  memory_dump 白盒通道天然对接，无需侵入。
+- **实测证据**：
+  - ret-01-name-editor / ret-02-address 双用例 score=1.00（retention=100），
+    探针裁决 correct（"你叫小明（Xiao Ming）。"/"B. vim"）；
+  - 证据含真实 transcript、memory_dump（USER.md 含
+    `<!-- observed: 2026-09-05 | status: active -->` 条目）、memory_evolution；
+  - 跨用例污染检查：ret-02 全文无 ret-01 的「小明/vim」→ 隔离生效。
+- **三条关键实测教训**（都已写进 OPENCLAW_REAL_INSTANCE.md 障碍表）：
+  1. OpenClaw 记忆权威存储是 state SQLite + 滚动会话历史，Markdown 只是
+     投影——只清文件会被绕过（模型答"早就记住了"）；必须每 episode 用
+     独立 `--session-key` + 文件层还原双管齐下；
+  2. 交互式智能体会以 `ask_user` 工具收尾等用户输入，单发 CLI 调用因此
+     300s 挂死——`tools.deny=["ask_user"]` 后模型改为纯文字收尾；
+  3. 容器以评测用户 uid 运行才能让 shim 的文件级 reset 生效（否则
+     chown 不匹配导致 PermissionError 被静默吞掉，污染照旧）。
+- **诚实记录的局限**：memory-core 语义检索因缺 OpenAI embedding key 降级
+  为关键词匹配（sync failed 日志持续）；验证环境是 Docker 近似环境，
+  openKylin 真机部分仍属交付物 c/e 待办。
+- **测试**：shim 通过 py_compile 与协议回路自检（session_start/memory_dump/
+  session_end 仅产出一行 memory 消息）；e2e 以真实评测代替单测覆盖。
+- **下一步**：接入更多维度用例做真实对比；清理孤儿会话；openKylin 真机
+  复跑。

@@ -20,3 +20,13 @@ dist/
 *.swp
 .DS_Store
 
+# OpenClaw 容器密钥（含 LLM 后端 key，切勿提交）
+docker/openclaw/.env
+
+# OpenClaw 运行时数据（容器挂载生成，非源码）
+docker/openclaw/openclaw-config/
+docker/openclaw/openclaw-workspace/
+
+
+# OpenClaw 缓存目录（容器挂载，非源码）
+docker/openclaw/openclaw-cache/
