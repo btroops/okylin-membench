@@ -115,6 +115,12 @@ OPENAI_MODEL=deepseek-v4-flash
 附带效果：设了 `OPENAI_API_KEY` 且端点支持 `/v1/embeddings` 时，
 memory-core 的语义检索恢复（否则退化为关键词匹配，见该文档局限 #2）。
 
+**关于 embedding（N+28）**：本仓库只有 OpenClaw 容器的 memory-core 使用
+embedding；membench 本体零依赖（参考智能体的记忆检索是确定性关键词实现，
+属评测口径的一部分，不引入向量检索）。embedding 走哪家厂商 = 把配方 B 的
+openai provider 指向你的端点；embedding 模型名的指定键待容器实测，见
+[OPENCLAW_REAL_INSTANCE.md](OPENCLAW_REAL_INSTANCE.md) 配方 B 附节。
+
 ## 4. 常见厂商速查
 
 | 厂商/服务 | `api` | base_url | 备注 |

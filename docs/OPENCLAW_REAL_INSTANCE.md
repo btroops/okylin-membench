@@ -133,6 +133,25 @@ docker compose exec -T openclaw-gateway openclaw models set openai/deepseek-v4-f
 docker compose restart openclaw-gateway
 ```
 
+**配方 B 附：embedding 自定义（memory-core 语义检索，N+28）**
+
+OpenClaw 的 memory-core 语义检索固定通过 **openai provider** 调
+`/v1/embeddings`（实测行为：无该 provider key 时持续报
+`No API key found for provider "openai"`，见局限 2）。由此：
+
+- **embedding 走哪家厂商 = 用户配置**：把 `models.providers.openai.baseUrl`
+  指向任意实现了 `/v1/embeddings` 的兼容端点（DeepSeek /v1、Qwen、自建
+  网关皆可）并贴入其 key，embedding 即随该端点走——可与 chat 模型同
+  端点，也可单独指一家。
+- **embedding 模型名的指定键待实测**：候选为
+  `openclaw config set memory.embedding.model <id>`、或在
+  `models.providers.openai.models[]` 中登记 embedding 模型、或专用环境
+  变量。验证方法：`openclaw config list` 输出 grep embed 定位真实键名；
+  配置后 memory sync 日志不再报 `No API key found` / 模型不存在即生效。
+  确认后请回填本节并注明 openclaw 镜像版本号。
+- **兜底**：若所用版本不支持改 embedding 模型名，可在自建 OpenAI 兼容
+  网关侧把其请求的模型名映射为厂商实际模型（网关层重写请求体）。
+
 切换 provider 的口径纪律（DEVLOG）：被测后端一换，归档的 openclaw-real
 三次稳定性均值 ± σ 与四智能体对比雷达即作废，必须重跑三次稳定性并
 归档新样例（标注 provider/模型），旧数据不得混用。
@@ -149,9 +168,10 @@ docker compose restart openclaw-gateway
    因此常为空列表（shim 已接入真实 `openclaw memory search --json`，
    解析成功且非空才返回条目，失败/空结果优雅降级不影响评分）——这是
    被测环境的真实能力上限，如实报告而非掩盖。
-   **解锁条件（N+26）**：`.env` 设 `OPENAI_API_KEY` 且端点支持
-   `/v1/embeddings`，语义检索即恢复；membench 侧双 provider 改造后
-   （配方 B），这不再是"只有 anthropic 端点"的结构性局限。
+   **解锁与自定义（N+26/N+28）**：`.env` 设 `OPENAI_API_KEY` 且端点支持
+   `/v1/embeddings`，语义检索即恢复；双 provider 改造（配方 B）后，embedding
+   走哪家厂商由用户配置（见配方 B 附「embedding 自定义」），不再是
+   "只有 anthropic 端点"的结构性局限。
 3. **答案锚定豁免的副作用**（N+19）：shim 让探针会话仅靠记忆文件作答
    后，真实 LLM 常在主答案后另起一段引用记忆原文（含干扰项），确定性
    评分的全文 must_not_include 扫描会被系统性误伤。membench 评分器

@@ -677,3 +677,24 @@ n/a 因网络抖动）。
   失效欢迎提 PR（开源协作约定）。
 - **验证**：README 引用的 docs/CONFIGURATION.md 与示例文件均已入库
   （message 可由本 diff 验证）；无代码路径，单测不适用（N+26 基线 117/117）。
+
+## 2026-09-05 · 轮次 N+28：embedding 自定义配置路径（用户决策延伸）
+
+- **决策来源**：用户延伸 N+26 的配置化原则——"embedding 也应可配置自己的
+  模型"。先厘清分层事实再动手：**membench 本体不依赖 embedding**（参考
+  智能体的记忆检索是确定性关键词实现，属评测口径的一部分，引入向量检索
+  会破坏基线可比性，不做）；embedding 只存在于 OpenClaw 容器的
+  memory-core，且实测固定通过 openai provider 调 `/v1/embeddings`。
+- **做了什么**（纯文档轮次，零代码）：
+  1. `OPENCLAW_REAL_INSTANCE.md` 配方 B 新增附节「embedding 自定义」：
+     端点级可配置（openai provider 的 baseUrl 指向任意 /v1/embeddings
+     兼容端点）为实测可推定路径；**模型名的指定键如实标注待实测**，给出
+     三个候选键与验证方法（config list grep embed + memory sync 日志），
+     并留网关层模型名重写的兜底方案；
+  2. 局限 #2 的"解锁条件"升级为"解锁与自定义"；
+  3. `CONFIGURATION.md` §3 补「关于 embedding」：谁在用 embedding、
+     membench 为何不用（口径说明），防止开发者找不存在的开关；
+  4. `.env.example` OPENAI 组注释点明该组同时是 embedding 来源。
+- **诚实标注**：embedding 模型名的真实配置键未在容器实测（与配方 B 的
+  api 取值同属待回填项），文档未臆造键名。
+- **下一步**：与配方 B api 取值一并容器内实测回填（含 openclaw 镜像版本号）。
