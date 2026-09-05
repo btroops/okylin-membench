@@ -698,3 +698,28 @@ n/a 因网络抖动）。
 - **诚实标注**：embedding 模型名的真实配置键未在容器实测（与配方 B 的
   api 取值同属待回填项），文档未臆造键名。
 - **下一步**：与配方 B api 取值一并容器内实测回填（含 openclaw 镜像版本号）。
+
+## 2026-09-06 · 轮次 N+29：judge 跨格式错配修复 + judge 健康度留痕 + 配置未知字段告警
+
+- **决策来源**：multi-provider 分支架构评审（本轮）结论——P1/P2 为必做项，
+  ③ 严格校验为高 ROI 小改；"上层 Provider 抽象"经评估**不做**（变体轴已切对、
+  rule of three 未到、契约窄是优点），触发条件写入方案文档备查。
+- **做了什么**（三件，互不耦合）：
+  1. **P1 修复**：`--judge-model` 原固定 `gpt-4o-mini`，`--judge anthropic`
+     不显式给模型会把 OpenAI 模型名发给 Anthropic 端点 → 静默失败回退。
+     默认模型挪入 `JUDGE_LLM_DEFAULTS` 随格式取值（openai=gpt-4o-mini，
+     anthropic=claude-sonnet-4-5），显式指定仍然优先；
+  2. **P2 可观测**：`LLMJudge` 增加调用/失败计数与 `health()` 快照；
+     `run_suite` 新增 `judge_health_fn` 钩子，落盘前把 judge 健康度并入
+     `summary["_judge"]`（共享 judge 按智能体取增量，无失败不串报错）；
+     HTML/Markdown 报告各智能体段落显示"失败 X/Y 次"警示或全成说明，
+     CLI 运行日志同步告警——judge 静默降级自此绝迹；
+  3. **① 配置严格化**：智能体工厂按 kind 维护合法字段表，未知字段告警并
+     忽略（`_` 前缀视为注释放行）；memory 子配置同口径。防"api 拼错成
+     ap1 → 无声回退 openai 缺省"这类评测口径悄然作废的事故。
+- **不做记录**：Provider 类层次抽象（理由见上）；`_split_system` 的
+  user-first 校验待下次触碰 llmhttp 时顺手加；重试/退避待真实稳定性问题
+  出现后在 opener 层解决，不动 `llmhttp.chat` 签名。
+- **验证**：新增 `tests/test_judge_observability.py`（模型默认值 ×3、
+  summary 增量落盘 ×3、报告可见性 ×2）与 `test_agents.py` 配置告警 ×5、
+  `test_radar_judge.py` 计数器 ×2，全套件 117→132 全绿；零新依赖。

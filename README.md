@@ -112,8 +112,9 @@ probes:
 
 - `choice` / `slot` / `fs` / `memory` 四类探针**完全确定性判定**，同一输入 100% 复现；
 - `free` 探针默认启发式判定（离线可用），可选 LLM judge：`--judge openai`
-  或 `--judge anthropic`（两种 wire format，端点与 key 环境变量缺省随格式；
-  强制 JSON 输出 + 多数投票 + 失败回退启发式；配置细节见
+  或 `--judge anthropic`（两种 wire format，端点、模型与 key 环境变量缺省随
+  格式；强制 JSON 输出 + 多数投票 + 失败回退启发式；judge 调用/失败计数
+  汇入 summary 并在报告可见；配置细节见
   [docs/CONFIGURATION.md](docs/CONFIGURATION.md)）；
 - 白盒证据：`memory` 探针直接检查智能体导出的记忆库；文件系统快照 diff
   检查行动产物；`sensitive_patterns` 全量扫描敏感信息落盘/落库。

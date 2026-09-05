@@ -65,6 +65,9 @@ anthropic 格式（示例：Anthropic 官方，key 变量缺省即 `ANTHROPIC_AP
 | `max_tokens` | 仅 anthropic 需要，缺省 1024 |
 | `memory` | `{"strategy": "none\|full_log\|store\|store_filter", "top_k": 5}` |
 
+配置里的未知字段会被**告警并忽略**（`_` 前缀视为注释，放行）——拼写错误
+（如 `api` 写成 `ap1`）不会无声地回退到缺省行为，而是启动时即提示。
+
 运行：
 
 ```bash
@@ -86,9 +89,12 @@ python3 -m membench.cli run --agent ... \
 # --judge openai 则缺省端点 https://api.openai.com/v1、key 读 OPENAI_API_KEY
 ```
 
-`--judge-base-url` / `--judge-key-env` 未显式给出时随格式取默认。
+`--judge-base-url` / `--judge-model` / `--judge-key-env` 未显式给出时随格式取默认
+（openai：`https://api.openai.com/v1` + `gpt-4o-mini` + `OPENAI_API_KEY`；
+anthropic：`https://api.anthropic.com` + `claude-sonnet-4-5` + `ANTHROPIC_API_KEY`）。
 judge 强制 JSON 输出 + votes 多数投票 + 失败自动回退启发式，
-judge 故障不会中断评测。
+judge 故障不会中断评测；**每次调用与失败都有计数**，汇入
+`summary.json` 的 `_judge` 字段并在对比报告中显示——judge 降级不再静默。
 
 ## 3. OpenClaw 容器：`docker/openclaw/.env`
 
