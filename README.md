@@ -1,22 +1,50 @@
-# membench — openKylin 智能体长期记忆自动化评测基准
+<div align="center">
 
-[English](README.en.md) | 简体中文
+# membench
 
-面向 openKylin 生态（KylinBot / kylin-agent / OpenClaw / HermesAgent 或任意
-OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测工具。零第三方依赖
-（仅需 `python3>=3.8` 与 `python3-yaml`），一条命令完成"跑剧本 → 采证据 →
-自动评分 → 雷达图报告"。
+**openKylin 智能体长期记忆自动化评测基准**
 
-> 协作/工作台规范（多人或多 agent 换手必读）：[AGENTS.md](AGENTS.md)
+[简体中文](README.md) | [English](README.en.md)
+
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![dependencies](https://img.shields.io/badge/dependencies-0-green)
+![tests](https://img.shields.io/badge/tests-107%20passing-brightgreen)
+![license](https://img.shields.io/badge/license-GPL--2.0--or--later-blue)
+![platform](https://img.shields.io/badge/platform-openKylin%20%7C%20Debian-orange)
+
+一套面向 openKylin 生态（KylinBot / kylin-agent / OpenClaw / HermesAgent 或任意
+OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测体系：一条命令完成
+「跑剧本 → 采证据 → 自动评分 → 雷达图报告」，`python3 -m membench.cli demo`
+即可在仓库内直接上手。
+
+</div>
+
+## 📖 这是什么
+
+这是为 openKylin 生态智能体准备的记忆评测工具：不是只给最终回答打分的 QA
+评测器，而是一套**证据链驱动**的完整评测方案——
+
+- **证据链评分** —— 从「记忆状态演变 → 检索来源 → 行动产物」全链路取证，
+  能区分"没记住 / 记住没用 / 记错 / 该忘未忘 / 不该记却记"五种失败模式
+  （详见 [docs/EVIDENCE_CHAIN.md](docs/EVIDENCE_CHAIN.md)）；
+- **九维指标** —— 六大基础维度（保持 / 调用 / 更新 / 区分 / 边界 / 复用）
+  + 三类推理维度（时序 / 多 session / 因果），部分对标 LongMemEval (ICLR'25)
+  与 AMA-Bench (2026)；
+- **确定性优先** —— `choice` / `slot` / `fs` / `memory` 四类探针 100%
+  确定性判定，同一输入必出同一分数；`free` 探针离线启发式判定，可选
+  LLM judge；
+- **零第三方依赖** —— 仅需 `python3>=3.8` 与 `python3-yaml`，克隆即用；
+- **自包含报告** —— 单文件 HTML 对比报告（雷达图 / 热力表 / FAMA / bin）
+  + 逐用例证据查看器（完整对话 / 记忆库演变 / 裁决理由），双击即看。
+
+> 💡 **范式核心**：终态 QA 只能看到"答没答对"；证据链评测能进一步回答
+> "**为什么**错"——其中"该忘未忘 / 不该记却记"两类失败在终态范式下
+> **完全不可见**，却正是记忆系统的真实风险。
+
+> 🤝 协作/工作台规范（多人或多 agent 换手必读）：[AGENTS.md](AGENTS.md)
 > 与 [docs/WORKFLOW.md](docs/WORKFLOW.md)。
 
-## 核心范式
-
-> **证据链驱动的记忆评测**：不只看最终回答，而是从「记忆状态演变 → 检索来源 → 行动产物」的完整证据链评分，
-> 能区分"没记住 / 记住没用 / 记错 / 该忘未忘 / 不该记却记"五种失败模式——后两种在终态 QA 范式下完全不可见。
-> 详见 [docs/EVIDENCE_CHAIN.md](docs/EVIDENCE_CHAIN.md)。
-
-## 九维指标
+## 🧭 九维指标
 
 | 维度 | 考察点 | 对标 |
 |---|---|---|
@@ -30,13 +58,13 @@ OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测工具。
 | multi_session_reasoning 多 session 推理 | 跨 session 分散信息的组合/聚合 | LongMemEval multi-session |
 | causal_reasoning 因果推理 | 基于已记住前置条件调整行动建议（"我不会 Python"→建议改用 Go） | AMA-Bench (2026) |
 
-## 五分类裁决（自动评分的可解释单元）
+## ⚖️ 五分类裁决（自动评分的可解释单元）
 
 `correct` 正确记忆 · `miss` 遗漏 · `confusion` 混淆（记成旧值/干扰项） ·
 `improper_persistence` 错误持久化（不该记却记了） · `improper_reuse` 错误复用 ·
 `not_evaluable` 证据不足（不计入均分）。
 
-## 快速开始
+## 🚀 快速开始
 
 ```bash
 # 仓库内直接运行
@@ -66,7 +94,7 @@ results/
 ├── comparison/evidence.html        # 逐用例证据查看器（裁决理由/对话/记忆演变）
 ```
 
-## 接入你的智能体
+## 🔌 接入你的智能体
 
 三种方式（见 `agents/*.json` 示例）：
 
@@ -85,7 +113,7 @@ results/
    **换厂商 / 三处配置点 / 常见厂商 base_url 速查**：
    [docs/CONFIGURATION.md](docs/CONFIGURATION.md)。
 
-## 数据集格式
+## 📦 数据集格式
 
 每个用例 = 一段"记忆剧本"：多 session 对话 + 探针 + 期望。完整字段说明见
 [docs/SCHEMA.md](docs/SCHEMA.md)，评测方案设计见
@@ -110,7 +138,7 @@ probes:
       must_not_include: ["北京市海淀区中关村大街1号"]
 ```
 
-## 评分设计：确定性优先
+## 🎯 评分设计：确定性优先
 
 - `choice` / `slot` / `fs` / `memory` 四类探针**完全确定性判定**，同一输入 100% 复现；
 - `free` 探针默认启发式判定（离线可用），可选 LLM judge：`--judge openai`
@@ -121,7 +149,7 @@ probes:
 - 白盒证据：`memory` 探针直接检查智能体导出的记忆库；文件系统快照 diff
   检查行动产物；`sensitive_patterns` 全量扫描敏感信息落盘/落库。
 
-## 安装（openKylin / Debian 系）
+## 🛠️ 安装（openKylin / Debian 系）
 
 ```bash
 bash packaging/build_deb.sh          # 构建 dist/membench_0.1.0-1_all.deb
@@ -129,12 +157,12 @@ sudo dpkg -i dist/membench_0.1.0-1_all.deb
 membench demo
 ```
 
-## 运行测试
+## 🧪 运行测试
 
 ```bash
 python3 -m unittest discover -s tests   # 107 个单元/端到端测试（35 用例 + 21 模板 / 9 维度；含评分可信度实验、证据查看器、doctor 自检）
 ```
 
-## 许可证
+## 📄 许可证
 
-GPL-2.0-or-later
+[GPL-2.0-or-later](LICENSE)
