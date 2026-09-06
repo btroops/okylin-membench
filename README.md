@@ -1,5 +1,7 @@
 # membench — openKylin 智能体长期记忆自动化评测基准
 
+[English](README.en.md) | 简体中文
+
 面向 openKylin 生态（KylinBot / kylin-agent / OpenClaw / HermesAgent 或任意
 OpenAI 兼容服务）的智能体**长期记忆能力**自动化评测工具。零第三方依赖
 （仅需 `python3>=3.8` 与 `python3-yaml`），一条命令完成"跑剧本 → 采证据 →
